@@ -452,4 +452,4 @@ class TestList(_TestSequenceBase):
         assert b == desired
 
 if __name__ == "__main__":
-    NumpyTest().test(10,10)
+    unittest.main()

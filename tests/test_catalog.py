@@ -331,4 +331,4 @@ class TestCatalog(TestCase):
 
 
 if __name__ == '__main__':
-    NumpyTest('weave.catalog').run()
+    unittest.main()

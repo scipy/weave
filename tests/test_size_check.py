@@ -370,4 +370,4 @@ class TestExpressions(TestCase):
 
 
 if __name__ == "__main__":
-    NumpyTest('weave.size_check').run()
+    unittest.main()

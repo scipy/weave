@@ -162,4 +162,4 @@ class TestTransformSlices(TestCase):
 
 
 if __name__ == "__main__":
-    NumpyTest('weave.slice_handler').run()
+    unittest.main()
