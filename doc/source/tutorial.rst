@@ -15,8 +15,7 @@ Outline
 Introduction
 ============
 
-The :mod:`scipy.weave` (below just :mod:`weave`) package provides tools for
-including C/C++ code within in
+The :mod:`weave` package provides tools for including C/C++ code within in
 Python code. This offers both another level of optimization to those who need
 it, and an easy way to modify and extend any supported extension libraries
 such as wxPython and hopefully VTK soon. Inlining C/C++ code within Python
@@ -69,14 +68,6 @@ very little help to you. Further, it'd be helpful if you know something about
 writing Python extensions. ``weave`` does quite a bit for you, but for
 anything complex, you'll need to do some conversions, reference counting,
 etc.
-
-.. note::
-
-  ``weave`` is actually part of the `SciPy`_ package. However, it
-  also works fine as a standalone package (you can install from scipy/weave
-  with ``python setup.py install``). The examples here are given as if it is
-  used as a stand alone package. If you are using from within scipy, you can
-  use ``from scipy import weave`` and the examples will work identically.
 
 
 ==============
@@ -212,7 +203,7 @@ Testing Notes:
  Benchmarks
 ============
 
-This section has not been updated from old scipy weave and Numeric....
+This section has not been updated from old Scipy weave and Numeric....
 
 This section has a few benchmarks  -- thats all people want to see anyway
 right? These are mostly taken from running files in the ``weave/example``
@@ -539,7 +530,7 @@ of the functions As well as using the standard ``bisect`` module. If we run
 it on a 1 million element list and run the search 3000 times (for 0- 2999),
 here are the results we get::
 
-        C:\home\ej\wrk\scipy\weave\examples> python binary_search.py
+        C:\home\ej\wrk\weave\examples> python binary_search.py
         Binary search for 3000 items in 1000000 length list of integers:
         speed in python: 0.159999966621
         speed of bisect: 0.121000051498
@@ -607,7 +598,7 @@ version, while more complicated, is about a factor of 2 faster than Python.
 
 ::
 
-        C:\home\ej\wrk\scipy\weave\examples> python dict_sort.py
+        C:\home\ej\wrk\weave\examples> python dict_sort.py
         Dict sort of 1000 items for 300 iterations:
          speed in python: 0.319999933243
         [0, 1, 2, 3, 4]
@@ -676,7 +667,7 @@ appropriate). This provides another factor of 2 improvement.
 
 ::
 
-        #C:\home\ej\wrk\scipy\weave\examples> python cast_copy_transpose.py
+        #C:\home\ej\wrk\weave\examples> python cast_copy_transpose.py
         # Cast/Copy/Transposing (150,150)array 1 times
         #  speed in python: 0.870999932289
         #  speed in c: 0.25
@@ -951,16 +942,16 @@ The verbose flag is added to show what is printed out::
         running build_ext
         building 'sc_86e98826b65b047ffd2cd5f479c627f13' extension
         c:\gcc-2.95.2\bin\g++.exe -mno-cygwin -mdll -O2 -w -Wstrict-prototypes -IC:
-        \home\ej\wrk\scipy\weave -IC:\Python21\Include -c C:\DOCUME~1\eric\LOCAL
+        \home\ej\wrk\weave -IC:\Python21\Include -c C:\DOCUME~1\eric\LOCAL
         S~1\Temp\python21_compiled\sc_86e98826b65b047ffd2cd5f479c627f13.cpp
         -o C:\DOCUME~1\eric\LOCALS~1\Temp\python21_compiled\temp\Release\sc_86e98826b65b04ffd2cd5f479c627f13.o
-        skipping C:\home\ej\wrk\scipy\weave\CXX\cxxextensions.c
+        skipping C:\home\ej\wrk\weave\CXX\cxxextensions.c
         (C:\DOCUME~1\eric\LOCALS~1\Temp\python21_compiled\temp\Release\cxxextensions.o up-to-date)
-        skipping C:\home\ej\wrk\scipy\weave\CXX\cxxsupport.cxx
+        skipping C:\home\ej\wrk\weave\CXX\cxxsupport.cxx
         (C:\DOCUME~1\eric\LOCALS~1\Temp\python21_compiled\temp\Release\cxxsupport.o up-to-date)
-        skipping C:\home\ej\wrk\scipy\weave\CXX\IndirectPythonInterface.cxx
+        skipping C:\home\ej\wrk\weave\CXX\IndirectPythonInterface.cxx
         (C:\DOCUME~1\eric\LOCALS~1\Temp\python21_compiled\temp\Release\indirectpythoninterface.o up-to-date)
-        skipping C:\home\ej\wrk\scipy\weave\CXX\cxx_extensions.cxx
+        skipping C:\home\ej\wrk\weave\CXX\cxx_extensions.cxx
         (C:\DOCUME~1\eric\LOCALS~1\Temp\python21_compiled\temp\Release\cxx_extensions.o
         up-to-date)
         writing C:\DOCUME~1\eric\LOCALS~1\Temp\python21_compiled\temp\Release\sc_86e98826b65b047ffd2cd5f479c627f13.def
@@ -1789,7 +1780,7 @@ unobtrusive as possible and works much like pythons exec statement. As an
 example, the following code fragment takes a 5 point average of the 512x512
 2d image, b, and stores it in array, a::
 
-        from scipy import *  # or from NumPy import *
+        from numpy import *
         a = ones((512,512), Float64)
         b = ones((512,512), Float64)
         # ...do some stuff to fill in b...
@@ -1861,7 +1852,7 @@ Limitations
     ``weave.blitz`` does not currently support operations that use array
     broadcasting, nor have any of the special purpose functions in NumPy such
     as take, compress, etc. been implemented. Note that there are no obvious
-    reasons why most of this functionality cannot be added to scipy.weave, so
+    reasons why most of this functionality cannot be added to Weave, so
     it will likely trickle into future versions. Using ``slice()`` objects
     directly instead of ``start:stop:step`` is also not supported.
 
@@ -2021,10 +2012,10 @@ list representation of the tree.
 ::
 
         >>> import parser
-        >>> import scipy.weave.misc
+        >>> import weave.misc
         >>> ast = parser.suite("a = b * c + d")
         >>> ast_list = ast.tolist()
-        >>> sym_list = scipy.weave.misc.translate_symbols(ast_list)
+        >>> sym_list = weave.misc.translate_symbols(ast_list)
         >>> pprint.pprint(sym_list)
         ['file_input',
          ['stmt',
@@ -2522,7 +2513,7 @@ cryptic error report due to the fact that ``stdio.h`` also defines the name.
 .. _PyInline: http://pyinline.sourceforge.net/
 .. _SciPy: http://www.scipy.org
 .. _mingw32: http://www.mingw.org%3Ewww.mingw.org
-.. _NumPy: http://numeric.scipy.org/
+.. _NumPy: http://numpy.org/
 .. _here: http://www.scipy.org/Weave
 .. _Python Cookbook: http://aspn.activestate.com/ASPN/Cookbook/Python
 .. _binary_search():
