@@ -1,6 +1,6 @@
-**************
-Weave tutorial
-**************
+********
+Tutorial
+********
 
 .. sectionauthor:: Eric Jones eric@enthought.com
 

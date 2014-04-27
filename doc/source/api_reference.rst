@@ -14,6 +14,3 @@ API reference
    :toctree: generated/
 
    inline
-   blitz
-   ext_tools
-   accelerate

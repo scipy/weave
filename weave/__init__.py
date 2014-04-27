@@ -1,11 +1,12 @@
 """
-C/C++ integration
-=================
+C/C++ integration for Python
 
-        inline     -- a function for including C/C++ code within Python
-        blitz      -- a function for compiling Numeric expressions to C++
-        ext_tools  -- a module that helps construct C/C++ extension modules.
-        accelerate -- a module that inline accelerates Python functions
+Main functions are::
+
+  inline     -- a function for including C/C++ code within Python
+  blitz      -- a function for compiling Numeric expressions to C++
+  ext_tools  -- a module that helps construct C/C++ extension modules.
+  accelerate -- a module that inline accelerates Python functions
 
 
 .. note:: On Linux one needs to have the Python development headers installed
