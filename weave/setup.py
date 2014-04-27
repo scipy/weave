@@ -10,5 +10,4 @@ def configuration(parent_package='',top_path=None):
     config.add_data_dir('tests')
     config.add_data_dir('scxx')
     config.add_data_dir(join('blitz','blitz'))
-    config.add_data_dir('examples')
     return config
