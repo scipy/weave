@@ -18,7 +18,7 @@ are recommended to use Cython.
 .. toctree::
    :maxdepth: 2
 
-   tutorial/index
+   tutorial
 
 
 Reference
