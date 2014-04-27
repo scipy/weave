@@ -19,17 +19,14 @@ from __future__ import absolute_import, print_function
 
 import sys
 
-if sys.version_info[0] >= 3:
-    raise ImportError("scipy.weave only supports Python 2.x")
+
+if not sys.version_info[:2] in [(2, 6), (2, 7)]:
+    raise RuntimeError("Weave only supports Python 2.6 and 2.7")
 
 
 from .weave_version import weave_version as __version__
 
-try:
-    from .blitz_tools import blitz, BlitzWarning
-except ImportError:
-    pass  # scipy (core) wasn't available
-
+from .blitz_tools import blitz, BlitzWarning
 from .inline_tools import inline
 from . import ext_tools
 from .ext_tools import ext_module, ext_function
@@ -37,6 +34,7 @@ try:
     from .accelerate_tools import accelerate
 except:
     pass
+
 
 from numpy.testing import Tester
 test = Tester().test
