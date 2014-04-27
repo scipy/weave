@@ -19,12 +19,4 @@ are recommended to use Cython.
    :maxdepth: 2
 
    tutorial
-
-
-Reference
----------
-
-.. toctree::
-   :maxdepth: 1
-
-   weave
+   api_reference

@@ -1,6 +1,6 @@
-*********************
-Weave (`scipy.weave`)
-*********************
+**************
+Weave tutorial
+**************
 
 .. sectionauthor:: Eric Jones eric@enthought.com
 
