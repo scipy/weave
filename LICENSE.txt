@@ -1,5 +1,5 @@
-weave is distributed under the same license as SciPy which uses a BSD Style 
-license.  weave includes blitz++ by Todd Veldhuizen who kindly granted us
+Weave is distributed under the same license as SciPy which uses a BSD Style 
+license.  Weave includes blitz++ by Todd Veldhuizen who kindly granted us
 permission to use blitz++ with the regular SciPy license (i.e., the revised
 BSD license).  For more details see the email exchange below:
 
