@@ -1,0 +1,15 @@
+include MANIFEST.in
+include *.txt
+# Top-level build scripts
+include setup.py
+# All source files
+recursive-include weave *
+# All documentation
+recursive-include doc *
+# Add build and testing tools
+include tox.ini
+# Exclude what we don't want to include
+prune doc/build
+prune doc/source/generated
+prune */__pycache__
+global-exclude *.pyc *~ *.bak *.swp *.pyo
