@@ -4,9 +4,9 @@ import parser
 
 from numpy.testing import TestCase, assert_equal, run_module_suite
 
-from scipy.weave import slice_handler
-from scipy.weave.slice_handler import indexed_array_pattern
-from scipy.weave.ast_tools import ast_to_string, find_first_pattern
+from weave import slice_handler
+from weave.slice_handler import indexed_array_pattern
+from weave.ast_tools import ast_to_string, find_first_pattern
 from weave_test_utils import remove_whitespace
 
 

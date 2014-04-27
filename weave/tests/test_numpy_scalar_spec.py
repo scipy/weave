@@ -7,10 +7,10 @@ import tempfile
 import numpy
 from numpy.testing import TestCase, dec, assert_, run_module_suite
 
-from scipy.weave import inline_tools,ext_tools
-from scipy.weave.build_tools import msvc_exists, gcc_exists
-from scipy.weave.catalog import unique_file
-from scipy.weave.numpy_scalar_spec import numpy_complex_scalar_converter
+from weave import inline_tools, ext_tools
+from weave.build_tools import msvc_exists, gcc_exists
+from weave.catalog import unique_file
+from weave.numpy_scalar_spec import numpy_complex_scalar_converter
 
 
 def unique_mod(d,file_name):

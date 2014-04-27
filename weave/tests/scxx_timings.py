@@ -2,7 +2,7 @@ from __future__ import absolute_import, print_function
 
 import time
 
-from scipy import weave
+import weave
 
 
 force = 0

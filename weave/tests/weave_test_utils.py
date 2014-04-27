@@ -7,7 +7,7 @@ import glob
 from distutils.errors import DistutilsFileError
 import distutils.file_util
 
-from scipy.weave import catalog
+from weave import catalog
 
 
 def remove_whitespace(in_str):

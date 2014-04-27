@@ -2,7 +2,7 @@ from __future__ import absolute_import, print_function
 
 from numpy.testing import TestCase, assert_equal, run_module_suite
 
-from scipy.weave import ast_tools
+from weave import ast_tools
 
 
 class TestHarvestVariables(TestCase):
@@ -18,6 +18,7 @@ class TestHarvestVariables(TestCase):
         expr = "a[:1:2] = b[:1+i+2:]"
         desired = ['a','b','i']
         self.generic_check(expr,desired)
+
 
 if __name__ == "__main__":
     run_module_suite()

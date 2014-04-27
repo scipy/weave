@@ -13,7 +13,7 @@ from distutils.dir_util import remove_tree
 from numpy.testing import TestCase, assert_, dec, run_module_suite
 from numpy.testing.noseclasses import KnownFailureTest
 
-from scipy.weave import catalog
+from weave import catalog
 from weave_test_utils import (clear_temp_catalog, restore_temp_catalog,
                               empty_temp_dir, cleanup_temp_dir)
 
@@ -112,7 +112,7 @@ class TestIntermediateDir(TestCase):
             im_dir = catalog.create_intermediate_dir(tmpdir)
             root_im_dir = os.path.dirname(im_dir)
 
-            tempdir = tempfile.mkdtemp(prefix='scipy-test', dir=tmpdir)
+            tempdir = tempfile.mkdtemp(prefix='weave-test', dir=tmpdir)
             try:
                 os.rename(root_im_dir, tempdir)
             except OSError:

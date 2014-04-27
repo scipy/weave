@@ -8,9 +8,9 @@ import time
 
 from numpy.testing import TestCase, dec, assert_, run_module_suite
 
-from scipy.weave import inline_tools,ext_tools,c_spec
-from scipy.weave.build_tools import msvc_exists, gcc_exists
-from scipy.weave.catalog import unique_file
+from weave import inline_tools, ext_tools, c_spec
+from weave.build_tools import msvc_exists, gcc_exists
+from weave.catalog import unique_file
 
 from weave_test_utils import debug_print
 
@@ -661,6 +661,7 @@ def tearDownModule():
     import shutil
     if test_dir is not None:
         shutil.rmtree(test_dir)
+
 
 if __name__ == "__main__":
     run_module_suite()

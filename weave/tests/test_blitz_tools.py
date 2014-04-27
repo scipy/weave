@@ -10,8 +10,8 @@ from numpy import (float32, float64, complex64, complex128,
 from numpy.testing import (TestCase, dec, assert_equal,
                            assert_allclose, run_module_suite)
 
-from scipy.weave import blitz_tools, blitz, BlitzWarning
-from scipy.weave.ast_tools import harvest_variables
+from weave import blitz_tools, blitz, BlitzWarning
+from weave.ast_tools import harvest_variables
 from weave_test_utils import remove_whitespace, debug_print, TempdirBlitz
 
 

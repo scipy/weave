@@ -7,7 +7,7 @@ import sys
 from numpy.testing import (TestCase, dec, assert_, assert_raises,
                            run_module_suite)
 
-from scipy.weave import inline_tools
+from weave import inline_tools
 
 
 class TestDictConstruct(TestCase):

@@ -6,8 +6,8 @@ from numpy import arange, float32, float64
 from numpy.testing import (TestCase, dec, assert_equal, assert_,
                            run_module_suite)
 
-from scipy.weave import ext_tools, c_spec
-from scipy.weave.standard_array_spec import array_converter
+from weave import ext_tools, c_spec
+from weave.standard_array_spec import array_converter
 from weave_test_utils import empty_temp_dir
 
 

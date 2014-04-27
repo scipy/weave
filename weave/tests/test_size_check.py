@@ -6,8 +6,8 @@ import parser
 import numpy as np
 from numpy.testing import TestCase, assert_array_equal, run_module_suite
 
-from scipy.weave import size_check
-from scipy.weave.ast_tools import harvest_variables
+from weave import size_check
+from weave.ast_tools import harvest_variables
 
 
 class TestMakeSameLength(TestCase):
