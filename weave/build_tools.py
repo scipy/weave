@@ -22,7 +22,6 @@ import sys
 import os
 import time
 import tempfile
-import commands
 import subprocess
 import warnings
 

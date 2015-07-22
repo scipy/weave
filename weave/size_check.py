@@ -7,7 +7,10 @@ from numpy import ones, ndarray, array, asarray, concatenate, zeros, shape, \
 
 import sys
 
-numericTypes = (int, long, float, complex)
+if sys.version_info.major == 3:
+    numericTypes = (int, float, complex)
+else:
+    numericTypes = (int, long, float, complex)
 
 
 def isnumeric(t):

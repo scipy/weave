@@ -3,7 +3,11 @@
 from __future__ import absolute_import, print_function
 
 import sys
-from UserList import UserList
+if sys.version_info.major == 3:
+    from collections import UserDict, UserList
+else:
+    from UserList import UserList
+    from UserDict import UserDict
 
 from numpy.testing import (TestCase, dec, assert_equal, assert_, assert_raises,
                            run_module_suite)
@@ -891,9 +895,6 @@ class TestObjectSetItemOpIndex(TestCase):
         inline_tools.inline('a[1] = std::complex<double>(1,1);',['a'])
         assert_equal(sys.getrefcount(a[1]),2)
         assert_equal(a[1],1+1j)
-
-
-from UserDict import UserDict
 
 
 class TestObjectSetItemOpKey(TestCase):
