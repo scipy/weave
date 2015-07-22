@@ -7,6 +7,8 @@ from numpy import ones, ndarray, array, asarray, concatenate, zeros, shape, \
 
 import sys
 
+long = int
+
 numericTypes = (int, long, float, complex)
 
 

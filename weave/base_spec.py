@@ -84,11 +84,11 @@ class base_converter(object):
     def variable_as_string(self):
         return '"' + self.name + '"'
 
-import UserList
+import collections
 from . import base_info
 
 
-class arg_spec_list(UserList.UserList):
+class arg_spec_list(collections.UserList):
     def build_information(self):
         all_info = base_info.info_list()
         for i in self:

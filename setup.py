@@ -20,7 +20,7 @@ import subprocess
 import os
 
 
-if not sys.version_info[:2] in [(2, 6), (2, 7)]:
+if not sys.version_info[:2] in [(2, 6), (2, 7), (3, 4)]:
     raise RuntimeError("Python version 2.6 or 2.7 required.")
 
 
