@@ -92,7 +92,7 @@ def expr_to_filename(expr):
     base = 'sc_'
     # 32 chars is enough for unique filenames; too long names don't work for
     # MSVC (see gh-3216).  Don't use md5, gives a FIPS warning.
-    return base + sha256(expr).hexdigest()[:32]
+    return base + sha256(bytes(expr, 'utf-8')).hexdigest()[:32]
 
 
 def unique_file(d,expr):
@@ -107,7 +107,7 @@ def unique_file(d,expr):
     """
     files = os.listdir(d)
     base = expr_to_filename(expr)
-    for i in xrange(1000000):
+    for i in range(1000000):
         fname = base + repr(i)
         if not (fname+'.cpp' in files or
                 fname+'.o' in files or
@@ -634,7 +634,7 @@ class catalog(object):
                     access(os.path.dirname(x),W_OK))
         writable = filter(file_test,files)
         if writable:
-            file = writable[0]
+            file = next(writable)
         else:
             file = None
         return file

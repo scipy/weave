@@ -261,9 +261,12 @@ def build_extension(module_path,compiler_name='',build_dir=None,
         ext = create_extension(module_path,**kw)
         # the switcheroo on SystemExit here is meant to keep command line
         # sessions from exiting when compiles fail.
-        builtin = sys.modules['__builtin__']
-        old_SysExit = builtin.__dict__['SystemExit']
-        builtin.__dict__['SystemExit'] = CompileError
+        if sys.version_info.major == 3:
+            builtin_dict = __builtins__
+        else:
+            builtin_dict = sys.modules['__builtin__'].__dict__
+        old_SysExit = builtin_dict['SystemExit']
+        builtin_dict['SystemExit'] = CompileError
 
         # change current working directory to 'build_dir' so compiler won't
         # pick up anything by mistake
@@ -280,7 +283,7 @@ def build_extension(module_path,compiler_name='',build_dir=None,
             # restore state
             os.environ = environ
             # restore SystemExit
-            builtin.__dict__['SystemExit'] = old_SysExit
+            builtin_dict['SystemExit'] = old_SysExit
             # restore working directory to one before setup
             os.chdir(oldcwd)
         t2 = time.time()
@@ -397,16 +400,6 @@ def msvc_exists():
         except WindowsError:
             pass
     return result
-
-if os.name == 'nt':
-    def run_command(command):
-        """ not sure how to get exit status on nt. """
-        p = subprocess.Popen(['cl'], shell=True, stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT)
-        text = p.stdout.read()
-        return 0, text
-else:
-    run_command = commands.getstatusoutput
 
 
 def configure_temp_dir(temp_dir=None):

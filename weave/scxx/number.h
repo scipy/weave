@@ -99,7 +99,7 @@ public:
   PyObject*  Int = PyNumber_Int(_obj);
   if (Int==0)
       fail(PyExc_TypeError, "Cannot convert to long");
-  long r = PyInt_AS_LONG(Int);
+  long r = PyLong_AS_LONG(Int);
   Py_DECREF(Int);
   return r;
     };

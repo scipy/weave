@@ -80,16 +80,16 @@ public:
   //  Numeric constructors
   //-------------------------------------------------------------------------
   object(bool val) { 
-    _obj = _own = PyInt_FromLong((int)val); 
+    _obj = _own = PyLong_FromLong((int)val); 
   };
   object(int val) { 
-    _obj = _own = PyInt_FromLong((int)val); 
+    _obj = _own = PyLong_FromLong((int)val); 
   };
   object(unsigned int val) { 
     _obj = _own = PyLong_FromUnsignedLong(val); 
   };  
   object(long val) { 
-    _obj = _own = PyInt_FromLong(val); 
+    _obj = _own = PyLong_FromLong(val); 
   };  
   object(unsigned long val) { 
     _obj = _own = PyLong_FromUnsignedLong(val); 
@@ -105,10 +105,10 @@ public:
   // string constructors
   //-------------------------------------------------------------------------
   object(const char* val) {
-    _obj = _own = PyString_FromString((char*) val); 
+    _obj = _own = PyUnicode_FromString((char*) val); 
   };
   object(const std::string& val) : _obj (0), _own (0) { 
-    _obj = _own = PyString_FromString((char*)val.c_str()); 
+    _obj = _own = PyUnicode_FromString((char*)val.c_str()); 
   };
   
   //-------------------------------------------------------------------------
@@ -127,7 +127,7 @@ public:
   
   operator int () const {
     int _val;
-    _val = PyInt_AsLong(_obj);
+    _val = PyLong_AsLong(_obj);
     if (PyErr_Occurred()) {
         PyErr_Clear();
         fail(PyExc_TypeError, "cannot convert value to integer");        
@@ -163,14 +163,14 @@ public:
     return std::complex<double>(real, imag);
   };  
   operator std::string () const {
-    if (!PyString_Check(_obj))
+    if (!PyUnicode_Check(_obj))
         fail(PyExc_TypeError, "cannot convert value to std::string");
-    return std::string(PyString_AsString(_obj));
+    return std::string(PyUnicode_AsUTF8(_obj));
   };  
   operator char* () const {
-    if (!PyString_Check(_obj))
+    if (!PyUnicode_Check(_obj))
         fail(PyExc_TypeError, "cannot convert value to char*");
-    return PyString_AsString(_obj);
+    return PyUnicode_AsUTF8(_obj);
   };  
   
   //-------------------------------------------------------------------------
@@ -414,12 +414,8 @@ public:
   // !! NOT TESTED
   //-------------------------------------------------------------------------
   int cmp(const object& other) const {
-    int rslt = 0;
-    int rc = PyObject_Cmp(_obj, other, &rslt);
-    if (rc == -1)
-      fail(PyExc_TypeError, "cannot make the comparison");
-    return rslt;
-  };  
+    return PyObject_RichCompareBool(_obj, other, Py_LT) ? -1 : PyObject_RichCompareBool(_obj, other, Py_GT) ? 1 : 0;
+  };
   int cmp(int other) const {
     object _other = object(other);
     return cmp(_other);
@@ -587,23 +583,14 @@ public:
     object result = PyObject_Repr(_obj);
     if (!(PyObject*)result)
         throw 1;
-    return std::string(PyString_AsString(result));
+    return std::string(PyUnicode_AsUTF8(result));
   };
   
   std::string str() const {
     object result = PyObject_Str(_obj);
     if (!(PyObject*)result)
         throw 1;
-    return std::string(PyString_AsString(result));
-  };
-
-  // !! Not Tested  
-  object unicode() const {
-    object result = PyObject_Unicode(_obj);
-    if (!(PyObject*)result)
-        throw 1;
-    lose_ref(result);    
-    return result;
+    return std::string(PyUnicode_AsUTF8(result));
   };
   
   //-------------------------------------------------------------------------
@@ -726,7 +713,7 @@ public:
   };
 
   object is_int() const {
-    return PyInt_Check(_obj) == 1;
+    return PyLong_Check(_obj) == 1;
   };
 
   object is_float() const {
@@ -750,7 +737,7 @@ public:
   };
   
   object is_string() const {
-    return PyString_Check(_obj) == 1;
+    return PyUnicode_Check(_obj) == 1;
   };
   
   //-------------------------------------------------------------------------

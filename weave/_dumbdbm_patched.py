@@ -54,7 +54,6 @@ class _Database(object):
         self._update()
 
     def _update(self):
-        import string
         self._index = {}
         try:
             f = _open(self._dirfile)
@@ -62,7 +61,7 @@ class _Database(object):
             pass
         else:
             while 1:
-                line = string.rstrip(f.readline())
+                line = f.readline().rstrip()
                 if not line:
                     break
                 key, (pos, siz) = eval(line)
@@ -102,7 +101,7 @@ class _Database(object):
 ##      pos = ((pos + _BLOCKSIZE - 1) // _BLOCKSIZE) * _BLOCKSIZE
 ##      f.seek(pos)
         npos = ((pos + _BLOCKSIZE - 1) // _BLOCKSIZE) * _BLOCKSIZE
-        f.write('\0'*(npos-pos))
+        f.write(b'\0'*(npos-pos))
         pos = npos
 
         f.write(val)

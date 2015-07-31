@@ -200,22 +200,12 @@ class ext_module(object):
 
     def module_code(self):
         code = '\n'.join([
-            """\
-#ifdef __CPLUSPLUS__
-extern "C" {
-#endif
-""",
             self.warning_code(),
             self.header_code(),
             self.support_code(),
             self.function_code(),
             self.python_function_definition_code(),
             self.module_init_code(),
-            """\
-#ifdef __CPLUSCPLUS__
-}
-#endif
-"""
             ])
         return code
 
@@ -234,6 +224,7 @@ extern "C" {
         for i in info:
             i.set_compiler(self.compiler)
         return info
+        return base_info.info_list(info)
 
     def get_headers(self):
         all_headers = self.build_information().headers()
@@ -292,11 +283,40 @@ extern "C" {
     def module_init_code(self):
         init_code_list = self.build_information().module_init_code()
         init_code = indent(''.join(init_code_list),4)
-        code = 'PyMODINIT_FUNC init%s(void)\n' \
-               '{\n' \
-               '%s' \
-               '    (void) Py_InitModule("%s", compiled_methods);\n' \
-               '}\n' % (self.name,init_code,self.name)
+        if sys.version_info.major < 3:
+            code = 'PyMODINIT_FUNC init%s(void)\n' \
+                   '{\n' \
+                   '%s' \
+                   '    (void) Py_InitModule("%s", compiled_methods);\n' \
+                   '}\n' % (self.name,init_code,self.name)
+        else:
+            code = 'static int traverse(PyObject *m, visitproc visit, void *arg) {\n' \
+                   '    return 0;\n' \
+                   '}\n' \
+                   '\n' \
+                   'static int clear(PyObject *m) {\n' \
+                   '    return 0;\n' \
+                   '}\n' \
+                   '\n' \
+                   'static struct PyModuleDef moduledef = {\n' \
+                   '        PyModuleDef_HEAD_INIT,\n' \
+                   '        "%s", NULL,\n' \
+                   '        0,\n' \
+                   '        compiled_methods,\n' \
+                   '        NULL,\n' \
+                   '        traverse,\n' \
+                   '        clear,\n' \
+                   '        NULL\n' \
+                   '};\n' \
+                   '\n' \
+                   'extern "C"\n' \
+                   'PyObject *PyInit_%s(void)\n' \
+                   '{\n' \
+                   '    PyObject *module = PyModule_Create(&moduledef);\n' \
+                   '%s' \
+                   '    return module;\n' \
+                   '}\n' % (self.name,self.name,init_code)
+
         return code
 
     def generate_file(self,file_name="",location='.'):
@@ -338,7 +358,7 @@ extern "C" {
                                    info.extra_compile_args()
         kw['extra_link_args'] = kw.get('extra_link_args',[]) + \
                                    info.extra_link_args()
-        kw['sources'] = kw.get('sources',[]) + source_files
+        kw['sources'] = kw.get('sources',[]) + list(source_files)
         file = self.generate_file(location=location)
         return kw,file
 

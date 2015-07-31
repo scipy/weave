@@ -331,7 +331,7 @@ def inline(code,arg_names=[],local_dict=None, global_dict=None,
     else:
         # 1. try local cache
         try:
-            results = apply(function_cache[code],(local_dict,global_dict))
+            results = function_cache[code](local_dict,global_dict)
             return results
         except TypeError as msg:
             msg = str(msg).strip()
@@ -377,7 +377,7 @@ def attempt_function_call(code,local_dict,global_dict):
     global function_catalog
     # 1. try local cache
     try:
-        results = apply(function_cache[code],(local_dict,global_dict))
+        results = function_cache[code](local_dict,global_dict)
         return results
     except TypeError as msg:
         msg = str(msg).strip()
@@ -397,7 +397,7 @@ def attempt_function_call(code,local_dict,global_dict):
     function_list = function_catalog.get_functions_fast(code)
     for func in function_list:
         try:
-            results = apply(func,(local_dict,global_dict))
+            results = func(local_dict,global_dict)
             function_catalog.fast_cache(code,func)
             function_cache[code] = func
             return results
@@ -421,7 +421,7 @@ def attempt_function_call(code,local_dict,global_dict):
     function_list = function_catalog.get_functions(code,module_dir)
     for func in function_list:
         try:
-            results = apply(func,(local_dict,global_dict))
+            results = func(local_dict,global_dict)
             function_catalog.fast_cache(code,func)
             function_cache[code] = func
             return results
