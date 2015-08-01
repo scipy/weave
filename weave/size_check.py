@@ -243,7 +243,7 @@ class dummy_array(object):
                 #    step = step.value
                 if beg is None:
                     beg = 0
-                if end == sys.maxint or end is None:
+                if end == sys.maxsize or end is None:
                     end = dim_len
                 if step is None:
                     step = 1

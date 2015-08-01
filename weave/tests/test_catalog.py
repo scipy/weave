@@ -4,7 +4,6 @@ import sys
 import os
 import re
 import glob
-import string
 import stat
 import tempfile
 
@@ -461,7 +460,7 @@ class TestCatalog(TestCase):
         backup_dir = clear_temp_catalog()
         q = catalog.catalog()
         # just use some already available functions
-        funcs = [string.upper, string.lower, string.find,string.replace]
+        funcs = [str.upper, str.lower, str.find,str.replace]
         for i in funcs:
             q.add_function_persistent('code',i)
         pfuncs = q.get_cataloged_functions('code')
@@ -474,12 +473,12 @@ class TestCatalog(TestCase):
         backup_dir = clear_temp_catalog()
         q = catalog.catalog()
 
-        q.add_function('f',string.upper)
-        q.add_function('f',string.lower)
-        q.add_function('ff',string.find)
-        q.add_function('ff',string.replace)
-        q.add_function('fff',string.atof)
-        q.add_function('fff',string.atoi)
+        q.add_function('f',str.upper)
+        q.add_function('f',str.lower)
+        q.add_function('ff',str.find)
+        q.add_function('ff',str.replace)
+        q.add_function('fff',float)
+        q.add_function('fff',int)
         del q
 
         # now we're gonna make a new catalog with same code
@@ -516,10 +515,10 @@ class TestCatalog(TestCase):
         #assert_(funcs2 == [os.chdir,os.abort,string.replace,string.find])
         #assert_(funcs3 == [re.purge,re.match,os.open,
         #                  os.access,string.atoi,string.atof])
-        assert_(funcs1[:2] == [string.lower,string.upper]),repr(funcs1)
-        assert_(funcs2[:4] == [os.chdir,os.abort,string.replace,string.find])
+        assert_(funcs1[:2] == [str.lower,str.upper]),repr(funcs1)
+        assert_(funcs2[:4] == [os.chdir,os.abort,str.replace,str.find])
         assert_(funcs3[:6] == [re.purge,re.match,os.open,
-                          os.access,string.atoi,string.atof])
+                          os.access,int,float])
         cleanup_temp_dir(user_dir)
         cleanup_temp_dir(env_dir)
 

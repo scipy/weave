@@ -26,22 +26,22 @@ class IntConverter(TestCase):
 
     @dec.slow
     def test_type_match_string(self):
-        s = c_spec.int_converter()
+        s = c_spec.long_converter()
         assert_(not s.type_match('string'))
 
     @dec.slow
     def test_type_match_int(self):
-        s = c_spec.int_converter()
+        s = c_spec.long_converter()
         assert_(s.type_match(5))
 
     @dec.slow
     def test_type_match_float(self):
-        s = c_spec.int_converter()
+        s = c_spec.long_converter()
         assert_(not s.type_match(5.))
 
     @dec.slow
     def test_type_match_complex(self):
-        s = c_spec.int_converter()
+        s = c_spec.long_converter()
         assert_(not s.type_match(5.+1j))
 
     @dec.slow
@@ -219,52 +219,6 @@ class ComplexConverter(TestCase):
         b = 1.+1j
         c = test(b)
         assert_(c == 3.+3j)
-
-
-#----------------------------------------------------------------------------
-# File conversion tests
-#----------------------------------------------------------------------------
-
-class FileConverter(TestCase):
-
-    compiler = ''
-
-    @dec.slow
-    def test_py_to_file(self):
-        file_name = os.path.join(test_dir, "testfile")
-        file = open(file_name,'w')
-        code = """
-               fprintf(file,"hello bob");
-               """
-        inline_tools.inline(code,['file'],compiler=self.compiler,force=1)
-        file.close()
-        file = open(file_name,'r')
-        assert_(file.read() == "hello bob")
-
-    @dec.slow
-    def test_file_to_py(self):
-        file_name = os.path.join(test_dir, "testfile")
-        # not sure I like Py::String as default -- might move to std::sting
-        # or just plain char*
-        code = """
-               const char* _file_name = file_name.c_str();
-               FILE* file = fopen(_file_name, "w");
-               return_val = file_to_py(file, _file_name, "w");
-               """
-        file = inline_tools.inline(code,['file_name'], compiler=self.compiler,
-                                   force=1)
-        file.write("hello fred")
-        file.close()
-        file = open(file_name,'r')
-        assert_(file.read() == "hello fred")
-
-
-#----------------------------------------------------------------------------
-# Instance conversion tests
-#----------------------------------------------------------------------------
-
-class InstanceConverter(TestCase):
-    pass
 
 
 #----------------------------------------------------------------------------

@@ -264,7 +264,7 @@ class TestDummyArrayIndexing(TestCase):
 
     def test_1d_random(self):
         # throw a bunch of different indexes at it for good measure.
-        choices = map(lambda x: repr(x),range(50)) + range(50) + ['']*50
+        choices = [repr(x) for x in range(50)] + list(range(50)) + ['']*50
         for i in range(100):
             try:
                 beg = random.choice(choices)
@@ -287,7 +287,7 @@ class TestDummyArrayIndexing(TestCase):
 
     def test_2d_random(self):
         # throw a bunch of different indexes at it for good measure.
-        choices = map(lambda x: repr(x),range(50)) + range(50) + ['']*50
+        choices = [repr(x) for x in range(50)] + list(range(50)) + ['']*50
         for i in range(100):
             try:
                 beg = random.choice(choices)
@@ -307,7 +307,7 @@ class TestDummyArrayIndexing(TestCase):
 
     def test_3d_random(self):
         # throw a bunch of different indexes at it for good measure.
-        choices = map(lambda x: repr(x),range(50)) + range(50) + ['']*50
+        choices = [repr(x) for x in range(50)] + list(range(50)) + ['']*50
         for i in range(100):
             try:
                 idx = []

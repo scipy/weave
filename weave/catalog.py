@@ -67,7 +67,7 @@ def getmodule(object):
             # try except used because of some comparison failures
             # in wxPoint code.  Need to review this
             try:
-                if mod and object in mod.__dict__.values():
+                if mod and any(object is x for x in mod.__dict__.values()):
                     value = mod
                     # if it is a built-in module, keep looking to see
                     # if a non-builtin also has it.  Otherwise quit and
@@ -596,7 +596,7 @@ class catalog(object):
         """
         files = map(catalog_path,self.build_search_order())
         files = filter(lambda x: x is not None,files)
-        return files
+        return list(files)
 
     def get_existing_files(self):
         """ Returns all existing catalog file list in correct search order.

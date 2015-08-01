@@ -20,10 +20,10 @@ is read when the database is opened, and some updates rewrite the whole index)
 - support opening for read-only (flag = 'm')
 
 """
-from __future__ import division, print_function, absolute_import
 
 import sys
-_os = __import__('os')
+import os as _os
+import collections
 
 
 PY3 = sys.version_info[0] == 3
@@ -34,130 +34,261 @@ else:
 
 _open = open
 
+__all__ = ["error", "open"]
+
 _BLOCKSIZE = 512
 
-error = IOError             # For anydbm
+error = OSError
 
+class _Database(collections.MutableMapping):
 
-class _Database(object):
+    # The on-disk directory and data files can remain in mutually
+    # inconsistent states for an arbitrarily long time (see comments
+    # at the end of __setitem__).  This is only repaired when _commit()
+    # gets called.  One place _commit() gets called is from __del__(),
+    # and if that occurs at program shutdown time, module globals may
+    # already have gotten rebound to None.  Since it's crucial that
+    # _commit() finish successfully, we can't ignore shutdown races
+    # here, and _commit() must not reference any globals.
+    _os = _os       # for _commit()
+    _open = _open       # for _commit()
 
-    def __init__(self, file):
-        self._dirfile = file + '.dir'
-        self._datfile = file + '.dat'
-        self._bakfile = file + '.bak'
+    def __init__(self, filebasename, mode):
+        self._mode = mode
+
+        # The directory file is a text file.  Each line looks like
+        #    "%r, (%d, %d)\n" % (key, pos, siz)
+        # where key is the string key, pos is the offset into the dat
+        # file of the associated value's first byte, and siz is the number
+        # of bytes in the associated value.
+        self._dirfile = filebasename + '.dir'
+
+        # The data file is a binary file pointed into by the directory
+        # file, and holds the values associated with keys.  Each value
+        # begins at a _BLOCKSIZE-aligned byte offset, and is a raw
+        # binary 8-bit string value.
+        self._datfile = filebasename + '.dat'
+        self._bakfile = filebasename + '.bak'
+
+        # The index is an in-memory dict, mirroring the directory file.
+        self._index = None  # maps keys to (pos, siz) pairs
+
         # Mod by Jack: create data file if needed
         try:
-            f = _open(self._datfile, 'r')
-        except IOError:
-            f = _open(self._datfile, 'w')
-        f.close()
+            f = _open(self._datfile, 'r', encoding="Latin-1")
+        except OSError:
+            with _open(self._datfile, 'w', encoding="Latin-1") as f:
+                self._chmod(self._datfile)
+        else:
+            f.close()
         self._update()
 
+    # Read directory file into the in-memory index dict.
     def _update(self):
         self._index = {}
         try:
-            f = _open(self._dirfile)
-        except IOError:
+            f = _open(self._dirfile, 'r', encoding="Latin-1")
+        except OSError:
             pass
         else:
-            while 1:
-                line = f.readline().rstrip()
-                if not line:
-                    break
-                key, (pos, siz) = eval(line)
-                self._index[key] = (pos, siz)
-            f.close()
+            with f:
+                for line in f:
+                    line = line.rstrip()
+                    key, pos_and_siz_pair = eval(line)
+                    key = key.encode('Latin-1')
+                    self._index[key] = pos_and_siz_pair
 
+    # Write the index dict to the directory file.  The original directory
+    # file (if any) is renamed with a .bak extension first.  If a .bak
+    # file currently exists, it's deleted.
     def _commit(self):
+        # CAUTION:  It's vital that _commit() succeed, and _commit() can
+        # be called from __del__().  Therefore we must never reference a
+        # global in this routine.
+        if self._index is None:
+            return  # nothing to do
+
         try:
-            _os.unlink(self._bakfile)
-        except _os.error:
+            self._os.unlink(self._bakfile)
+        except OSError:
             pass
+
         try:
-            _os.rename(self._dirfile, self._bakfile)
-        except _os.error:
+            self._os.rename(self._dirfile, self._bakfile)
+        except OSError:
             pass
-        f = _open(self._dirfile, 'w')
-        for key, (pos, siz) in self._index.items():
-            f.write("%s, (%s, %s)\n" % (repr(key), repr(pos), repr(siz)))
-        f.close()
+
+        with self._open(self._dirfile, 'w', encoding="Latin-1") as f:
+            self._chmod(self._dirfile)
+            for key, pos_and_siz_pair in self._index.items():
+                # Use Latin-1 since it has no qualms with any value in any
+                # position; UTF-8, though, does care sometimes.
+                entry = "%r, %r\n" % (key.decode('Latin-1'), pos_and_siz_pair)
+                f.write(entry)
+
+    sync = _commit
+
+    def _verify_open(self):
+        if self._index is None:
+            raise error('DBM object has already been closed')
 
     def __getitem__(self, key):
-        pos, siz = self._index[key]  # may raise KeyError
-        f = _open(self._datfile, 'rb')
-        f.seek(pos)
-        dat = f.read(siz)
-        f.close()
+        if isinstance(key, str):
+            key = key.encode('utf-8')
+        self._verify_open()
+        pos, siz = self._index[key]     # may raise KeyError
+        with _open(self._datfile, 'rb') as f:
+            f.seek(pos)
+            dat = f.read(siz)
         return dat
 
-    def __contains__(self, key):
-        return key in self._index
-
+    # Append val to the data file, starting at a _BLOCKSIZE-aligned
+    # offset.  The data file is first padded with NUL bytes (if needed)
+    # to get to an aligned offset.  Return pair
+    #     (starting offset of val, len(val))
     def _addval(self, val):
-        f = _open(self._datfile, 'rb+')
-        f.seek(0, 2)
-        pos = f.tell()
-## Does not work under MW compiler
-##      pos = ((pos + _BLOCKSIZE - 1) // _BLOCKSIZE) * _BLOCKSIZE
-##      f.seek(pos)
-        npos = ((pos + _BLOCKSIZE - 1) // _BLOCKSIZE) * _BLOCKSIZE
-        f.write(b'\0'*(npos-pos))
-        pos = npos
-
-        f.write(val)
-        f.close()
+        with _open(self._datfile, 'rb+') as f:
+            f.seek(0, 2)
+            pos = int(f.tell())
+            npos = ((pos + _BLOCKSIZE - 1) // _BLOCKSIZE) * _BLOCKSIZE
+            f.write(b'\0'*(npos-pos))
+            pos = npos
+            f.write(val)
         return (pos, len(val))
 
+    # Write val to the data file, starting at offset pos.  The caller
+    # is responsible for ensuring that there's enough room starting at
+    # pos to hold val, without overwriting some other value.  Return
+    # pair (pos, len(val)).
     def _setval(self, pos, val):
-        f = _open(self._datfile, 'rb+')
-        f.seek(pos)
-        f.write(val)
-        f.close()
+        with _open(self._datfile, 'rb+') as f:
+            f.seek(pos)
+            f.write(val)
         return (pos, len(val))
 
-    def _addkey(self, key, pos_and_siz):
-        (pos, siz) = pos_and_siz
-        self._index[key] = (pos, siz)
-        f = _open(self._dirfile, 'a')
-        f.write("%s, (%s, %s)\n" % (repr(key), repr(pos), repr(siz)))
-        f.close()
+    # key is a new key whose associated value starts in the data file
+    # at offset pos and with length siz.  Add an index record to
+    # the in-memory index dict, and append one to the directory file.
+    def _addkey(self, key, pos_and_siz_pair):
+        self._index[key] = pos_and_siz_pair
+        with _open(self._dirfile, 'a', encoding="Latin-1") as f:
+            self._chmod(self._dirfile)
+            f.write("%r, %r\n" % (key.decode("Latin-1"), pos_and_siz_pair))
 
     def __setitem__(self, key, val):
-        if not isinstance(key, string_types) or not isinstance(val, string_types):
-            raise TypeError("keys and values must be strings")
+        if isinstance(key, str):
+            key = key.encode('utf-8')
+        elif not isinstance(key, (bytes, bytearray)):
+            raise TypeError("keys must be bytes or strings")
+        if isinstance(val, str):
+            val = val.encode('utf-8')
+        elif not isinstance(val, (bytes, bytearray)):
+            raise TypeError("values must be bytes or strings")
+        self._verify_open()
         if key not in self._index:
-            (pos, siz) = self._addval(val)
-            self._addkey(key, (pos, siz))
+            self._addkey(key, self._addval(val))
         else:
+            # See whether the new value is small enough to fit in the
+            # (padded) space currently occupied by the old value.
             pos, siz = self._index[key]
             oldblocks = (siz + _BLOCKSIZE - 1) // _BLOCKSIZE
             newblocks = (len(val) + _BLOCKSIZE - 1) // _BLOCKSIZE
             if newblocks <= oldblocks:
-                pos, siz = self._setval(pos, val)
-                self._index[key] = pos, siz
+                self._index[key] = self._setval(pos, val)
             else:
-                pos, siz = self._addval(val)
-                self._index[key] = pos, siz
-            self._addkey(key, (pos, siz))
+                # The new value doesn't fit in the (padded) space used
+                # by the old value.  The blocks used by the old value are
+                # forever lost.
+                self._index[key] = self._addval(val)
+
+            self._addkey(key, self._index[key])
 
     def __delitem__(self, key):
+        if isinstance(key, str):
+            key = key.encode('utf-8')
+        self._verify_open()
+        # The blocks used by the associated value are lost.
         del self._index[key]
+        # XXX It's unclear why we do a _commit() here (the code always
+        # XXX has, so I'm not changing it).  __setitem__ doesn't try to
+        # XXX keep the directory file in synch.  Why should we?  Or
+        # XXX why shouldn't __setitem__?
         self._commit()
 
     def keys(self):
-        return list(self._index.keys())
+        try:
+            return list(self._index)
+        except TypeError:
+            raise error('DBM object has already been closed') from None
 
-    def has_key(self, key):
-        return key in self._index
+    def items(self):
+        self._verify_open()
+        return [(key, self[key]) for key in self._index.keys()]
+
+    def __contains__(self, key):
+        if isinstance(key, str):
+            key = key.encode('utf-8')
+        try:
+            return key in self._index
+        except TypeError:
+            if self._index is None:
+                raise error('DBM object has already been closed') from None
+            else:
+                raise
+
+    def iterkeys(self):
+        try:
+            return iter(self._index)
+        except TypeError:
+            raise error('DBM object has already been closed') from None
+    __iter__ = iterkeys
 
     def __len__(self):
-        return len(self._index)
+        try:
+            return len(self._index)
+        except TypeError:
+            raise error('DBM object has already been closed') from None
 
     def close(self):
-        self._index = None
-        self._datfile = self._dirfile = self._bakfile = None
+        self._commit()
+        self._index = self._datfile = self._dirfile = self._bakfile = None
+
+    __del__ = close
+
+    def _chmod(self, file):
+        if hasattr(self._os, 'chmod'):
+            self._os.chmod(file, self._mode)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        self.close()
 
 
-def open(file, flag=None, mode=None):
-    # flag, mode arguments are currently ignored
-    return _Database(file)
+def open(file, flag=None, mode=0o666):
+    """Open the database file, filename, and return corresponding object.
+
+    The flag argument, used to control how the database is opened in the
+    other DBM implementations, is ignored in the dbm.dumb module; the
+    database is always opened for update, and will be created if it does
+    not exist.
+
+    The optional mode argument is the UNIX mode of the file, used only when
+    the database has to be created.  It defaults to octal code 0o666 (and
+    will be modified by the prevailing umask).
+
+    """
+    # flag argument is currently ignored
+
+    # Modify mode depending on the umask
+    try:
+        um = _os.umask(0)
+        _os.umask(um)
+    except AttributeError:
+        pass
+    else:
+        # Turn off any bits that are set in the umask
+        mode = mode & (~um)
+
+    return _Database(file, mode)
