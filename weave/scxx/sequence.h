@@ -25,6 +25,9 @@ void fail(PyObject*, const char* msg);
 //---------------------------------------------------------------------------
 class sequence : public object
 {
+private:
+  // since we override this virtual method, make it private
+  void set_item(const object& key, const object& val);
 public:
   //-------------------------------------------------------------------------
   // constructors

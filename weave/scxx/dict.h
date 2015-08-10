@@ -176,7 +176,7 @@ public:
       fail(PyExc_RuntimeError, "Cannot add key / value");
   };
 
-  virtual void set_item(object& key, object& val) const {
+  virtual void set_item(const object& key, const object& val) {
     int rslt = PyDict_SetItem(_obj, key, val);
     if (rslt==-1)
       fail(PyExc_KeyError, "Key must be hashable");

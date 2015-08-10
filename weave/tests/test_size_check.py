@@ -1,5 +1,3 @@
-from __future__ import absolute_import, print_function
-
 import random
 import parser
 
@@ -121,7 +119,7 @@ class TestDummyArray(TestBinaryOpSize):
             y = np.ones(y)
         xx = size_check.dummy_array(x)
         yy = size_check.dummy_array(y)
-        ops = ['+', '-', '/', '*', '<<', '>>']
+        ops = ['+', '-', '//', '*', '<<', '>>']
         for op in ops:
             actual = eval('xx' + op + 'yy')
             desired = desired

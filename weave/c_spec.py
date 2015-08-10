@@ -82,6 +82,7 @@ class common_base_converter(base_converter):
 
     def init_info(self):
         self.matching_types = []
+        self.preheader_defines = []
         self.headers = []
         self.include_dirs = []
         self.libraries = []
@@ -104,6 +105,8 @@ class common_base_converter(base_converter):
 
     def generate_build_info(self):
         info = self.info_object()
+        for (a,b) in self.preheader_defines:
+            info.add_preheader_define(a,b)
         for header in self.headers:
             info.add_header(header)
         for d in self.include_dirs:
@@ -202,7 +205,7 @@ class common_base_converter(base_converter):
 
 class module_converter(common_base_converter):
     def init_info(self):
-        common_base_converter.init_info(self)
+        super().init_info()
         self.type_name = 'module'
         self.check_func = 'PyModule_Check'
         # probably should test for callable classes here also.
@@ -215,7 +218,7 @@ class module_converter(common_base_converter):
 
 class string_converter(common_base_converter):
     def init_info(self):
-        common_base_converter.init_info(self)
+        super().init_info()
         self.type_name = 'string'
         self.check_func = 'PyUnicode_Check'
         self.c_type = 'std::string'
@@ -279,7 +282,7 @@ num_to_c_types['Q'] = 'npy_ulonglong'
 
 class scalar_converter(common_base_converter):
     def init_info(self):
-        common_base_converter.init_info(self)
+        super().init_info()
         self.warnings = ['disable: 4275', 'disable: 4101']
         self.headers = ['<complex>','<math.h>']
         self.use_ref_count = 0
@@ -347,7 +350,7 @@ scxx_dir = os.path.join(local_dir,'scxx')
 
 class scxx_converter(common_base_converter):
     def init_info(self):
-        common_base_converter.init_info(self)
+        super().init_info()
         self.headers = ['"scxx/object.h"','"scxx/list.h"','"scxx/tuple.h"',
                         '"scxx/dict.h"','<iostream>']
         self.include_dirs = [local_dir,scxx_dir]

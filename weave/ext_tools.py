@@ -226,6 +226,11 @@ class ext_module(object):
         return info
         return base_info.info_list(info)
 
+    def get_preheader_defines(self):
+        d = self.build_information().preheader_defines()
+        d = map(lambda xy: '#define %s %s\n' % xy, d)
+        return ''.join(d) + '\n'
+
     def get_headers(self):
         all_headers = self.build_information().headers()
 
@@ -256,7 +261,7 @@ class ext_module(object):
     def header_code(self):
         h = self.get_headers()
         h = map(lambda x: '#include ' + x + '\n',h)
-        return ''.join(h) + '\n'
+        return self.get_preheader_defines() + ''.join(h) + '\n'
 
     def support_code(self):
         code = self.build_information().support_code()
