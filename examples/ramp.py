@@ -1,7 +1,7 @@
 """ Comparison of several different ways of calculating a "ramp"
     function.
 
-    C:\home\ej\wrk\junk\scipy\weave\examples>python ramp.py
+    C:\home\ej\wrk\junk\weave\examples>python ramp.py
     python (seconds*ratio): 128.149998188
     arr[500]: 0.0500050005001
     compiled numeric1 (seconds, speed up): 1.42199993134 90.1195530071
@@ -17,7 +17,7 @@
 from __future__ import absolute_import, print_function
 
 import time
-import scipy.weave as weave
+import weave
 from numpy import *
 
 

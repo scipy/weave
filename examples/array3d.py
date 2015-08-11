@@ -6,8 +6,8 @@ by accessing the numpy array data directly.
 """
 from __future__ import absolute_import, print_function
 
-import scipy.weave as weave
-from scipy.weave import converters
+import weave
+from weave import converters
 import numpy
 
 

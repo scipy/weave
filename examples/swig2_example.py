@@ -28,8 +28,8 @@ from __future__ import absolute_import, print_function
 # Import our SWIG2 wrapped library
 import swig2_ext
 
-import scipy.weave as weave
-from scipy.weave import swig2_spec, converters
+import weave
+from weave import swig2_spec, converters
 
 # SWIG2 support is not enabled by default.  We do this by adding the
 # swig2 converter to the default list of converters.

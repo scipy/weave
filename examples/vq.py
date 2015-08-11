@@ -2,7 +2,7 @@
 """
 from __future__ import absolute_import, print_function
 
-# C:\home\ej\wrk\scipy\weave\examples>python vq.py
+# C:\home\ej\wrk\weave\examples>python vq.py
 # vq with 1000 observation, 10 features and 30 codes fo 100 iterations
 #  speed in python: 0.150119999647
 # [25 29] [ 2.49147266  3.83021032]
@@ -19,10 +19,10 @@ from __future__ import absolute_import, print_function
 from numpy import *
 import sys
 sys.path.insert(0,'..')
-import scipy.weave.inline_tools as inline_tools
-import scipy.weave.converters as converters
+import weave.inline_tools as inline_tools
+import weave.converters as converters
 blitz_type_converters = converters.blitz
-import scipy.weave.c_spec as c_spec
+import weave.c_spec as c_spec
 
 
 def vq(obs,code_book):

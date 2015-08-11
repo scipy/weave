@@ -21,7 +21,7 @@ from __future__ import absolute_import, print_function
     a major issue, but remains an open issue.
 
 """
-import scipy.weave as weave
+import weave
 from numpy.random import *
 from numpy import *
 from wxPython.wx import *

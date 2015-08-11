@@ -39,7 +39,7 @@ License: BSD Style.
 """
 from __future__ import absolute_import, print_function
 
-import scipy.weave as weave
+import weave
 import vtk
 import numpy
 

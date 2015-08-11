@@ -2,7 +2,7 @@
 # 2x over fastest Python version -- again, maybe not worth the effort...
 # Then again, 2x is 2x...
 #
-#    C:\home\eric\wrk\scipy\weave\examples>python dict_sort.py
+#    C:\home\eric\wrk\weave\examples>python dict_sort.py
 #    Dict sort of 1000 items for 300 iterations:
 #     speed in python: 0.250999927521
 #    [0, 1, 2, 3, 4]

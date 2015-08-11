@@ -2,7 +2,7 @@
 # Borrowed from Kalle Svensson in the Python Cookbook.
 # The results are nearly in the "not worth it" category.
 #
-# C:\home\ej\wrk\scipy\compiler\examples>python binary_search.py
+# C:\home\ej\wrk\compiler\examples>python binary_search.py
 # Binary search for 3000 items in 100000 length list of integers:
 #  speed in python: 0.139999985695
 #  speed in c: 0.0900000333786
@@ -19,9 +19,8 @@ from __future__ import absolute_import, print_function
 import sys
 sys.path.insert(0,'..')
 # from compiler import inline_tools
-import scipy.weave.inline_tools as inline_tools
+import weave.inline_tools as inline_tools
 from bisect import bisect_left as bisect
-import types
 
 
 def c_int_search(seq,t,chk=1):
