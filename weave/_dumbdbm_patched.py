@@ -28,12 +28,11 @@ _os = __import__('os')
 
 PY3 = sys.version_info[0] == 3
 if PY3:
-    string_types = str
-    import builtins.open as _open
+    string_types = str,
 else:
-    string_types = basestring
-    import __builtin__.open as _open
+    string_types = basestring,
 
+_open = open
 
 _BLOCKSIZE = 512
 
