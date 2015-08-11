@@ -22,12 +22,18 @@ is read when the database is opened, and some updates rewrite the whole index)
 """
 from __future__ import division, print_function, absolute_import
 
+import sys
 _os = __import__('os')
 
-from scipy.lib.six import builtins
-from scipy.lib.six import string_types
 
-_open = builtins.open
+PY3 = sys.version_info[0] == 3
+if PY3:
+    string_types = str
+    import builtins.open as _open
+else:
+    string_types = basestring
+    import __builtin__.open as _open
+
 
 _BLOCKSIZE = 512
 
