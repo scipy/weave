@@ -1,5 +1,5 @@
 # Typical run:
-# C:\home\eric\wrk\scipy\weave\examples>python fibonacci.py
+# C:\home\eric\wrk\weave\examples>python fibonacci.py
 # Recursively computing the first 30 fibonacci numbers:
 #  speed in python: 4.31599998474
 #  speed in c: 0.0499999523163

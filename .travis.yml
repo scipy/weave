@@ -1,6 +1,7 @@
 # After changing this file, check it on:
 #   http://lint.travis-ci.org/
 language: python
+sudo: false
 matrix:
   include:
     - python: 2.7
@@ -10,20 +11,28 @@ matrix:
     - python: 2.6
       env:
         - TESTMODE=fast
-        - NUMPYSPEC===1.5.1
+        - NUMPYSPEC="numpy==1.6.2"
         - OPTIMIZE=-OO
+addons:
+  apt:
+    packages:
+    - libatlas-dev
+    - libatlas-base-dev
+    - liblapack-dev
+    - ccache
+cache:
+  directories:
+    - $HOME/.ccache
 before_install:
+  - export PATH=/usr/lib/ccache:$PATH
   - uname -a
   - free -m
   - df -h
   - ulimit -a
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq libatlas-dev libatlas-base-dev liblapack-dev gfortran
   - mkdir builds
   - pushd builds
-  - pip install --upgrade pip setuptools  # Upgrade pip and setuptools to get ones with `wheel` support
-  - pip install --find-links http://wheels.astropy.org/ --find-links http://wheels2.astropy.org/ --use-wheel --use-mirrors nose numpy$NUMPYSPEC Cython mpmath argparse
-  - if [ "${TESTMODE}" == "full" ]; then pip install coverage coveralls; fi
+  - travis_retry pip install $NUMPYSPEC
+  - travis_retry pip install nose argparse
   - python -V
   - popd
 script:
@@ -32,5 +41,3 @@ notifications:
   # Perhaps we should have status emails sent to the mailing list, but
   # let's wait to see what people think before turning that on.
   email: false
-after_success:
-    - if [ "${TESTMODE}" == "full" ]; then cp build/test/.coverage . && coveralls; fi

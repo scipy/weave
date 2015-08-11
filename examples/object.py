@@ -5,7 +5,7 @@
 """
 from __future__ import absolute_import, print_function
 
-import scipy.weave as weave
+import weave
 
 #----------------------------------------------------------------------------
 # get/set attribute and call methods example

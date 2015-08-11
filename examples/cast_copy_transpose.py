@@ -6,7 +6,7 @@
     fastest approach and is beneficial if you don't need to keep the
     original array.
 """
-# C:\home\ej\wrk\scipy\compiler\examples>python cast_copy_transpose.py
+# C:\home\ej\wrk\compiler\examples>python cast_copy_transpose.py
 # Cast/Copy/Transposing (150,150)array 1 times
 #  speed in python: 0.870999932289
 #  speed in c: 0.25
@@ -19,9 +19,9 @@ import numpy
 from numpy import *
 import sys
 sys.path.insert(0,'..')
-import scipy.weave.inline_tools as inline_tools
-import scipy.weave.c_spec as c_spec
-from scipy.weave.converters import blitz as cblitz
+import weave.inline_tools as inline_tools
+import weave.c_spec as c_spec
+from weave.converters import blitz as cblitz
 
 
 def _cast_copy_transpose(type,a_2d):

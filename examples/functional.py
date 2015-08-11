@@ -1,4 +1,4 @@
-#       C:\home\eric\wrk\scipy\weave\examples>python functional.py
+#       C:\home\eric\wrk\weave\examples>python functional.py
 #       desired: [2, 3, 4]
 #       actual: [2, 3, 4]
 #       actual2: [2, 3, 4]

@@ -1,7 +1,7 @@
 from __future__ import absolute_import, print_function
 
 #
-#        C:\home\eric\wrk\scipy\weave\examples>python ramp2.py
+#        C:\home\eric\wrk\weave\examples>python ramp2.py
 #        python (seconds): 2.94499993324
 #        arr[500]: 0.0500050005001
 #
@@ -9,7 +9,7 @@ from __future__ import absolute_import, print_function
 #        arr[500]: 0.0500050005001
 
 import time
-from scipy.weave import ext_tools
+from weave import ext_tools
 from numpy import *
 
 

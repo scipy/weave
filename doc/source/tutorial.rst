@@ -1822,8 +1822,8 @@ These numbers are for a 512x512 double precision image run on a 400 MHz
 Celeron processor under RedHat Linux 6.2.
 
 Because of the slow compile times, its probably most effective to develop
-algorithms as you usually do using the capabilities of scipy or the NumPy
-module. Once the algorithm is perfected, put quotes around it and execute it
+algorithms as you usually do using the capabilities of Scipy or Numpy.
+Once the algorithm is perfected, put quotes around it and execute it
 using ``weave.blitz``. This provides the standard rapid prototyping strengths
 of Python and results in algorithms that run close to that of hand coded C or
 Fortran.
@@ -2514,7 +2514,7 @@ cryptic error report due to the fact that ``stdio.h`` also defines the name.
 .. _SciPy: http://www.scipy.org
 .. _mingw32: http://www.mingw.org%3Ewww.mingw.org
 .. _NumPy: http://numpy.org/
-.. _here: http://www.scipy.org/Weave
+.. _here: https://github.com/scipy/weave
 .. _Python Cookbook: http://aspn.activestate.com/ASPN/Cookbook/Python
 .. _binary_search():
     http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/81188

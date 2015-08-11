@@ -221,7 +221,7 @@ def inline(code,arg_names=[],local_dict=None, global_dict=None,
         pasted at the end of a ``#include`` statement in the C++ code.
     customize : base_info.custom_info, optional
         An alternative way to specify `support_code`, `headers`, etc. needed
-        by the function.  See :mod:`scipy.weave.base_info` for more
+        by the function.  See :mod:`weave.base_info` for more
         details. (not sure this'll be used much).
     type_converters : [type converters], optional
         These guys are what convert Python data types to C/C++ data types.
