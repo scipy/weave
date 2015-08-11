@@ -52,16 +52,7 @@ For release:
     9.  test get_item_operator for object, list, tuples, dicts.
         DONE -- but I don't really like the operator[] behavior.
         
-base package
-    scipy_base
-    scipy_distutils
-    scipy_test
-    gui_thread
 
-scipy
-weave
-chaco
-    
 weave
 
 Note on ref counts:

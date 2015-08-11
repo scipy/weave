@@ -106,7 +106,6 @@ def unique_file(d,expr):
         extension to it before creating files.
     """
     files = os.listdir(d)
-    # base = 'scipy_compile'
     base = expr_to_filename(expr)
     for i in xrange(1000000):
         fname = base + repr(i)
@@ -182,7 +181,7 @@ def default_dir_posix(tmp_dir=None):
 
     xdg_cache = (os.environ.get("XDG_CACHE_HOME", None) or
                  os.path.join(home_dir, '.cache'))
-    xdg_temp_dir = os.path.join(xdg_cache, 'scipy', python_name)
+    xdg_temp_dir = os.path.join(xdg_cache, 'weave', python_name)
     path_candidates.append(xdg_temp_dir)
 
     home_temp_dir_name = '.' + python_name
@@ -345,7 +344,7 @@ def create_temp_dir(prefix, inner_dir=None, tmp_dir=None):
 
 def intermediate_dir_prefix():
     """ Prefix of root intermediate dir (<tmp>/<root_im_dir>). """
-    return "%s-%s-" % ("scipy", whoami())
+    return "%s-%s-" % ("weave", whoami())
 
 
 def find_temp_dir(prefix, tmp_dir=None):

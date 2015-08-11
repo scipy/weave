@@ -13,7 +13,7 @@ Main functions are::
           in order to be able to compile things with the `weave` module.
           Since this is a runtime dependency these headers (typically in a
           pythonX.Y-dev package) are not always installed when installing
-          scipy.
+          weave.
 
 """
 from __future__ import absolute_import, print_function

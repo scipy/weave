@@ -13,7 +13,7 @@ from __future__ import absolute_import, print_function
 from types import InstanceType, XRangeType
 import inspect
 from hashlib import sha256
-import scipy.weave as weave
+import weave
 from numpy.testing import assert_
 
 from .bytecodecompiler import CXXCoder,Type_Descriptor,Function_Descriptor

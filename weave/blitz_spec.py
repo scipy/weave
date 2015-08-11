@@ -4,7 +4,7 @@
     handle different data types.  The information includes
     such as include files, libraries, and even code snippets.
 
-    array_info -- for building functions that use scipy arrays
+    array_info -- for building functions that use numpy arrays
 """
 from __future__ import absolute_import, print_function
 
