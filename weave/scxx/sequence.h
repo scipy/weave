@@ -79,27 +79,12 @@ public:
   //-------------------------------------------------------------------------
   // count -- count the number of objects in a sequence.
   //-------------------------------------------------------------------------
-  int count(const object& value) const {
-    int rslt = PySequence_Count(_obj, value);
+  template<class T>
+  int count(T value) const {
+    int rslt = PySequence_Count(_obj, object(value));
     if (rslt == -1)
       fail(PyExc_RuntimeError, "failure in count");
     return rslt;
-  };
-  int count(int value) const {
-    object val = value;
-    return count(val);
-  };
-  int count(double value) const {
-    object val = value;
-    return count(val);
-  };
-  int count(const char* value) const {
-    object val = value;
-    return count(val);
-  };
-  int count(const std::string& value) const {
-    object val = value.c_str();
-    return count(val);
   };
 
   //-------------------------------------------------------------------------
@@ -145,62 +130,24 @@ public:
   // in -- find whether a value is in the given sequence.
   //       overloaded to handle the standard types used in weave.
   //-------------------------------------------------------------------------
-  bool in(const object& value) const {
-    int rslt = PySequence_In(_obj, value);
+  template<class T>
+  bool in(T value) const {
+    int rslt = PySequence_In(_obj, object(value));
     if (rslt==-1)
       fail(PyExc_RuntimeError, "problem in in");
     return (rslt==1);
   };  
-  bool in(int value) const {
-    object val = value;
-    return in(val);
-  };
-  bool in(double value) const {
-    object val = value;
-    return in(val);
-  };
-  bool in(const std::complex<double>& value) const {
-    object val = value;
-    return in(val);
-  };
-  bool in(const char* value) const {
-    object val = value;
-    return in(val);
-  };
-  bool in(const std::string& value) const {
-    object val = value.c_str();
-    return in(val);
-  };
   
   //-------------------------------------------------------------------------
   // index -- find whether a value is in the given sequence.
   //          overloaded to handle the standard types used in weave.
   //-------------------------------------------------------------------------
-  int index(const object& value) const {
-    int rslt = PySequence_Index(_obj, value);
+  template<class T>
+  int index(T value) const {
+    int rslt = PySequence_Index(_obj, object(value));
     if (rslt==-1)
       fail(PyExc_IndexError, "value not found");
     return rslt;
-  };
-  int index(int value) const {
-    object val = value;
-    return index(val);
-  };  
-  int index(double value) const {
-    object val = value;
-    return index(val);
-  };
-  int index(const std::complex<double>& value) const {
-    object val = value;
-    return index(val);
-  };
-  int index(const char* value) const {
-    object val = value;
-    return index(val);
-  };  
-  int index(const std::string& value) const {
-    object val = value;
-    return index(val);
   };
 
   //-------------------------------------------------------------------------
@@ -239,26 +186,6 @@ public:
     grab_ref(other);
     _parent.set_item(_ndx, *this);
     return *this;
-  };
-  indexed_ref& operator=(int other) {
-    object oth = other;
-    return operator=(oth);
-  };  
-  indexed_ref& operator=(double other) {
-    object oth = other;
-    return operator=(oth);
-  };  
-  indexed_ref& operator=(const std::complex<double>& other) {
-    object oth = other;
-    return operator=(oth);
-  };    
-  indexed_ref& operator=(const char* other) {
-    object oth = other;
-    return operator=(oth);
-  };    
-  indexed_ref& operator=(const std::string& other) {
-    object oth = other;
-    return operator=(oth);
   };
   indexed_ref& operator=( const indexed_ref& other ) {
     object oth = other;

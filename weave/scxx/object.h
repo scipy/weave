@@ -240,152 +240,23 @@ public:
   // There is a combinatorial explosion here of function combinations.
   // perhaps there is a casting fix someone can suggest.
   //-------------------------------------------------------------------------
-  void set_attr(const char* nm, object& val) {
-    int res = PyObject_SetAttrString(_obj, (char*) nm, val);
+  template<class T>
+  void set_attr(const char* nm, T val) {
+    int res = PyObject_SetAttrString(_obj, (char*) nm, object(val));
     if (res == -1)
         throw 1;
   };
 
-  void set_attr(const std::string& nm, object& val) {
-    int res = PyObject_SetAttrString(_obj, (char*) nm.c_str(), val);
-    if (res == -1)
-        throw 1;
-  };
-  
-  void set_attr(const object& nm, object& val) {
-    int res = PyObject_SetAttr(_obj, nm, val);
+  template<class T>
+  void set_attr(const std::string& nm, T val) {
+    int res = PyObject_SetAttrString(_obj, (char*) nm.c_str(), object(val));
     if (res == -1)
         throw 1;
   };
 
-  //////////////     int      //////////////
-  void set_attr(const char* nm, int val) {
-    py::object _val = py::object(val);
-    int res = PyObject_SetAttrString(_obj, (char*) nm, _val);
-    if (res == -1)
-        throw 1;
-  };
-
-  void set_attr(const std::string& nm, int val) {
-    py::object _val = py::object(val);
-    int res = PyObject_SetAttrString(_obj, (char*) nm.c_str(), _val);
-    if (res == -1)
-        throw 1;
-  };
-  
-  void set_attr(const object& nm, int val) {
-    py::object _val = py::object(val);
-    int res = PyObject_SetAttr(_obj, nm, _val);
-    if (res == -1)
-        throw 1;
-  };
-  
-  ////////////// unsigned long //////////////
-  void set_attr(const char* nm, unsigned long val) {
-    py::object _val = py::object(val);
-    int res = PyObject_SetAttrString(_obj, (char*) nm, _val);
-    if (res == -1)
-        throw 1;
-  };
-
-  void set_attr(const std::string& nm, unsigned long val) {
-    py::object _val = py::object(val);
-    int res = PyObject_SetAttrString(_obj, (char*) nm.c_str(), _val);
-    if (res == -1)
-        throw 1;
-  };
-  
-  void set_attr(const object& nm, unsigned long val) {
-    py::object _val = py::object(val);
-    int res = PyObject_SetAttr(_obj, nm, _val);
-    if (res == -1)
-        throw 1;
-  };
-
-  ////////////// double //////////////
-  void set_attr(const char* nm, double val) {
-    py::object _val = py::object(val);
-    int res = PyObject_SetAttrString(_obj, (char*) nm, _val);
-    if (res == -1)
-        throw 1;
-  };
-
-  void set_attr(const std::string& nm, double val) {
-    py::object _val = py::object(val);
-    int res = PyObject_SetAttrString(_obj, (char*) nm.c_str(), _val);
-    if (res == -1)
-        throw 1;
-  };
-  
-  void set_attr(const object& nm, double val) {
-    py::object _val = py::object(val);
-    int res = PyObject_SetAttr(_obj, nm, _val);
-    if (res == -1)
-        throw 1;
-  };
-
-  ////////////// complex //////////////
-  void set_attr(const char* nm, const std::complex<double>& val) {
-    py::object _val = py::object(val);
-    int res = PyObject_SetAttrString(_obj, (char*) nm, _val);
-    if (res == -1)
-        throw 1;
-  };
-
-  void set_attr(const std::string& nm, const std::complex<double>& val) {
-    py::object _val = py::object(val);
-    int res = PyObject_SetAttrString(_obj, (char*) nm.c_str(), _val);
-    if (res == -1)
-        throw 1;
-  };
-  
-  void set_attr(const object& nm, const std::complex<double>& val) {
-    py::object _val = py::object(val);
-    int res = PyObject_SetAttr(_obj, nm, _val);
-    if (res == -1)
-        throw 1;
-  };
-  
-  ////////////// char* //////////////
-  void set_attr(const char* nm, const char* val) {
-    py::object _val = py::object(val);
-    int res = PyObject_SetAttrString(_obj, (char*) nm, _val);
-    if (res == -1)
-        throw 1;
-  };
-
-  void set_attr(const std::string& nm, const char* val) {
-    py::object _val = py::object(val);
-    int res = PyObject_SetAttrString(_obj, (char*) nm.c_str(), _val);
-    if (res == -1)
-        throw 1;
-  };
-  
-  void set_attr(const object& nm, const char* val) {
-    py::object _val = py::object(val);
-    int res = PyObject_SetAttr(_obj, nm, _val);
-    if (res == -1)
-        throw 1;
-  };
-
-  ////////////// std::string //////////////
-  void set_attr(const char* nm, const std::string& val) {
-    py::object _val = py::object(val);
-    int res = PyObject_SetAttrString(_obj, (char*) nm, _val);
-    if (res == -1)
-        throw 1;
-  };
-
-  void set_attr(const std::string& nm, const std::string& val) {
-    py::object _val = py::object(val);
-    int res = PyObject_SetAttrString(_obj, (char*) nm.c_str(), _val);
-    if (res == -1)
-        throw 1;
-  };
-  
-  void set_attr(const object& nm, const std::string& val) {
-    py::object _val = py::object(val);
-    int res = PyObject_SetAttr(_obj, nm, _val);
+  template<class T>
+  void set_attr(const object& nm, T val) {
+    int res = PyObject_SetAttr(_obj, nm, object(val));
     if (res == -1)
         throw 1;
   };
@@ -774,14 +645,8 @@ public:
   //-------------------------------------------------------------------------
   // operator[]  
   //-------------------------------------------------------------------------
-  // !! defined in weave_imp.cpp
-  // !! I'd like to refactor things so that they can be defined here.
-  keyed_ref operator [] (object& key);
-  keyed_ref operator [] (const char* key);
-  keyed_ref operator [] (const std::string& key);
-  keyed_ref operator [] (int key);
-  keyed_ref operator [] (double key);
-  keyed_ref operator [] (const std::complex<double>& key);
+  template<class T>
+  keyed_ref operator [] (T key);
   
   //-------------------------------------------------------------------------
   // iter methods
@@ -824,7 +689,7 @@ class object::keyed_ref : public object
   object& _parent;
   object _key;
 public:
-  keyed_ref(object obj, object& parent, object& key)
+  keyed_ref(object obj, object& parent, const object& key)
       : object(obj), _parent(parent), _key(key) {};  
   virtual ~keyed_ref() {};
 
@@ -833,31 +698,33 @@ public:
     _parent.set_item(_key, other);
     return *this;
   }
-  keyed_ref& operator=(int other) {
-    object _other = object(other);
-    return operator=(_other);
-  }  
-  keyed_ref& operator=(double other) {
-    object _other = object(other);
-    return operator=(_other);
-  }
-  keyed_ref& operator=(const std::complex<double>& other) {
-    object _other = object(other);
-    return operator=(_other);
-  }
-  keyed_ref& operator=(const char* other) {
-    object _other = object(other);
-    return operator=(_other);
-  }
-  keyed_ref& operator=(const std::string& other) {
-    object _other = object(other);
-    return operator=(_other);
-  }
+
   keyed_ref& operator=(const keyed_ref& other) {
-    object _other = object(other);
-    return operator=(_other);
+    object oth = other;
+    return operator=( oth );
   }
 };
+
+template<class T>
+object::keyed_ref object::operator [] (T key) {
+  object k(key);
+  object rslt = PyObject_GetItem(_obj, k);
+  lose_ref(rslt);
+  if (!(PyObject*)rslt)
+  {
+    // don't throw error for when [] fails because it might be on left hand 
+    // side (a[0] = 1).  If the obj was just created, it will be filled 
+    // with NULL values, and setting the values should be ok.  However, we
+    // do want to catch index errors that might occur on the right hand side
+    // (obj = a[4] when a has len==3).
+      if (PyErr_ExceptionMatches(PyExc_KeyError))
+           PyErr_Clear(); // Ignore key errors
+      else if (PyErr_ExceptionMatches(PyExc_IndexError))
+        throw 1;
+  }
+  return object::keyed_ref(rslt, *this, k);
+}
+
 } // namespace
 
 

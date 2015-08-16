@@ -16,7 +16,7 @@ cpp_support_template = \
 static %(cpp_struct)s* convert_to_%(cpp_clean_struct)s(PyObject* py_obj,char* name)
 {
     %(cpp_struct)s *cpp_ptr = 0;
-    char* str = PyString_AsString(py_obj);
+    char* str = PyUnicode_AsUTF8(py_obj);
     if (!str)
         handle_conversion_error(py_obj,"%(cpp_struct)s", name);
     // work on this error reporting...
@@ -32,7 +32,7 @@ static %(cpp_struct)s* convert_to_%(cpp_clean_struct)s(PyObject* py_obj,char* na
 static %(cpp_struct)s* py_to_%(cpp_clean_struct)s(PyObject* py_obj,char* name)
 {
     %(cpp_struct)s *cpp_ptr;
-    char* str = PyString_AsString(py_obj);
+    char* str = PyUnicode_AsUTF8(py_obj);
     if (!str)
         handle_conversion_error(py_obj,"%(cpp_struct)s", name);
     // work on this error reporting...

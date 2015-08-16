@@ -48,7 +48,7 @@ class ext_function_from_specs(object):
         declare_return = 'py::object return_val;\n' \
                          'int exception_occurred = 0;\n' \
                          'PyObject *py_local_dict = NULL;\n'
-        arg_string_list = self.arg_specs.variable_as_strings() + ['"local_dict"']
+        arg_string_list = list(self.arg_specs.variable_as_strings()) + ['"local_dict"']
         arg_strings = ','.join(arg_string_list)
         if arg_strings:
             arg_strings += ','

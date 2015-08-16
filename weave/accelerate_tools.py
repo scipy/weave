@@ -108,9 +108,9 @@ class Double(Basic_Number):
 
 class String(Basic):
     cxxtype = "char*"
-    checker = "PyString_Check"
-    inbounder = "PyString_AsString"
-    outbounder = "PyString_FromString"
+    checker = "PyUnicode_Check"
+    inbounder = "PyUnicode_AsUTF8"
+    outbounder = "PyUnicode_FromString"
 
     def literalizer(self,s):
         return CStr(s)

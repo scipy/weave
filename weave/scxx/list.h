@@ -121,66 +121,28 @@ public:
   // append -- add new item to end of list
   //           overloaded to accept all of the common weave types.
   //-------------------------------------------------------------------------
-  list& append(const object& other) {
-    int rslt = PyList_Append(_obj, other);
+  template<class T>
+  list& append(T other) {
+    int rslt = PyList_Append(_obj, object(other));
     if (rslt==-1) {
       PyErr_Clear();  //Python sets one
       fail(PyExc_RuntimeError, "Error appending");
     }
     return *this;
   };
-  list& append(int other) {
-    object oth = other;
-    return append(oth);
-  };
-  list& append(double other) {
-    object oth = other;
-    return append(oth);
-  };
-  list& append(const std::complex<double>& other) {
-    object oth = other;
-    return append(oth);
-  };
-  list& append(const char* other) {
-    object oth = other;
-    return append(oth);
-  };
-  list& append(const std::string& other) {
-    object oth = other;
-    return append(oth);
-  };
   
   //-------------------------------------------------------------------------
   // insert -- insert a new item before the given index.
   //           overloaded to accept all of the common weave types.
   //-------------------------------------------------------------------------
-  list& insert(int ndx, object& other) {
-    int rslt = PyList_Insert(_obj, ndx, other);
+  template<class T>
+  list& insert(int ndx, T other) {
+    int rslt = PyList_Insert(_obj, ndx, object(other));
     if (rslt==-1) {
       PyErr_Clear();  //Python sets one
       fail(PyExc_RuntimeError, "Error inserting");
     };
     return *this;
-  };
-  list& insert(int ndx, int other) {
-    object oth = other;
-    return insert(ndx, oth);
-  };
-  list& insert(int ndx, double other) {
-    object oth = other;
-    return insert(ndx, oth);
-  };
-  list& insert(int ndx, std::complex<double>& other) {
-    object oth = other;
-    return insert(ndx, oth);
-  };  
-  list& insert(int ndx, const char* other) {
-    object oth = other;
-    return insert(ndx, oth);
-  };
-  list& insert(int ndx, const std::string& other) {
-    object oth = other;
-    return insert(ndx, oth);
   };
 
   //-------------------------------------------------------------------------
