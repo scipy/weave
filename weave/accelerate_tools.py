@@ -94,9 +94,9 @@ class Basic_Number(Basic):
 
 class Integer(Basic_Number):
     cxxtype = "long"
-    checker = "PyInt_Check"
-    inbounder = "PyInt_AsLong"
-    outbounder = "PyInt_FromLong"
+    checker = "PyLong_Check"
+    inbounder = "PyLong_AsLong"
+    outbounder = "PyLong_FromLong"
 
 
 class Double(Basic_Number):

@@ -358,15 +358,12 @@ def gcc_exists(name='gcc'):
     result = 0
     cmd = [str(name), '-v']
     try:
-        if sys.platform == 'win32':
-            p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
-                                 stderr=subprocess.STDOUT)
-        else:
-            p = subprocess.Popen(cmd, stdout=subprocess.PIPE,
-                                 stderr=subprocess.STDOUT)
-        str_result = p.stdout.read()
-        if 'specs' in str_result:
-            result = 1
+        shell = (sys.platform == 'win32')
+        with subprocess.Popen(cmd, shell=shell, stdout=subprocess.PIPE,
+                              stderr=subprocess.STDOUT) as p:
+            str_result = p.stdout.read()
+            if 'specs' in str_result:
+                result = 1
     except:
         # This was needed because the msvc compiler messes with
         # the path variable. and will occasionlly mess things up
@@ -381,12 +378,12 @@ def msvc_exists():
     """
     result = 0
     try:
-        p = subprocess.Popen(['cl'], shell=True, stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT)
-        str_result = p.stdout.read()
-        # print str_result
-        if 'Microsoft' in str_result:
-            result = 1
+        with subprocess.Popen(['cl'], shell=True, stdout=subprocess.PIPE,
+                              stderr=subprocess.STDOUT) as p:
+            str_result = p.stdout.read()
+            # print str_result
+            if 'Microsoft' in str_result:
+                result = 1
     except:
         # assume we're ok if devstudio exists
         import distutils.msvccompiler

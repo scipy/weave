@@ -369,7 +369,7 @@ cobject:
   }
 
   if ((pyobj) && (flags & SWIG_POINTER_DISOWN)) {
-    PyObject *zero = PyInt_FromLong(0);
+    PyObject *zero = PyLong_FromLong(0);
     PyObject_SetAttrString(pyobj,(char*)"thisown",zero);
     Py_DECREF(zero);
   }
@@ -426,7 +426,7 @@ SWIG_Python_NewPointerObj(void *ptr, swig_type_info *type, int own) {
     Py_DECREF(args);
     if (inst) {
       if (own) {
-        PyObject *n = PyInt_FromLong(1);
+        PyObject *n = PyLong_FromLong(1);
         PyObject_SetAttrString(inst,(char*)"thisown",n);
         Py_DECREF(n);
       }

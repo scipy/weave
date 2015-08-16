@@ -3,6 +3,7 @@ from __future__ import absolute_import, print_function
 import os
 import sys
 import re
+import io
 
 from . import catalog
 from . import build_tools
@@ -501,7 +502,6 @@ def indent(st,spaces):
 def format_error_msg(errors):
     #minimum effort right now...
     import pprint
-    import cStringIO
-    msg = cStringIO.StringIO()
+    msg = io.StringIO()
     pprint.pprint(errors,msg)
     return msg.getvalue()

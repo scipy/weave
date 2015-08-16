@@ -23,7 +23,7 @@ from numpy import *
 
 def Ramp(result, size, start, end):
     step = (end-start)/(size-1)
-    for i in xrange(size):
+    for i in range(size):
         result[i] = start + step*i
 
 
@@ -84,7 +84,7 @@ def main():
 
     arr = [0]*N_array
     t1 = time.time()
-    for i in xrange(N_py):
+    for i in range(N_py):
         Ramp(arr, N_array, 0.0, 1.0)
     t2 = time.time()
     py_time = (t2 - t1) * ratio
@@ -96,7 +96,7 @@ def main():
     # I'm not including this in the timing.
     Ramp_numeric1(arr1, 0.0, 1.0)
     t1 = time.time()
-    for i in xrange(N_c):
+    for i in range(N_c):
         Ramp_numeric1(arr1, 0.0, 1.0)
     t2 = time.time()
     c_time = (t2 - t1)
@@ -108,7 +108,7 @@ def main():
     # I'm not including this in the timing.
     Ramp_numeric2(arr2, 0.0, 1.0)
     t1 = time.time()
-    for i in xrange(N_c):
+    for i in range(N_c):
         Ramp_numeric2(arr2, 0.0, 1.0)
     t2 = time.time()
     c_time = (t2 - t1)
@@ -120,7 +120,7 @@ def main():
     # I'm not including this in the timing.
     Ramp_list1(arr3, 0.0, 1.0)
     t1 = time.time()
-    for i in xrange(N_py):
+    for i in range(N_py):
         Ramp_list1(arr3, 0.0, 1.0)
     t2 = time.time()
     c_time = (t2 - t1) * ratio
@@ -132,7 +132,7 @@ def main():
     # I'm not including this in the timing.
     Ramp_list2(arr4, 0.0, 1.0)
     t1 = time.time()
-    for i in xrange(N_py):
+    for i in range(N_py):
         Ramp_list2(arr4, 0.0, 1.0)
     t2 = time.time()
     c_time = (t2 - t1) * ratio

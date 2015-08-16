@@ -120,7 +120,7 @@ class _TestSequenceBase(TestCase):
         a = self.seq_type([0]) * N
         val = 0
         t1 = time.time()
-        for i in xrange(N):
+        for i in range(N):
             val = a[i]
         t2 = time.time()
         debug_print('python1:', t2 - t1)
@@ -151,7 +151,7 @@ class _TestSequenceBase(TestCase):
         # b is always a list so we can assign to it.
         b = [1] * N
         t1 = time.time()
-        for i in xrange(N):
+        for i in range(N):
             b[i] = a[i]
         t2 = time.time()
         debug_print('python:', t2 - t1)
@@ -384,7 +384,7 @@ class TestList(_TestSequenceBase):
         a = ["blah"] * N
         desired = [1] * N
         t1 = time.time()
-        for i in xrange(N):
+        for i in range(N):
             desired[i] = a[i] + 'blah'
         t2 = time.time()
         debug_print('python:', t2 - t1)
@@ -412,7 +412,7 @@ class TestList(_TestSequenceBase):
         a = [0] * N
         desired = [1] * N
         t1 = time.time()
-        for i in xrange(N):
+        for i in range(N):
             desired[i] = a[i] + 1
         t2 = time.time()
         debug_print('python:', t2 - t1)

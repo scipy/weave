@@ -27,7 +27,7 @@ class sequence : public object
 {
 private:
   // since we override this virtual method, make it private
-  void set_item(const object& key, const object& val);
+  using object::set_item;
 public:
   //-------------------------------------------------------------------------
   // constructors

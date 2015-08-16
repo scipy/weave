@@ -76,7 +76,7 @@ class IntConverter(TestCase):
         a = 1
         code = """
                a=a+2;
-               return_val = PyInt_FromLong(a);
+               return_val = PyLong_FromLong(a);
                """
         test = ext_tools.ext_function('test',code,['a'])
         mod.add_function(test)
@@ -231,7 +231,7 @@ class CallableConverter(TestCase):
 
     @dec.slow
     def test_call_function(self):
-        func = string.find
+        func = str.find
         search_str = "hello world hello"
         sub_str = "world"
         # * Not sure about ref counts on search_str and sub_str.

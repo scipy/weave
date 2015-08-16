@@ -33,7 +33,7 @@ def c_int_search(seq,t,chk=1):
            #line 33 "binary_search.py"
            if (!PyList_Check(py_seq))
                py::fail(PyExc_TypeError, "seq must be a list");
-           if (!PyInt_Check(py_t))
+           if (!PyLong_Check(py_t))
                py::fail(PyExc_TypeError, "t must be an integer");
            int val, m, min = 0;
            int max = seq.len()- 1;

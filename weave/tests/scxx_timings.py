@@ -21,7 +21,7 @@ def list_append_c(a,Na):
     code = """
            for(int i = 0; i < Na;i++)
            {
-               PyObject* oth = PyInt_FromLong(i);
+               PyObject* oth = PyLong_FromLong(i);
                int res = PyList_Append(py_a,oth);
                Py_DECREF(oth);
                if(res == -1)
@@ -35,7 +35,7 @@ def list_append_c(a,Na):
 
 
 def list_append_py(a,Na):
-    for i in xrange(Na):
+    for i in range(Na):
         a.append(i)
 
 
