@@ -58,7 +58,7 @@ class NumpyComplexScalarConverter(TestCase):
         test = ext_tools.ext_function('test',code,['a'])
         mod.add_function(test)
         mod.compile(location=test_dir, compiler=self.compiler)
-        exec('from ' + mod_name + ' import test')
+        test = __import__(mod_name).test
         b = numpy.complex128(1.+1j)
         test(b)
         try:
@@ -85,7 +85,7 @@ class NumpyComplexScalarConverter(TestCase):
         test = ext_tools.ext_function('test',code,['a'])
         mod.add_function(test)
         mod.compile(location=test_dir, compiler=self.compiler)
-        exec('from ' + mod_name + ' import test')
+        test = __import__(mod_name).test
         b = 1.+1j
         c = test(b)
         assert_(c == 3.+3j)

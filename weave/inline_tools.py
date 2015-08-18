@@ -499,8 +499,7 @@ def compile_function(code,arg_names,local_dict,global_dict,
     # the directory where it lives is in the python path.
     try:
         sys.path.insert(0,storage_dir)
-        exec('import ' + module_name)
-        func = eval(module_name+'.compiled_func')
+        func = __import__(module_name).compiled_func
     finally:
         del sys.path[0]
     return func
