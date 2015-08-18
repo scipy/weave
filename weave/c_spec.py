@@ -355,6 +355,7 @@ class scxx_converter(common_base_converter):
                         '"scxx/dict.h"','<iostream>']
         self.include_dirs = [local_dir,scxx_dir]
         self.sources = [os.path.join(scxx_dir,'weave_imp.cpp'),]
+        self.extra_compile_args = ['-std=c++11', '-Wno-self-assign']
 
 
 class list_converter(scxx_converter):

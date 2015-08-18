@@ -421,13 +421,13 @@ class ListConverter(TestCase):
         with_cxx = ext_tools.ext_function('with_cxx',code,['a'])
         mod.add_function(with_cxx)
         code = """
-               int vv, sum = 0;
+               long vv, sum = 0;
                PyObject *v;
                for(int i = 0; i < a.len(); i++)
                {
                    v = PyList_GetItem(py_a,i);
                    //didn't set error here -- just speed test
-                   vv = py_to_int(v,"list item");
+                   vv = PyLong_AsLong(v);
                    if (vv % 2)
                     sum += vv;
                    else

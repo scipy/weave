@@ -550,29 +550,6 @@ class TestObjectStr(TestCase):
         assert_equal(res,"str return")
 
 
-class TestObjectUnicode(TestCase):
-
-    # This ain't going to win awards for test of the year...
-
-    @dec.slow
-    def test_unicode(self):
-        class Foo:
-
-            def __repr__(self):
-                return "repr return"
-
-            def __str__(self):
-                return "unicode"
-        a = Foo()
-        res = inline_tools.inline('return_val = a.unicode();',['a'])
-        first = sys.getrefcount(res)
-        del res
-        res = inline_tools.inline('return_val = a.unicode();',['a'])
-        second = sys.getrefcount(res)
-        assert_equal(first,second)
-        assert_equal(res,"unicode")
-
-
 class TestObjectIsCallable(TestCase):
 
     @dec.slow
