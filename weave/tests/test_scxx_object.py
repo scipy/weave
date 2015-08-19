@@ -431,9 +431,8 @@ class TestObjectCmp(TestCase):
         class Foo:
             def __init__(self,x):
                 self.x = x
-
-            def __cmp__(self,other):
-                return cmp(self.x,other.x)
+            def __eq__(self,other):
+                return self.x == other.x
 
         a,b = Foo(1),Foo(2)
         res = inline_tools.inline('return_val = (a == b);',['a','b'])
