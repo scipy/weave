@@ -280,171 +280,22 @@ public:
         throw 1;
   };
   
-    //-------------------------------------------------------------------------
+  //-------------------------------------------------------------------------
   // comparison
   // !! NOT TESTED
   //-------------------------------------------------------------------------
-  int cmp(const object& other) const {
-    return PyObject_RichCompareBool(_obj, other, Py_LT) ? -1 : PyObject_RichCompareBool(_obj, other, Py_GT) ? 1 : 0;
-  };
-  int cmp(int other) const {
-    object _other = object(other);
-    return cmp(_other);
-  };  
-  int cmp(unsigned long other) const {
-    object _other = object(other);
-    return cmp(_other);
-  };
-  int cmp(double other) const {
-    object _other = object(other);
-    return cmp(_other);
-  };
-  int cmp(const std::complex<double>& other) const {
-    object _other = object(other);
-    return cmp(_other);
-  };
-  
-  int cmp(const char* other) const {
-    object _other = object((char*)other);
-    return cmp(_other);
-  };
-  
-  int cmp(const std::string& other) const {
-    object _other = object(other);
-    return cmp(_other);
+  template<class T>
+  int cmp(T other) const {
+    object o(other);
+    return PyObject_RichCompareBool(_obj, o, Py_GT) - PyObject_RichCompareBool(_obj, o, Py_LT);
   };
     
-  bool operator == (const object& other) const {
-    return cmp(other) == 0;
-  };
-  bool operator == (int other) const {
-    return cmp(other) == 0;
-  };
-  bool operator == (unsigned long other) const {
-    return cmp(other) == 0;
-  };
-  bool operator == (double other) const {
-    return cmp(other) == 0;
-  };
-  bool operator == (const std::complex<double>& other) const {
-    return cmp(other) == 0;
-  };
-  bool operator == (const std::string& other) const {
-    return cmp(other) == 0;
-  };
-  bool operator == (const char* other) const {
-    return cmp(other) == 0;
-  };
-
-  bool operator != (const object& other) const {
-    return cmp(other) != 0;
-  };
-  bool operator != (int other) const {
-    return cmp(other) != 0;
-  };
-  bool operator != (unsigned long other) const {
-    return cmp(other) != 0;
-  };
-  bool operator != (double other) const {
-    return cmp(other) != 0;
-  };
-  bool operator != (const std::complex<double>& other) const {
-    return cmp(other) != 0;
-  };
-  bool operator != (const std::string& other) const {
-    return cmp(other) != 0;
-  };
-  bool operator != (const char* other) const {
-    return cmp(other) != 0;
-  };
-    
-  bool operator < (const object& other) const {
-    return cmp(other) < 0;
-  };
-  bool operator < (int other) const {
-    return cmp(other) < 0;
-  };
-  bool operator < (unsigned long other) const {
-    return cmp(other) < 0;
-  };
-  bool operator < (double other) const {
-    return cmp(other) < 0;
-  };
-  bool operator < (const std::complex<double>& other) const {
-    return cmp(other) < 0;
-  };
-  bool operator < (const std::string& other) const {
-    return cmp(other) < 0;
-  };
-  bool operator < (const char* other) const {
-    return cmp(other) < 0;
-  };
-  
-  bool operator > (const object& other) const {
-    return cmp(other) > 0;
-  };
-  bool operator > (int other) const {
-    return cmp(other) > 0;
-  };
-  bool operator > (unsigned long other) const {
-    return cmp(other) > 0;
-  };
-  bool operator > (double other) const {
-    return cmp(other) > 0;
-  };
-  bool operator > (const std::complex<double>& other) const {
-    return cmp(other) > 0;
-  };
-  bool operator > (const std::string& other) const {
-    return cmp(other) > 0;
-  };
-  bool operator > (const char* other) const {
-    return cmp(other) > 0;
-  };
-
-  bool operator >= (const object& other) const {
-    return cmp(other) >= 0;
-  };
-  bool operator >= (int other) const {
-    return cmp(other) >= 0;
-  };
-  bool operator >= (unsigned long other) const {
-    return cmp(other) >= 0;
-  };
-  bool operator >= (double other) const {
-    return cmp(other) >= 0;
-  };
-  bool operator >= (const std::complex<double>& other) const {
-    return cmp(other) >= 0;
-  };
-  bool operator >= (const std::string& other) const {
-    return cmp(other) >= 0;
-  };
-  bool operator >= (const char* other) const {
-    return cmp(other) >= 0;
-  };
-  
-  bool operator <= (const object& other) const {
-    return cmp(other) <= 0;
-  };
-  bool operator <= (int other) const {
-    return cmp(other) <= 0;
-  };
-  bool operator <= (unsigned long other) const {
-    return cmp(other) <= 0;
-  };
-  bool operator <= (double other) const {
-    return cmp(other) <= 0;
-  };
-  bool operator <= (const std::complex<double>& other) const {
-    return cmp(other) <= 0;
-  };
-  bool operator <= (const std::string& other) const {
-    return cmp(other) <= 0;
-  };
-  bool operator <= (const char* other) const {
-    return cmp(other) <= 0;
-  };
+  template<class T> bool operator == (const T& other) const { return PyObject_RichCompareBool(_obj, other, Py_EQ); };
+  template<class T> bool operator != (const T& other) const { return PyObject_RichCompareBool(_obj, other, Py_NE); };
+  template<class T> bool operator < (const T& other) const { return PyObject_RichCompareBool(_obj, other, Py_LT); };
+  template<class T> bool operator > (const T& other) const { return PyObject_RichCompareBool(_obj, other, Py_GT); };
+  template<class T> bool operator <= (const T& other) const { return PyObject_RichCompareBool(_obj, other, Py_LE); };
+  template<class T> bool operator >= (const T& other) const { return PyObject_RichCompareBool(_obj, other, Py_GE); };
 
   //-------------------------------------------------------------------------
   // string representations
