@@ -39,7 +39,7 @@ class inline_ext_function(ext_tools.ext_function):
 
             This code got a lot uglier when I added local_dict...
         """
-        declare_return = 'py::object return_val;\n'    \
+        declare_return = 'py::object return_val(nullptr);\n'    \
                          'int exception_occurred = 0;\n'    \
                          'PyObject *py__locals = NULL;\n' \
                          'PyObject *py__globals = NULL;\n'
@@ -107,12 +107,12 @@ class inline_ext_function(ext_tools.ext_function):
             '    }\n'
         catch_code = "catch(...)                        \n"   \
                       "{                                 \n" + \
-                      "    return_val =  py::object();   \n"   \
+                      "    return_val = nullptr;   \n"   \
                       "    exception_occurred = 1;        \n"   \
                       "}                                 \n"
         return_code = "    /* cleanup code */                   \n" + \
                            cleanup_code + \
-                      "    if(!(PyObject*)return_val && !exception_occurred)\n"   \
+                      "    if(return_val.is_null() && !exception_occurred)\n"   \
                       "    {\n                                  \n"   \
                       "        return_val = Py_None;            \n"   \
                       "    }\n                                  \n"   \

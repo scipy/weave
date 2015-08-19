@@ -69,8 +69,7 @@ public:
   //-------------------------------------------------------------------------
   class keyed_ref;  
 
-  object()
-    : _obj (0), _own (0) { };
+  object(const std::nullptr_t &) : _obj (0), _own (0) { };
   object(const object& other)
     : _obj (0), _own (0) { grab_ref(other); };
   object(PyObject* obj)
@@ -105,10 +104,10 @@ public:
   // string constructors
   //-------------------------------------------------------------------------
   object(const char* val) {
-    _obj = _own = PyUnicode_FromString((char*) val); 
+    _obj = _own = PyUnicode_FromString(val);
   };
   object(const std::string& val) : _obj (0), _own (0) { 
-    _obj = _own = PyUnicode_FromString((char*)val.c_str()); 
+    _obj = _own = PyUnicode_FromString(val.c_str());
   };
   
   //-------------------------------------------------------------------------
@@ -203,10 +202,10 @@ public:
   // hasattr -- test if object has specified attribute
   //-------------------------------------------------------------------------  
   int hasattr(const char* nm) const {
-    return PyObject_HasAttrString(_obj, (char*) nm) == 1;
+    return PyObject_HasAttrString(_obj, nm) == 1;
   };
   int hasattr(const std::string& nm) const {
-    return PyObject_HasAttrString(_obj, (char*) nm.c_str()) == 1;
+    return PyObject_HasAttrString(_obj, nm.c_str()) == 1;
   };
   int hasattr(object& nm) const {
     return PyObject_HasAttr(_obj, nm) == 1;
@@ -217,7 +216,7 @@ public:
   // attr -- retreive attribute/method from object
   //-------------------------------------------------------------------------
   object attr(const char* nm) const {    
-    PyObject* val = PyObject_GetAttrString(_obj, (char*) nm);
+    PyObject* val = PyObject_GetAttrString(_obj, nm);
     if (!val)
         throw 1;
     return object(lose_ref(val));    
@@ -242,14 +241,14 @@ public:
   //-------------------------------------------------------------------------
   template<class T>
   void set_attr(const char* nm, T val) {
-    int res = PyObject_SetAttrString(_obj, (char*) nm, object(val));
+    int res = PyObject_SetAttrString(_obj, nm, object(val));
     if (res == -1)
         throw 1;
   };
 
   template<class T>
   void set_attr(const std::string& nm, T val) {
-    int res = PyObject_SetAttrString(_obj, (char*) nm.c_str(), object(val));
+    int res = PyObject_SetAttrString(_obj, nm.c_str(), object(val));
     if (res == -1)
         throw 1;
   };
@@ -265,12 +264,12 @@ public:
   // del attributes/methods from object
   //-------------------------------------------------------------------------
   void del(const char* nm) {
-    int result = PyObject_DelAttrString(_obj, (char*) nm);
+    int result = PyObject_DelAttrString(_obj, nm);
     if (result == -1)
         throw 1;
   };
   void del(const std::string& nm) {
-    int result = PyObject_DelAttrString(_obj, (char*) nm.c_str());
+    int result = PyObject_DelAttrString(_obj, nm.c_str());
     if (result == -1)
         throw 1;
   };

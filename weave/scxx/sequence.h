@@ -32,7 +32,6 @@ public:
   //-------------------------------------------------------------------------
   // constructors
   //-------------------------------------------------------------------------
-  sequence() : object() {};
   sequence(const sequence& other) : object(other) {};
   sequence(PyObject* obj) : object(obj) {
     _violentTypeCheck();

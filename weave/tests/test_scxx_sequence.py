@@ -132,7 +132,7 @@ class _TestSequenceBase(TestCase):
 
         code = """
                const int N = a.length();
-               py::object val;
+               py::object val(nullptr);
                for(int i=0; i < N; i++)
                    val = a[i];
                """
