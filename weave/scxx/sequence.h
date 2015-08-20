@@ -1,7 +1,7 @@
-/******************************************** 
+/********************************************
   copyright 1999 McMillan Enterprises, Inc.
   www.mcmillan-inc.com
-  
+
   modified for weave by eric jones
 *********************************************/
 #if !defined(SEQUENCE_H_INCLUDED_)
@@ -13,9 +13,9 @@
 #include "object.h"
 
 namespace py {
-    
+
 //---------------------------------------------------------------------------
-// !! This isn't being picked up out of object.h for some reason, so I'll 
+// !! This isn't being picked up out of object.h for some reason, so I'll
 // !! redeclare it.
 //---------------------------------------------------------------------------
 void fail(PyObject*, const char* msg);
@@ -39,7 +39,7 @@ public:
 
   //-------------------------------------------------------------------------
   // destructors
-  //-------------------------------------------------------------------------  
+  //-------------------------------------------------------------------------
   virtual ~sequence() {}
 
   //-------------------------------------------------------------------------
@@ -54,17 +54,17 @@ public:
     _violentTypeCheck();
     return *this;
   };
-  
+
   //-------------------------------------------------------------------------
   // type checking.
-  //-------------------------------------------------------------------------  
+  //-------------------------------------------------------------------------
   virtual void _violentTypeCheck() {
     if (!PySequence_Check(_obj)) {
       grab_ref(0);
       fail(PyExc_TypeError, "Not a sequence");
     }
   };
-  
+
   //-------------------------------------------------------------------------
   // operator+ -- concatenation
   //-------------------------------------------------------------------------
@@ -87,7 +87,7 @@ public:
   };
 
   //-------------------------------------------------------------------------
-  // set_item -- virtual so that set_item for tuple and list use 
+  // set_item -- virtual so that set_item for tuple and list use
   //             type specific xxx_SetItem function calls.
   //-------------------------------------------------------------------------
   virtual void set_item(int ndx, object& val) {
@@ -102,8 +102,8 @@ public:
   //-------------------------------------------------------------------------
   object operator [] (int i) {
     PyObject* o = PySequence_GetItem(_obj, i);
-    // don't throw error for when [] fails because it might be on left hand 
-    // side (a[0] = 1).  If the sequence was just created, it will be filled 
+    // don't throw error for when [] fails because it might be on left hand
+    // side (a[0] = 1).  If the sequence was just created, it will be filled
     // with NULL values, and setting the values should be ok.  However, we
     // do want to catch index errors that might occur on the right hand side
     // (obj = a[4] when a has len==3).
@@ -113,7 +113,7 @@ public:
     }
     return lose_ref(o);
   };
-  
+
   //-------------------------------------------------------------------------
   // slice -- handles slice operations.
   // !! NOT TESTED
@@ -124,7 +124,7 @@ public:
       fail(PyExc_IndexError, "could not obtain slice");
     return lose_ref(o);
   };
-  
+
   //-------------------------------------------------------------------------
   // in -- find whether a value is in the given sequence.
   //       overloaded to handle the standard types used in weave.
@@ -135,8 +135,8 @@ public:
     if (rslt==-1)
       fail(PyExc_RuntimeError, "problem in in");
     return (rslt==1);
-  };  
-  
+  };
+
   //-------------------------------------------------------------------------
   // index -- find whether a value is in the given sequence.
   //          overloaded to handle the standard types used in weave.
@@ -150,10 +150,10 @@ public:
   };
 
   //-------------------------------------------------------------------------
-  // len, length, size -- find the length of the sequence.  
+  // len, length, size -- find the length of the sequence.
   //                      version inherited from py::object ok.
   //-------------------------------------------------------------------------
-  
+
   //-------------------------------------------------------------------------
   // operator* -- repeat a list multiple times.
   //-------------------------------------------------------------------------
@@ -180,7 +180,7 @@ public:
   indexed_ref(PyObject* obj, sequence& parent, int ndx)
     : object(obj), _parent(parent), _ndx(ndx) { };
   virtual ~indexed_ref() {};
-  
+
   indexed_ref& operator=(const object& other) {
     grab_ref(other);
     _parent.set_item(_ndx, *this);
@@ -195,4 +195,4 @@ public:
 
 } // namespace py
 
-#endif // PWOSEQUENCE_H_INCLUDED_
+#endif // SEQUENCE_H_INCLUDED_

@@ -188,15 +188,8 @@ class common_base_converter(base_converter):
         msg = "(file:: name: %s)" % self.name
         return msg
 
-    def __cmp__(self,other):
-        # only works for equal
-        result = -1
-        try:
-            result = cmp(self.name,other.name) or \
-                     cmp(self.__class__, other.__class__)
-        except AttributeError:
-            pass
-        return result
+    def __eq__(self,other):
+        return self.name == other.name and self.__class__ == other.__class__
 
 #----------------------------------------------------------------------------
 # Module Converter

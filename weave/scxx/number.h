@@ -1,4 +1,4 @@
-/******************************************** 
+/********************************************
   copyright 1999 McMillan Enterprises, Inc.
   www.mcmillan-inc.com
 
@@ -11,7 +11,7 @@
 #include "sequence.h"
 
 namespace py {
-    
+
 class number : public object
 {
 public:

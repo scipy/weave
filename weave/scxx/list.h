@@ -21,7 +21,7 @@ namespace py {
 
 class list : public sequence
 {
-    
+
 public:
   //-------------------------------------------------------------------------
   // constructors
@@ -31,7 +31,7 @@ public:
   list(PyObject* obj) : sequence(obj) {
     _violentTypeCheck();
   };
-  
+
   //-------------------------------------------------------------------------
   // descructor
   //-------------------------------------------------------------------------
@@ -49,18 +49,18 @@ public:
     _violentTypeCheck();
     return *this;
   };
-  
+
   //-------------------------------------------------------------------------
   // type checking
   //-------------------------------------------------------------------------
   virtual void _violentTypeCheck() {
-    if (!PyList_Check(_obj)) { 
+    if (!PyList_Check(_obj)) {
       //should probably check the sequence methods for non-0 setitem
       grab_ref(0);
       fail(PyExc_TypeError, "Not a mutable sequence");
     }
   };
-  
+
   //-------------------------------------------------------------------------
   // del -- remove the item at a given index from the list.
   //        also a two valued version for removing slices from a list.
@@ -83,8 +83,8 @@ public:
   //-------------------------------------------------------------------------
   indexed_ref operator [] (int i) {
     PyObject* o = PyList_GetItem(_obj, i);  // get a "borrowed" refcount
-    // don't throw error for when [] fails because it might be on left hand 
-    // side (a[0] = 1).  If the list was just created, it will be filled 
+    // don't throw error for when [] fails because it might be on left hand
+    // side (a[0] = 1).  If the list was just created, it will be filled
     // with NULL values, and setting the values should be ok.  However, we
     // do want to catch index errors that might occur on the right hand side
     // (obj = a[4] when a has len==3).
@@ -130,7 +130,7 @@ public:
     }
     return *this;
   };
-  
+
   //-------------------------------------------------------------------------
   // insert -- insert a new item before the given index.
   //           overloaded to accept all of the common weave types.

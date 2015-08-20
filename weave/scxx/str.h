@@ -1,7 +1,7 @@
-/******************************************** 
+/********************************************
   copyright 1999 McMillan Enterprises, Inc.
   www.mcmillan-inc.com
-  
+
   modified heavily for weave by eric jones
 *********************************************/
 #if !defined(STR_H_INCLUDED_)
@@ -16,7 +16,6 @@ namespace py {
 class str : public sequence
 {
 public:
-  str() : sequence() {};
   str(const char* s)
     : sequence(PyUnicode_FromString((char* )s)) { lose_ref(_obj); }
   str(const char* s, int sz)
@@ -27,7 +26,6 @@ public:
     : sequence(obj) { _violentTypeCheck(); };
   str(const object& other)
     : sequence(other) { _violentTypeCheck(); };
-  virtual ~str() {};
 
   virtual str& operator=(const str& other) {
     grab_ref(other);
