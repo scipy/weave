@@ -171,9 +171,14 @@ class common_base_converter(base_converter):
         return simple_c_to_py_template % self.template_vars()
 
     def declaration_code(self,templatize=0,inline=0):
-        code = '%(py_var)s = %(var_lookup)s;\n'   \
-               '%(c_type)s %(name)s = %(var_convert)s;\n' %  \
-               self.template_vars(inline=inline)
+        template_vars = self.template_vars(inline=inline)
+        if template_vars['py_var'] != template_vars['var_lookup']:
+            code = '%(py_var)s = %(var_lookup)s;\n'   \
+                   '%(c_type)s %(name)s = %(var_convert)s;\n' %  \
+                   template_vars
+        else:
+            code = '%(c_type)s %(name)s = %(var_convert)s;\n' %  \
+                   template_vars
         return code
 
     def cleanup_code(self):
@@ -348,7 +353,7 @@ class scxx_converter(common_base_converter):
                         '"scxx/dict.h"','<iostream>']
         self.include_dirs = [local_dir,scxx_dir]
         self.sources = [os.path.join(scxx_dir,'weave_imp.cpp'),]
-        self.extra_compile_args = ['-std=c++11', '-Wno-self-assign']
+        self.extra_compile_args = ['-std=c++0x']
 
 
 class list_converter(scxx_converter):
