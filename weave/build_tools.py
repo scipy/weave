@@ -33,7 +33,7 @@ import distutils.sysconfig
 import distutils.dir_util
 # some (most?) platforms will fail to link C++ correctly
 # unless numpy.distutils is used.
-from numpy.distutils.core import Extension
+from numpy.distutils.core import Extension, NumpyDistribution, numpy_cmdclass
 
 
 old_init_posix = distutils.sysconfig._init_posix
@@ -211,17 +211,8 @@ def build_extension(module_path,compiler_name='',build_dir=None,
           extension_name.
     """
     success = 0
-    from numpy.distutils.core import setup
     from numpy.distutils.log import set_verbosity
     set_verbosity(-1)
-
-    # this is a screwy trick to get rid of a ton of warnings on Unix
-    import distutils.sysconfig
-    distutils.sysconfig.get_config_vars()
-    if 'OPT' in distutils.sysconfig._config_vars:
-        flags = distutils.sysconfig._config_vars['OPT']
-        flags = flags.replace('-Wall','')
-        distutils.sysconfig._config_vars['OPT'] = flags
 
     # get the name of the module and the extension directory it lives in.
     module_dir,cpp_name = os.path.split(os.path.abspath(module_path))
@@ -244,29 +235,17 @@ def build_extension(module_path,compiler_name='',build_dir=None,
 
     compiler_name = choose_compiler(compiler_name)
 
-    configure_sys_argv(compiler_name,temp_dir,build_dir)
-
     # the business end of the function
     try:
         if verbose == 1:
             print('Compiling code...')
 
         # set compiler verboseness 2 or more makes it output results
-        if verbose > 1:
-            verb = 1
-        else:
-            verb = 0
+        from distutils import log
+        log.set_verbosity(1 if verbose>1 else 0)
 
         t1 = time.time()
         ext = create_extension(module_path,**kw)
-        # the switcheroo on SystemExit here is meant to keep command line
-        # sessions from exiting when compiles fail.
-        if sys.version_info.major == 3:
-            builtin_dict = __builtins__
-        else:
-            builtin_dict = sys.modules['__builtin__'].__dict__
-        old_SysExit = builtin_dict['SystemExit']
-        builtin_dict['SystemExit'] = CompileError
 
         # change current working directory to 'build_dir' so compiler won't
         # pick up anything by mistake
@@ -278,12 +257,24 @@ def build_extension(module_path,compiler_name='',build_dir=None,
         import copy
         environ = copy.deepcopy(os.environ)
         try:
-            setup(name=module_name, ext_modules=[ext],verbose=verb)
+            attr = {'name':module_name,
+                    'ext_modules':[ext],
+                    'verbose':1 if verbose>1 else 0,
+                    'cmdclass':numpy_cmdclass.copy()}
+            dist = NumpyDistribution(attr)
+            dist.parse_config_files()
+            options = dist.get_option_dict('build_ext')
+            source = "weave.build_tools"
+            options['build_lib'] = (source, build_dir)
+            options['build_temp'] = (source, temp_dir)
+            if compiler_name:
+                options['compiler'] = (source, compiler_name)
+            dist.run_command('build_ext')
+        except Exception as exc:
+            raise SystemExit("error: %s" % (exc,))
         finally:
             # restore state
             os.environ = environ
-            # restore SystemExit
-            builtin_dict['SystemExit'] = old_SysExit
             # restore working directory to one before setup
             os.chdir(oldcwd)
         t2 = time.time()
@@ -295,29 +286,7 @@ def build_extension(module_path,compiler_name='',build_dir=None,
     except SyntaxError:  # TypeError:
         success = 0
 
-    # restore argv after our trick...
-    restore_sys_argv()
-
     return success
-
-old_argv = []
-
-
-def configure_sys_argv(compiler_name,temp_dir,build_dir):
-    # We're gonna play some tricks with argv here to pass info to distutils
-    # which is really built for command line use. better way??
-    global old_argv
-    old_argv = sys.argv[:]
-    sys.argv = ['','build_ext','--build-lib', build_dir,
-                               '--build-temp',temp_dir]
-    if compiler_name == 'gcc':
-        sys.argv.insert(2,'--compiler='+compiler_name)
-    elif compiler_name:
-        sys.argv.insert(2,'--compiler='+compiler_name)
-
-
-def restore_sys_argv():
-    sys.argv = old_argv
 
 
 def configure_python_path(build_dir):
