@@ -115,9 +115,8 @@ class array_converter(standard_array_spec.array_converter):
         code = code % self.template_vars(inline=inline)
         return code
 
-    def __cmp__(self,other):
-        #only works for equal
-        return (cmp(self.name,other.name) or
-                 cmp(self.var_type,other.var_type) or
-                 cmp(self.dims, other.dims) or
-                 cmp(self.__class__, other.__class__))
+    def __eq__(self,other):
+        return self.__class__ == other.__class__ and \
+               self.name == other.name and \
+               self.var_type == other.var_type and \
+               self.dims == other.dims

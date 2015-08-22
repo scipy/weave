@@ -136,18 +136,15 @@ class dummy_array(object):
         new_shape = binary_op_size(self.shape,x)
         return dummy_array(new_shape,1)
 
-    def __cmp__(self,other):
-        # This isn't an exact compare, but does work for ==
-        # cluge for Numeric
-        if isnumeric(other):
-            return 0
-        if len(self.shape) == len(other.shape) == 0:
-            return 0
-        return not alltrue(equal(self.shape,other.shape),axis=0)
-
     def __eq__(self,other):
-        # in Python 3, __eq__ does not fall back to __cmp__
-        return not bool(self.__cmp__(other))
+        # kludge for Numeric
+        if isnumeric(other):
+            return True
+        same = (self.shape == other.shape)
+        if isinstance(same, bool):
+            return same
+        else:
+            return all(same)
 
     def __add__(self,other):
         return self.binary_op(other)

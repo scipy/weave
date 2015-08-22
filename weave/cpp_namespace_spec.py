@@ -107,8 +107,7 @@ class cpp_namespace_converter(base_converter):
         msg = "(%s:: name: %s)" % (self.type_name,self.name)
         return msg
 
-    def __cmp__(self,other):
-        #only works for equal
-        return cmp(self.name,other.name) or \
-               cmp(self.__class__, other.__class__) or \
-               cmp(self.type_name,other.type_name)
+    def __eq__(self,other):
+        return self.__class__ == other.__class__ and \
+               self.name == other.name and \
+               self.type_name == other.type_name

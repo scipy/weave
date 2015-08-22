@@ -56,14 +56,15 @@ class ext_function_from_specs(object):
                          arg_strings
 
         py_objects = ', '.join(self.arg_specs.py_pointers())
-        init_flags = ', '.join(self.arg_specs.init_flags())
-        init_flags_init = '= '.join(self.arg_specs.init_flags())
         py_vars = ' = '.join(self.arg_specs.py_variables())
+        init_flags = [x.init_flag() for x in self.arg_specs if x.cleanup_code()]
         if py_objects:
             declare_py_objects = 'PyObject ' + py_objects + ';\n'
-            declare_py_objects += 'int ' + init_flags + ';\n'
+            if init_flags:
+                declare_py_objects += 'int ' + ', '.join(init_flags) + ';\n'
             init_values = py_vars + ' = NULL;\n'
-            init_values += init_flags_init + ' = 0;\n\n'
+            if init_flags:
+                init_values += '= '.join(init_flags) + ' = 0;\n\n'
         else:
             declare_py_objects = ''
             init_values = ''
@@ -91,7 +92,8 @@ class ext_function_from_specs(object):
         arg_strings = []
         for arg in self.arg_specs:
             arg_strings.append(arg.declaration_code())
-            arg_strings.append(arg.init_flag() + " = 1;\n")
+            if arg.cleanup_code():
+                arg_strings.append(arg.init_flag() + " = 1;\n")
         code = "".join(arg_strings)
         return code
 
