@@ -410,6 +410,9 @@ When passing an array to ``inline`` they can be accessed using hefty pointer ari
 For an array ``u`` in 2 dimensions ``inline``defines the macro ``U2(i,j) (*((double*)(u_array->data + (i)*Su[0] + (j)*Su[1])))`` for easy and convenient access.
 
 ::
+        from weave import inline
+        import numpy as np
+
         arrays = r"""
                  printf("[");
                   for(int x = 0; x < i; x++) {
@@ -421,7 +424,7 @@ For an array ``u`` in 2 dimensions ``inline``defines the macro ``U2(i,j) (*((dou
                   }
                   printf("]\n");  
                   """
-
+        
         arr = np.random.rand(3,3)
         i, j = arr.shape
 
