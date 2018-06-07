@@ -194,7 +194,7 @@ def setup_package():
         FULLVERSION, GIT_REVISION = get_version_info()
         metadata['version'] = FULLVERSION
     else:
-        if len(sys.argv) >= 2 and sys.argv[1] == 'bdist_wheel':
+        if len(sys.argv) >= 2 and sys.argv[1] in ['bdist_wheel', 'test']:
             # bdist_wheel needs setuptools
             import setuptools
 
