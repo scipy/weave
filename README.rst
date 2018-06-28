@@ -11,3 +11,8 @@ are recommended to use Cython.
 To install Weave, use of pip is recommended:: 
 
     pip install weave
+
+To run the tests::
+
+    python2 -c "import weave; weave.test('full')"
+
