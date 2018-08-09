@@ -166,9 +166,9 @@ public:
         fail(PyExc_TypeError, "cannot convert value to std::string");
     return std::string(PyUnicode_AsUTF8(_obj));
   };
-  operator char* () const {
+  operator const char* () const {
     if (!PyUnicode_Check(_obj))
-        fail(PyExc_TypeError, "cannot convert value to char*");
+        fail(PyExc_TypeError, "cannot convert value to const char*");
     return PyUnicode_AsUTF8(_obj);
   };
 
