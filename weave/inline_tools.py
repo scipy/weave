@@ -7,8 +7,12 @@ import os
 from . import ext_tools
 from . import catalog
 from . import common_info
-
-from numpy.core.multiarray import _get_ndarray_c_version
+try:
+    # numpy 1.16:
+    from numpy.core._multiarray_umath import _get_ndarray_c_version
+except ImportError:
+    # numpy < 1.16:
+    from numpy.core.multiarray import _get_ndarray_c_version
 ndarray_api_version = '/* NDARRAY API VERSION %x */' % (_get_ndarray_c_version(),)
 
 
