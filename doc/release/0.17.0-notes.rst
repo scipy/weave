@@ -1,0 +1,17 @@
+==========================
+Weave 0.17.0 Release Notes
+==========================
+
+Weave provides tools for including C/C++ code within Python code. Inlining
+C/C++ code within Python generally results in speedups of 1.5x to 30x over
+algorithms written in pure Python.
+
+Weave is the stand-alone version of the now-removed SciPy submodule ``scipy.weave``.
+It is Python 2.x only, and is provided for users that need new versions of
+SciPy but have existing code that still depends on ``scipy.weave``. For new code,
+users are recommended to use Cython.
+
+Weave 0.17.0 is a maintenance release that fixes compatibility with NumPy
+1.16.x.
+
+This release requires Python 2.6 or 2.7.
