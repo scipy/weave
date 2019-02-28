@@ -62,7 +62,7 @@ static PyObject *
 swig_varlink_repr(swig_varlinkobject *v)
 {
   v = v;
-  return PyString_FromString("<Global variables>");
+  return PyUnicode_FromString("<Global variables>");
 }
 
 /* ---------------------------------------------------------------------
@@ -412,11 +412,11 @@ SWIGSTATICRUNTIME(char *)
 SWIG_GetPtrObj(PyObject *obj, void **ptr, char *type) {
   PyObject *sobj = obj;
   char     *str;
-  if (!PyString_Check(obj)) {
+  if (!PyUnicode_Check(obj)) {
     sobj = PyObject_GetAttrString(obj,"this");
     if (!sobj) return "";
   }
-  str = PyString_AsString(sobj);
+  str = PyUnicode_AsUTF8(sobj);
   //printf("str: %s\\n", str);
   return SWIG_GetPtr(str,ptr,type);
 }

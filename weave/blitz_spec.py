@@ -20,7 +20,7 @@ blitz_support_code =  \
 // declare them.
 
 int _beg = blitz::fromStart;
-const int _end = blitz::toEnd;
+int _end = blitz::toEnd;
 blitz::Range _all = blitz::Range::all();
 
 template<class T, int N>
@@ -28,14 +28,12 @@ static blitz::Array<T,N> convert_to_blitz(PyArrayObject* arr_obj,const char* nam
 {
     blitz::TinyVector<int,N> shape(0);
     blitz::TinyVector<int,N> strides(0);
-    //for (int i = N-1; i >=0; i--)
     for (int i = 0; i < N; i++)
     {
-        shape[i] = arr_obj->dimensions[i];
-        strides[i] = arr_obj->strides[i]/sizeof(T);
+        shape[i] = PyArray_DIMS(arr_obj)[i];
+        strides[i] = PyArray_STRIDES(arr_obj)[i]/sizeof(T);
     }
-    //return blitz::Array<T,N>((T*) arr_obj->data,shape,
-    return blitz::Array<T,N>((T*) arr_obj->data,shape,strides,
+    return blitz::Array<T,N>((T*) PyArray_DATA(arr_obj),shape,strides,
                              blitz::neverDeleteData);
 }
 
@@ -45,14 +43,12 @@ static blitz::Array<T,N> py_to_blitz(PyArrayObject* arr_obj,const char* name)
 
     blitz::TinyVector<int,N> shape(0);
     blitz::TinyVector<int,N> strides(0);
-    //for (int i = N-1; i >=0; i--)
     for (int i = 0; i < N; i++)
     {
-        shape[i] = arr_obj->dimensions[i];
-        strides[i] = arr_obj->strides[i]/sizeof(T);
+        shape[i] = PyArray_DIMS(arr_obj)[i];
+        strides[i] = PyArray_STRIDES(arr_obj)[i]/sizeof(T);
     }
-    //return blitz::Array<T,N>((T*) arr_obj->data,shape,
-    return blitz::Array<T,N>((T*) arr_obj->data,shape,strides,
+    return blitz::Array<T,N>((T*) PyArray_DATA(arr_obj),shape,strides,
                              blitz::neverDeleteData);
 }
 """
@@ -79,11 +75,8 @@ class array_info(base_info.custom_info):
 
 class array_converter(standard_array_spec.array_converter):
     def init_info(self):
-        standard_array_spec.array_converter.init_info(self)
-        blitz_headers = ['"blitz/array.h"',
-                         '"numpy/arrayobject.h"',
-                          '<complex>','<math.h>']
-        self.headers.extend(blitz_headers)
+        super().init_info()
+        self.headers.append('"blitz/array.h"')
         self.include_dirs = [blitz_dir]
         self.support_code.append(blitz_support_code)
 
@@ -97,7 +90,7 @@ class array_converter(standard_array_spec.array_converter):
         return array_info()
 
     def type_spec(self,name,value):
-        new_spec = standard_array_spec.array_converter.type_spec(self,name,value)
+        new_spec = super().type_spec(name,value)
         new_spec.dims = len(value.shape)
         if new_spec.dims > 11:
             msg = "Error converting variable '" + name + "'.  " \
@@ -106,7 +99,7 @@ class array_converter(standard_array_spec.array_converter):
         return new_spec
 
     def template_vars(self,inline=0):
-        res = standard_array_spec.array_converter.template_vars(self,inline)
+        res = super().template_vars(inline)
         if hasattr(self,'dims'):
             res['dims'] = self.dims
         return res
@@ -122,9 +115,8 @@ class array_converter(standard_array_spec.array_converter):
         code = code % self.template_vars(inline=inline)
         return code
 
-    def __cmp__(self,other):
-        #only works for equal
-        return (cmp(self.name,other.name) or
-                 cmp(self.var_type,other.var_type) or
-                 cmp(self.dims, other.dims) or
-                 cmp(self.__class__, other.__class__))
+    def __eq__(self,other):
+        return self.__class__ == other.__class__ and \
+               self.name == other.name and \
+               self.var_type == other.var_type and \
+               self.dims == other.dims

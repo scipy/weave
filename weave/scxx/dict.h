@@ -1,7 +1,7 @@
-/******************************************** 
+/********************************************
   copyright 1999 McMillan Enterprises, Inc.
   www.mcmillan-inc.com
-  
+
   modified for weave by eric jones
 *********************************************/
 
@@ -16,6 +16,11 @@ namespace py {
 
 class dict : public object
 {
+private:
+    using object::operator int;
+    using object::operator float;
+    using object::operator double;
+    using object::operator std::complex<double>;
 public:
 
   //-------------------------------------------------------------------------
@@ -26,14 +31,14 @@ public:
   dict(PyObject* obj) : object(obj) {
     _violentTypeCheck();
   };
-  
+
   //-------------------------------------------------------------------------
   // destructor
   //-------------------------------------------------------------------------
   virtual ~dict() {};
 
   //-------------------------------------------------------------------------
-  // operator= 
+  // operator=
   //-------------------------------------------------------------------------
   virtual dict& operator=(const dict& other) {
     grab_ref(other);
@@ -54,59 +59,31 @@ public:
       fail(PyExc_TypeError, "Not a dictionary");
     }
   };
-  
+
   //-------------------------------------------------------------------------
   // get -- object, numeric, and string versions
-  //-------------------------------------------------------------------------  
-  object get (object& key) {
-    object rslt = PyDict_GetItem(_obj, key);
-    return rslt;
+  //-------------------------------------------------------------------------
+  object get (const object& key) {
+    return PyDict_GetItem(_obj, key);
   };
-  object get (int key) {
-    object _key = object(key);
-    return get(_key);
-  };
-  object get (double key) {
-    object _key = object(key);
-    return get(_key);
-  };
-  object get (const std::complex<double>& key) {
-    object _key = object(key);
-    return get(_key);
-  };  
   object get (const char* key) {
-    object rslt = PyDict_GetItemString(_obj, (char*) key);
-    return rslt;
+    return PyDict_GetItemString(_obj, (char*) key);
   };
   object get (const std::string& key) {
     return get(key.c_str());
   };
-  object get (char key) {
-    return get(&key);
-  };
-  
+
   //-------------------------------------------------------------------------
   // operator[] -- object and numeric versions
-  //-------------------------------------------------------------------------  
-  keyed_ref operator [] (object& key) {
-    object rslt = PyDict_GetItem(_obj, key);
+  //-------------------------------------------------------------------------
+  template<class T>
+  keyed_ref operator [] (T key) {
+    object rslt = PyDict_GetItem(_obj, object(key));
     if (!(PyObject*)rslt)
         PyErr_Clear(); // Ignore key errors
     return keyed_ref(rslt, *this, key);
   };
-  keyed_ref operator [] (int key) {
-    object _key = object(key);
-    return operator [](_key);
-  };
-  keyed_ref operator [] (double key) {
-    object _key = object(key);
-    return operator [](_key);
-  };
-  keyed_ref operator [] (const std::complex<double>& key) {
-    object _key = object(key);
-    return operator [](_key);
-  };
-  
+
   //-------------------------------------------------------------------------
   // operator[] non-const -- string versions
   //-------------------------------------------------------------------------
@@ -114,34 +91,17 @@ public:
     object rslt = PyDict_GetItemString(_obj, (char*) key);
     if (!(PyObject*)rslt)
         PyErr_Clear(); // Ignore key errors
-    object _key = key;    
-    return keyed_ref(rslt, *this, _key);
+    return keyed_ref(rslt, *this, key);
   };
   keyed_ref operator [] (const std::string& key) {
     return operator [](key.c_str());
   };
 
-  keyed_ref operator [] (char key) {
-    return operator [](&key);
-  };
-
   //-------------------------------------------------------------------------
   // has_key -- object and numeric versions
-  //-------------------------------------------------------------------------  
-  bool has_key(object& key) const {
+  //-------------------------------------------------------------------------
+  bool has_key(const object& key) const {
     return PyMapping_HasKey(_obj, key)==1;
-  };
-  bool has_key(int key) const {
-    object _key = key;    
-    return has_key(_key);
-  };
-  bool has_key(double key) const {
-    object _key = key;    
-    return has_key(_key);
-  };
-  bool has_key(const std::complex<double>& key) const {
-    object _key = key;    
-    return has_key(_key);
   };
 
   //-------------------------------------------------------------------------
@@ -153,16 +113,13 @@ public:
   bool has_key(const std::string& key) const {
     return has_key(key.c_str());
   };
-  bool has_key(char key) const {
-    return has_key(&key);
-  };
 
   //-------------------------------------------------------------------------
   // len and length methods
-  //-------------------------------------------------------------------------  
+  //-------------------------------------------------------------------------
   int len() const {
     return PyDict_Size(_obj);
-  }  
+  }
   int length() const {
     return PyDict_Size(_obj);
   };
@@ -176,7 +133,7 @@ public:
       fail(PyExc_RuntimeError, "Cannot add key / value");
   };
 
-  virtual void set_item(object& key, object& val) const {
+  virtual void set_item(const object& key, const object& val) {
     int rslt = PyDict_SetItem(_obj, key, val);
     if (rslt==-1)
       fail(PyExc_KeyError, "Key must be hashable");
@@ -184,14 +141,14 @@ public:
 
   //-------------------------------------------------------------------------
   // clear
-  //-------------------------------------------------------------------------  
+  //-------------------------------------------------------------------------
   void clear() {
     PyDict_Clear(_obj);
   };
-  
+
   //-------------------------------------------------------------------------
   // update
-  //-------------------------------------------------------------------------  
+  //-------------------------------------------------------------------------
 #if PY_VERSION_HEX >= 0x02020000
   void update(dict& other) {
     PyDict_Merge(_obj,other,1);
@@ -201,22 +158,10 @@ public:
   // del -- remove key from dictionary
   //        overloaded to take all common weave types
   //-------------------------------------------------------------------------
-  void del(object& key) {
+  void del(const object& key) {
     int rslt = PyDict_DelItem(_obj, key);
     if (rslt==-1)
       fail(PyExc_KeyError, "Key not found");
-  };
-  void del(int key) {
-    object _key = key;
-    del(_key);
-  };
-  void del(double key) {
-    object _key = key;
-    del(_key);
-  };
-  void del(const std::complex<double>& key) {
-    object _key = key;
-    del(_key);
   };
   void del(const char* key) {
     int rslt = PyDict_DelItemString(_obj, (char*) key);

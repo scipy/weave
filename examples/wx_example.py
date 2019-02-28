@@ -150,7 +150,7 @@ class MyCanvas(wxScrolledWindow):
         dc.SetPen(wxPen(wxNamedColour('MEDIUM FOREST GREEN'), 4))
         for line in self.lines:
             for coords in line:
-                apply(dc.DrawLine, coords)
+                dc.DrawLine(*coords)
 
     def SetXY(self, event):
         self.x, self.y = self.ConvertEventCoords(event)
@@ -174,7 +174,7 @@ class MyCanvas(wxScrolledWindow):
             dc.SetPen(wxPen(wxNamedColour('MEDIUM FOREST GREEN'), 4))
             coords = (self.x, self.y) + self.ConvertEventCoords(event)
             self.curLine.append(coords)
-            apply(dc.DrawLine, coords)
+            dc.DrawLine(*coords)
             self.SetXY(event)
             dc.EndDrawing()
 

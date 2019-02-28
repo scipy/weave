@@ -18,7 +18,7 @@ class TestInline(TestCase):
                   throw_error(PyExc_ValueError,
                               "the variable 'a' should not be less than 2");
                else
-                   return_val = PyInt_FromLong(a+1);
+                   return_val = PyLong_FromLong(a+1);
                """
         result = inline_tools.inline(code,['a'])
         assert_(result == 4)

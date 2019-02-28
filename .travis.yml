@@ -4,6 +4,10 @@ language: python
 sudo: false
 matrix:
   include:
+    - python: 3.4
+      env:
+        - TESTMODE=full
+        - COVERAGE=--coverage
     - python: 2.7
       env:
         - TESTMODE=full

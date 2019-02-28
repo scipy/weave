@@ -9,7 +9,7 @@ support_code = """
                PyObject* length(std::string a)
                {
                    int l = a.length();
-                   return PyInt_FromLong(l);
+                   return PyLong_FromLong(l);
                }
                """
 a = 'some string'

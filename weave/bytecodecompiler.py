@@ -237,9 +237,9 @@ class ByteCodeMeaning(object):
         name = byOpcode[opcode]
         method = getattr(self,name)
         if argument is None:
-            return apply(method,(pc,))
+            return method(pc)
         else:
-            return apply(method,(pc,argument,))
+            return method(pc,argument)
 
     def evaluate(self, pc,code):
         next, opcode,argument = self.fetch(pc,code)
