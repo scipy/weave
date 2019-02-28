@@ -22,8 +22,8 @@ import sys
 import os
 import time
 import tempfile
-import commands
 import subprocess
+commands = subprocess
 import warnings
 
 from . import platform_info

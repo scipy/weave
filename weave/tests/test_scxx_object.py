@@ -3,7 +3,7 @@
 from __future__ import absolute_import, print_function
 
 import sys
-from UserList import UserList
+from collections import UserList
 
 from numpy.testing import (TestCase, dec, assert_equal, assert_, assert_raises,
                            run_module_suite)
