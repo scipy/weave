@@ -110,7 +110,7 @@ class Double(Basic_Number):
 class String(Basic):
     cxxtype = "char*"
     checker = "PyString_Check"
-    inbounder = "PyString_AsString"
+    inbounder = "_PyUnicode_AsString"
     outbounder = "PyString_FromString"
 
     def literalizer(self,s):

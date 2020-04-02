@@ -167,12 +167,12 @@ public:
   operator std::string () const {
     if (!PyString_Check(_obj))
         fail(PyExc_TypeError, "cannot convert value to std::string");
-    return std::string(PyString_AsString(_obj));
+    return std::string(_PyUnicode_AsString(_obj));
   };  
   operator char* () const {
     if (!PyString_Check(_obj))
         fail(PyExc_TypeError, "cannot convert value to char*");
-    return PyString_AsString(_obj);
+    return _PyUnicode_AsString(_obj);
   };  
   
   //-------------------------------------------------------------------------
@@ -589,14 +589,14 @@ public:
     object result = PyObject_Repr(_obj);
     if (!(PyObject*)result)
         throw 1;
-    return std::string(PyString_AsString(result));
+    return std::string(_PyUnicode_AsString(result));
   };
   
   std::string str() const {
     object result = PyObject_Str(_obj);
     if (!(PyObject*)result)
         throw 1;
-    return std::string(PyString_AsString(result));
+    return std::string(_PyUnicode_AsString(result));
   };
 
   // !! Not Tested  

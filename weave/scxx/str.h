@@ -45,7 +45,7 @@ public:
     }
   };
   operator const char* () const {
-    return PyString_AsString(_obj);
+    return _PyUnicode_AsString(_obj);
   };
   /*
   static str format(const str& fmt, tuple& args){

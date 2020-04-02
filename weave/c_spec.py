@@ -218,7 +218,7 @@ class string_converter(common_base_converter):
         self.check_func = 'PyString_Check'
         self.c_type = 'std::string'
         self.return_type = 'std::string'
-        self.to_c_return = "std::string(PyString_AsString(py_obj))"
+        self.to_c_return = "std::string(_PyUnicode_AsString(py_obj))"
         self.matching_types = [bytes]
         self.headers.append('<string>')
 
