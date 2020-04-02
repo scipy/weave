@@ -18,9 +18,9 @@ class str : public sequence
 public:
   str() : sequence() {};
   str(const char* s)
-    : sequence(PyString_FromString((char* )s)) { lose_ref(_obj); }
+    : sequence(PyUnicode_FromString((char* )s)) { lose_ref(_obj); }
   str(const char* s, int sz)
-    : sequence(PyString_FromStringAndSize((char* )s, sz)) {  lose_ref(_obj); }
+    : sequence(PyUnicode_FromStringAndSize((char* )s, sz)) {  lose_ref(_obj); }
   str(const str& other)
     : sequence(other) {};
   str(PyObject* obj)

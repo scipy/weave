@@ -376,7 +376,7 @@ class StringConverter(TestCase):
         a = 'string'
         code = """
                a= std::string("hello");
-               return_val = PyString_FromString(a.c_str());
+               return_val = PyUnicode_FromString(a.c_str());
                """
         test = ext_tools.ext_function('test',code,['a'])
         mod.add_function(test)

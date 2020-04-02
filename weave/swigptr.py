@@ -62,7 +62,7 @@ static PyObject *
 swig_varlink_repr(swig_varlinkobject *v)
 {
   v = v;
-  return PyString_FromString("<Global variables>");
+  return PyUnicode_FromString("<Global variables>");
 }
 
 /* ---------------------------------------------------------------------

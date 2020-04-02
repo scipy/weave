@@ -111,7 +111,7 @@ class String(Basic):
     cxxtype = "char*"
     checker = "PyString_Check"
     inbounder = "_PyUnicode_AsString"
-    outbounder = "PyString_FromString"
+    outbounder = "PyUnicode_FromString"
 
     def literalizer(self,s):
         return CStr(s)

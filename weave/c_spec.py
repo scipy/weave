@@ -227,7 +227,7 @@ class string_converter(common_base_converter):
         code = """
                PyObject* string_to_py(std::string s)
                {
-                   return PyString_FromString(s.c_str());
+                   return PyUnicode_FromString(s.c_str());
                }
                """
         return code

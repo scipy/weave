@@ -107,10 +107,10 @@ public:
   // string constructors
   //-------------------------------------------------------------------------
   object(const char* val) {
-    _obj = _own = PyString_FromString((char*) val); 
+    _obj = _own = PyUnicode_FromString((char*) val); 
   };
   object(const std::string& val) : _obj (0), _own (0) { 
-    _obj = _own = PyString_FromString((char*)val.c_str()); 
+    _obj = _own = PyUnicode_FromString((char*)val.c_str()); 
   };
   
   //-------------------------------------------------------------------------

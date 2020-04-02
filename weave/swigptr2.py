@@ -314,7 +314,7 @@ SWIG_Python_ConvertPtr(PyObject *obj, void **ptr, swig_type_info *ty, int flags)
 #ifdef SWIG_COBJECT_TYPES
   if (!(PyCObject_Check(obj))) {
     if (!SWIG_this)
-      SWIG_this = PyString_FromString("this");
+      SWIG_this = PyUnicode_FromString("this");
     pyobj = obj;
     obj = PyObject_GetAttr(obj,SWIG_this);
     newref = 1;
@@ -331,7 +331,7 @@ SWIG_Python_ConvertPtr(PyObject *obj, void **ptr, swig_type_info *ty, int flags)
 #else
   if (!(PyString_Check(obj))) {
     if (!SWIG_this)
-      SWIG_this = PyString_FromString("this");
+      SWIG_this = PyUnicode_FromString("this");
     pyobj = obj;
     obj = PyObject_GetAttr(obj,SWIG_this);
     newref = 1;
@@ -414,7 +414,7 @@ SWIG_Python_NewPointerObj(void *ptr, swig_type_info *type, int own) {
     *(r++) = '_';
     r = SWIG_PackData(r,&ptr,sizeof(void *));
     strcpy(r,type->name);
-    robj = PyString_FromString(result);
+    robj = PyUnicode_FromString(result);
   }
 #endif
   if (!robj || (robj == Py_None)) return robj;
@@ -935,7 +935,7 @@ PySwigObject_str(PySwigObject *v)
 {
   char result[SWIG_BUFFER_SIZE];
   return SWIG_PackVoidPtr(result, v->ptr, v->desc, sizeof(result)) ?
-    PyString_FromString(result) : 0;
+    PyUnicode_FromString(result) : 0;
 }
 
 SWIGRUNTIME PyObject *
@@ -953,7 +953,7 @@ PySwigObject_oct(PySwigObject *v)
     strcpy(buf, "0");
   else
     PyOS_snprintf(buf, sizeof(buf), "0%lo", x);
-  return PyString_FromString(buf);
+  return PyUnicode_FromString(buf);
 }
 
 SWIGRUNTIME PyObject *
@@ -961,7 +961,7 @@ PySwigObject_hex(PySwigObject *v)
 {
   char buf[100];
   PyOS_snprintf(buf, sizeof(buf), "0x%lx", (unsigned long)v->ptr);
-  return PyString_FromString(buf);
+  return PyUnicode_FromString(buf);
 }
 
 SWIGRUNTIME int
@@ -1369,7 +1369,7 @@ SWIG_Python_ConvertPtr(PyObject *obj, void **ptr, swig_type_info *ty, int flags)
 #ifdef SWIG_COBJECT_TYPES
   if (!(PySwigObject_Check(obj))) {
     if (!SWIG_this)
-      SWIG_this = PyString_FromString("this");
+      SWIG_this = PyUnicode_FromString("this");
     pyobj = obj;
     obj = PyObject_GetAttr(obj,SWIG_this);
     newref = 1;
@@ -1386,7 +1386,7 @@ SWIG_Python_ConvertPtr(PyObject *obj, void **ptr, swig_type_info *ty, int flags)
 #else
   if (!(PyString_Check(obj))) {
     if (!SWIG_this)
-      SWIG_this = PyString_FromString("this");
+      SWIG_this = PyUnicode_FromString("this");
     pyobj = obj;
     obj = PyObject_GetAttr(obj,SWIG_this);
     newref = 1;
@@ -1502,7 +1502,7 @@ SWIG_Python_NewPointerObj(void *ptr, swig_type_info *type, int own) {
   {
     char result[SWIG_BUFFER_SIZE];
     robj = SWIG_PackVoidPtr(result, ptr, type->name, sizeof(result)) ?
-      PyString_FromString(result) : 0;
+      PyUnicode_FromString(result) : 0;
   }
 #endif
   if (!robj || (robj == Py_None)) return robj;
@@ -1535,7 +1535,7 @@ SWIG_Python_NewPackedObj(void *ptr, size_t sz, swig_type_info *type) {
   {
     char result[SWIG_BUFFER_SIZE];
     robj = SWIG_PackDataName(result, ptr, sz, type->name, sizeof(result)) ?
-      PyString_FromString(result) : 0;
+      PyUnicode_FromString(result) : 0;
   }
 #endif
   return robj;
@@ -2240,7 +2240,7 @@ PySwigObject_str(PySwigObject *v)
 {
   char result[SWIG_BUFFER_SIZE];
   return SWIG_PackVoidPtr(result, v->ptr, v->desc, sizeof(result)) ?
-    PyString_FromString(result) : 0;
+    PyUnicode_FromString(result) : 0;
 }
 
 SWIGRUNTIME PyObject *
@@ -2255,7 +2255,7 @@ PySwigObject_format(const char* fmt, PySwigObject *v)
   PyObject *res = NULL;
   PyObject *args = PyTuple_New(1);
   if (args && (PyTuple_SetItem(args, 0, PySwigObject_long(v)) == 0)) {
-    PyObject *ofmt = PyString_FromString(fmt);
+    PyObject *ofmt = PyUnicode_FromString(fmt);
     if (ofmt) {
       res = PyString_Format(ofmt,args);
       Py_DECREF(ofmt);
@@ -2708,7 +2708,7 @@ SWIG_Python_ConvertPtr(PyObject *obj, void **ptr, swig_type_info *ty, int flags)
 #ifdef SWIG_COBJECT_TYPES
   if (!(PySwigObject_Check(obj))) {
     if (!SWIG_this)
-      SWIG_this = PyString_FromString("this");
+      SWIG_this = PyUnicode_FromString("this");
     pyobj = obj;
     obj = PyObject_GetAttr(obj,SWIG_this);
     newref = 1;
@@ -2725,7 +2725,7 @@ SWIG_Python_ConvertPtr(PyObject *obj, void **ptr, swig_type_info *ty, int flags)
 #else
   if (!(PyString_Check(obj))) {
     if (!SWIG_this)
-      SWIG_this = PyString_FromString("this");
+      SWIG_this = PyUnicode_FromString("this");
     pyobj = obj;
     obj = PyObject_GetAttr(obj,SWIG_this);
     newref = 1;
@@ -2847,7 +2847,7 @@ SWIG_Python_NewPointerObj(void *ptr, swig_type_info *type, int own) {
   {
     char result[SWIG_BUFFER_SIZE];
     robj = SWIG_PackVoidPtr(result, ptr, type->name, sizeof(result)) ?
-      PyString_FromString(result) : 0;
+      PyUnicode_FromString(result) : 0;
   }
 #endif
   if (!robj || (robj == Py_None)) return robj;
@@ -2880,7 +2880,7 @@ SWIG_Python_NewPackedObj(void *ptr, size_t sz, swig_type_info *type) {
   {
     char result[SWIG_BUFFER_SIZE];
     robj = SWIG_PackDataName(result, ptr, sz, type->name, sizeof(result)) ?
-      PyString_FromString(result) : 0;
+      PyUnicode_FromString(result) : 0;
   }
 #endif
   return robj;
@@ -3712,7 +3712,7 @@ PyString_FromFormat(const char *fmt, ...) {
   va_start(ap, fmt);
   res = vsnprintf(buf, sizeof(buf), fmt, ap);
   va_end(ap);
-  return (res < 0 || res >= (int)sizeof(buf)) ? 0 : PyString_FromString(buf);
+  return (res < 0 || res >= (int)sizeof(buf)) ? 0 : PyUnicode_FromString(buf);
 }
 #endif
 
@@ -4288,7 +4288,7 @@ PySwigObject_format(const char* fmt, PySwigObject *v)
   PyObject *args = PyTuple_New(1);
   if (args) {
     if (PyTuple_SetItem(args, 0, PySwigObject_long(v)) == 0) {
-      PyObject *ofmt = PyString_FromString(fmt);
+      PyObject *ofmt = PyUnicode_FromString(fmt);
       if (ofmt) {
         res = PyString_Format(ofmt,args);
         Py_DECREF(ofmt);
@@ -4355,7 +4355,7 @@ PySwigObject_str(PySwigObject *v)
 {
   char result[SWIG_BUFFER_SIZE];
   return SWIG_PackVoidPtr(result, v->ptr, v->ty->name, sizeof(result)) ?
-    PyString_FromString(result) : 0;
+    PyUnicode_FromString(result) : 0;
 }
 
 SWIGRUNTIME int
@@ -4703,7 +4703,7 @@ PySwigPacked_str(PySwigPacked *v)
   if (SWIG_PackDataName(result, v->pack, v->size, 0, sizeof(result))){
     return PyString_FromFormat("%s%s", result, v->ty->name);
   } else {
-    return PyString_FromString(v->ty->name);
+    return PyUnicode_FromString(v->ty->name);
   }
 }
 
@@ -4849,7 +4849,7 @@ PySwigPacked_UnpackData(PyObject *obj, void *ptr, size_t size)
 SWIGRUNTIMEINLINE PyObject *
 _SWIG_This(void)
 {
-  return PyString_FromString("this");
+  return PyUnicode_FromString("this");
 }
 
 SWIGRUNTIME PyObject *
@@ -5286,7 +5286,7 @@ SWIGRUNTIME swig_type_info *
 SWIG_Python_TypeQuery(const char *type)
 {
   PyObject *cache = SWIG_Python_TypeCache();
-  PyObject *key = PyString_FromString(type);
+  PyObject *key = PyUnicode_FromString(type);
   PyObject *obj = PyDict_GetItem(cache, key);
   swig_type_info *descriptor;
   if (obj) {
