@@ -92,7 +92,7 @@ def expr_to_filename(expr):
     base = 'sc_'
     # 32 chars is enough for unique filenames; too long names don't work for
     # MSVC (see gh-3216).  Don't use md5, gives a FIPS warning.
-    return base + sha256(expr).hexdigest()[:32]
+    return base + sha256(bytes(expr, 'utf-8')).hexdigest()[:32]
 
 
 def unique_file(d,expr):

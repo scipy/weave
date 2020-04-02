@@ -98,8 +98,6 @@ def compiler_exe_path(exe_name):
 def check_sum(file):
     from hashlib import sha256
     try:
-        f = open(file,'r')
-        bytes = f.read(-1)
         with open(file,'rb') as f:
             bytes = f.read(-1)
     except IOError:
