@@ -101,7 +101,6 @@ def py_fib2(a):
 
 import time
 
-
 def recurse_compare(n):
     print('Recursively computing the first %d fibonacci numbers:' % n)
     t1 = time.time()
