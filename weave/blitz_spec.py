@@ -6,7 +6,7 @@
 
     array_info -- for building functions that use numpy arrays
 """
-from __future__ import absolute_import, print_function
+
 
 from . import base_info
 from . import standard_array_spec

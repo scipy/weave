@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function
+
 
 import types
 from .base_spec import base_converter
@@ -218,7 +218,7 @@ class string_converter(common_base_converter):
         self.c_type = 'std::string'
         self.return_type = 'std::string'
         self.to_c_return = "std::string(PyString_AsString(py_obj))"
-        self.matching_types = [types.StringType]
+        self.matching_types = [bytes]
         self.headers.append('<string>')
 
     def c_to_py_code(self):
@@ -247,7 +247,7 @@ class unicode_converter(common_base_converter):
         self.c_type = 'Py_UNICODE*'
         self.return_type = self.c_type
         self.to_c_return = "PyUnicode_AS_UNICODE(py_obj)"
-        self.matching_types = [types.UnicodeType]
+        self.matching_types = [str]
         # self.headers.append('<string>')
 
     def declaration_code(self,templatize=0,inline=0):
@@ -306,7 +306,7 @@ num_to_c_types[type(1)] = 'long'
 num_to_c_types[type(1.)] = 'double'
 num_to_c_types[type(1.+1.j)] = 'std::complex<double> '
 # !! hmmm. The following is likely unsafe...
-num_to_c_types[long] = 'npy_longlong'
+num_to_c_types[int] = 'npy_longlong'
 
 #----------------------------------------------------------------------------
 # Numeric array Python numeric --> C type maps
@@ -351,7 +351,7 @@ class int_converter(scalar_converter):
         self.c_type = 'int'
         self.return_type = 'int'
         self.to_c_return = "(int) PyInt_AsLong(py_obj)"
-        self.matching_types = [types.IntType]
+        self.matching_types = [int]
 
 
 class long_converter(scalar_converter):
@@ -363,7 +363,7 @@ class long_converter(scalar_converter):
         self.c_type = 'longlong'
         self.return_type = 'longlong'
         self.to_c_return = "(longlong) PyLong_AsLongLong(py_obj)"
-        self.matching_types = [types.LongType]
+        self.matching_types = [int]
 
 
 class float_converter(scalar_converter):
@@ -375,7 +375,7 @@ class float_converter(scalar_converter):
         self.c_type = 'double'
         self.return_type = 'double'
         self.to_c_return = "PyFloat_AsDouble(py_obj)"
-        self.matching_types = [types.FloatType]
+        self.matching_types = [float]
 
 
 class complex_converter(scalar_converter):
@@ -387,7 +387,7 @@ class complex_converter(scalar_converter):
         self.return_type = 'std::complex<double>'
         self.to_c_return = "std::complex<double>(PyComplex_RealAsDouble(py_obj),"\
                                                 "PyComplex_ImagAsDouble(py_obj))"
-        self.matching_types = [types.ComplexType]
+        self.matching_types = [complex]
 
 #----------------------------------------------------------------------------
 #
@@ -417,7 +417,7 @@ class list_converter(scxx_converter):
         self.c_type = 'py::list'
         self.return_type = 'py::list'
         self.to_c_return = 'py::list(py_obj)'
-        self.matching_types = [types.ListType]
+        self.matching_types = [list]
         # ref counting handled by py::list
         self.use_ref_count = 0
 
@@ -430,7 +430,7 @@ class tuple_converter(scxx_converter):
         self.c_type = 'py::tuple'
         self.return_type = 'py::tuple'
         self.to_c_return = 'py::tuple(py_obj)'
-        self.matching_types = [types.TupleType]
+        self.matching_types = [tuple]
         # ref counting handled by py::tuple
         self.use_ref_count = 0
 
@@ -443,7 +443,7 @@ class dict_converter(scxx_converter):
         self.c_type = 'py::dict'
         self.return_type = 'py::dict'
         self.to_c_return = 'py::dict(py_obj)'
-        self.matching_types = [types.DictType]
+        self.matching_types = [dict]
         # ref counting handled by py::dict
         self.use_ref_count = 0
 

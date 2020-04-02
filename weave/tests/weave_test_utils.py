@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function
+
 
 import os
 import tempfile
@@ -69,7 +69,7 @@ def cleanup_temp_dir(d):
     This should probably catch some errors.
 
     """
-    files = map(lambda x,d=d: os.path.join(d,x),os.listdir(d))
+    files = list(map(lambda x,d=d: os.path.join(d,x),os.listdir(d)))
     for i in files:
         try:
             if os.path.isdir(i):

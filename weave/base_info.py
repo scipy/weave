@@ -8,9 +8,9 @@
     info_list -- a handy list class for working with multiple
                  info classes at the same time.
 """
-from __future__ import absolute_import, print_function
 
-import UserList
+
+import collections
 
 
 class base_info(object):
@@ -128,7 +128,7 @@ class custom_info(base_info):
         return self._extra_link_args.append(link_arg)
 
 
-class info_list(UserList.UserList):
+class info_list(collections.UserList):
     def get_unique_values(self,attribute):
         all_values = []
         for info in self:

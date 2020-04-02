@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function
+
 
 import parser
 import sys
@@ -45,7 +45,7 @@ def blitz(expr,local_dict=None, global_dict=None,check_size=1,verbose=0,**kw):
 
     # 2. try local cache
     try:
-        results = apply(function_cache[expr],(local_dict,global_dict))
+        results = function_cache[expr](*(local_dict,global_dict))
         return results
     except:
         pass

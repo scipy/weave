@@ -1,6 +1,6 @@
 """ Test refcounting and behavior of SCXX.
 """
-from __future__ import absolute_import, print_function
+
 
 import sys
 
@@ -297,21 +297,21 @@ class TestDictOthers(TestCase):
         a = {}
         a["hello"] = 1
         items = inline_tools.inline("return_val = a.items();",['a'])
-        assert_(items == a.items())
+        assert_(items == list(a.items()))
 
     @dec.slow
     def test_values(self):
         a = {}
         a["hello"] = 1
         values = inline_tools.inline("return_val = a.values();",['a'])
-        assert_(values == a.values())
+        assert_(values == list(a.values()))
 
     @dec.slow
     def test_keys(self):
         a = {}
         a["hello"] = 1
         keys = inline_tools.inline("return_val = a.keys();",['a'])
-        assert_(keys == a.keys())
+        assert_(keys == list(a.keys()))
 
     @dec.slow
     def test_update(self):

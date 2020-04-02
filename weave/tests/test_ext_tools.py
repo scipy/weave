@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function
+
 
 import types
 
@@ -135,7 +135,7 @@ class TestAssignVariableTypes(TestCase):
         bd.name, bd.var_type, bd.dims = 'b', float64, 1
 
         cd = c_spec.int_converter()
-        cd.name, cd.var_type = 'c', types.IntType
+        cd.name, cd.var_type = 'c', int
         desired = [ad,bd,cd]
         assert_equal(actual,desired)
 

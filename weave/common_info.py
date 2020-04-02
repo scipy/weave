@@ -4,7 +4,7 @@
         swig pointer (old style) conversion support
 
 """
-from __future__ import absolute_import, print_function
+
 
 from . import base_info
 

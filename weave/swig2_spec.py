@@ -74,7 +74,7 @@ to consider when using the swig2_converter.
 
 Prabhu Ramachandran <prabhu_r@users.sf.net>
 """
-from __future__ import absolute_import, print_function
+
 
 import sys
 from .c_spec import common_base_converter

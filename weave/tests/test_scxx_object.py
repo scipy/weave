@@ -1,9 +1,9 @@
 """ Test refcounting and behavior of SCXX.
 """
-from __future__ import absolute_import, print_function
+
 
 import sys
-from UserList import UserList
+from collections import UserList
 
 from numpy.testing import (TestCase, dec, assert_equal, assert_, assert_raises,
                            run_module_suite)
@@ -90,8 +90,8 @@ class TestObjectPrint(TestCase):
 
     @dec.slow
     def test_stringio(self):
-        import cStringIO
-        file_imposter = cStringIO.StringIO()
+        import io
+        file_imposter = io.StringIO()
         code = """
                py::object val = "how now brown cow";
                val.print(file_imposter);

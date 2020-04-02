@@ -16,13 +16,13 @@
     does this by converting a pythonxx.lib file to a libpythonxx.a file.
     Note that you need write access to the pythonxx/lib directory to do this.
 """
-from __future__ import absolute_import, print_function
+
 
 import sys
 import os
 import time
 import tempfile
-import commands
+import subprocess
 import subprocess
 import warnings
 
@@ -407,7 +407,7 @@ if os.name == 'nt':
         text = p.stdout.read()
         return 0, text
 else:
-    run_command = commands.getstatusoutput
+    run_command = subprocess.getstatusoutput
 
 
 def configure_temp_dir(temp_dir=None):

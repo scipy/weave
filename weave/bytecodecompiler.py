@@ -6,13 +6,14 @@
 #**************************************************************************#
 #*  *#
 #**************************************************************************#
-from __future__ import absolute_import, print_function
+
 
 import sys
 import inspect
 from . import accelerate_tools
 
 from numpy.testing import assert_
+import collections
 
 ##################################################################
 #                       CLASS __DESCRIPTOR                       #
@@ -156,7 +157,7 @@ byName = {
 # Build one in the reverse sense
 # -----------------------------------------------
 byOpcode = {}
-for name, op in byName.items():
+for name, op in list(byName.items()):
     byOpcode[op] = name
     del name
     del op
@@ -189,7 +190,7 @@ def opcodize(s):
 def listing(f):
     "Pretty print the internals of your function"
     assert_(inspect.isfunction(f))
-    filename = f.func_code.co_filename
+    filename = f.__code__.co_filename
     try:
         lines = open(filename).readlines()
     except:
@@ -197,7 +198,7 @@ def listing(f):
     pc = 0
     s = ''
     lastLine = None
-    for op,arg,name in opcodize(f.func_code.co_code):
+    for op,arg,name in opcodize(f.__code__.co_code):
         if lines and name == 'SET_LINENO':
             source = lines[arg-1][:-1]
             while lastLine and lastLine < arg-1:
@@ -237,9 +238,9 @@ class ByteCodeMeaning(object):
         name = byOpcode[opcode]
         method = getattr(self,name)
         if argument is None:
-            return apply(method,(pc,))
+            return method(*(pc,))
         else:
-            return apply(method,(pc,argument,))
+            return method(*(pc,argument,))
 
     def evaluate(self, pc,code):
         next, opcode,argument = self.fetch(pc,code)
@@ -701,14 +702,14 @@ class CXXCoder(ByteCodeMeaning):
     ##################################################################
     def __init__(self,function,signature,name=None):
         assert_(inspect.isfunction(function))
-        assert_(not function.func_defaults,
+        assert_(not function.__defaults__,
                 msg="Function cannot have default args (yet)")
         if name is None:
             name = function.__name__
         self.name = name
         self.function = function
         self.signature = signature
-        self.codeobject = function.func_code
+        self.codeobject = function.__code__
         self.__uid = 0  # Builds temps
         self.__indent = 1
         return
@@ -991,7 +992,7 @@ class CXXCoder(ByteCodeMeaning):
         var_name = self.codeobject.co_names[var_num]
 
         # First, figure out who owns this global
-        myHash = id(self.function.func_globals)
+        myHash = id(self.function.__globals__)
         for module_name in sys.modules:
             module = sys.modules[module_name]
             if module and id(module.__dict__) == myHash:
@@ -1213,14 +1214,14 @@ class CXXCoder(ByteCodeMeaning):
     ##################################################################
     def LOAD_GLOBAL(self,pc,var_num):
         # Figure out the name and load it
-        import __builtin__
+        import builtins
         try:
-            F = self.function.func_globals[self.codeobject.co_names[var_num]]
+            F = self.function.__globals__[self.codeobject.co_names[var_num]]
         except:
-            F = __builtin__.__dict__[self.codeobject.co_names[var_num]]
+            F = builtins.__dict__[self.codeobject.co_names[var_num]]
 
         # For functions, we see if we know about this function
-        if callable(F):
+        if isinstance(F, collections.Callable):
             self.push(F,type(F))
             return
 

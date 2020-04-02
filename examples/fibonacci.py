@@ -9,7 +9,7 @@
 #  speed in c: 5.00000715256e-005
 #  speed up: 10.42
 # fib(30) 832040 832040 832040 832040
-from __future__ import absolute_import, print_function
+
 
 import sys
 sys.path.insert(0,'..')

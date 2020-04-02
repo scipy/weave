@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function
+
 
 import os
 import sys
@@ -451,7 +451,7 @@ class ListConverter(TestCase):
         mod_name = 'list_speed'+self.compiler
         mod_name = unique_mod(test_dir,mod_name)
         mod = ext_tools.ext_module(mod_name)
-        a = range(1000000)
+        a = list(range(1000000))
         code = """
                int v, sum = 0;
                for(int i = 0; i < a.len(); i++)

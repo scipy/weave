@@ -3,7 +3,7 @@
 # from weave import ext_tools
 
 # use the following so that development version is used.
-from __future__ import absolute_import, print_function
+
 
 import sys
 sys.path.insert(0,'..')

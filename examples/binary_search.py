@@ -14,7 +14,7 @@
 # Note -- really need to differentiate between conversion errors and
 # run time errors.  This would reduce useless compiles and provide a
 # more intelligent control of things.
-from __future__ import absolute_import, print_function
+
 
 import sys
 sys.path.insert(0,'..')
@@ -223,7 +223,7 @@ def search_compare(a,n):
 if __name__ == "__main__":
     # note bisect returns index+1 compared to other algorithms
     m = 100000
-    a = range(m)
+    a = list(range(m))
     n = 50000
     search_compare(a,n)
     print('search(a,3450)', c_int_search(a,3450), py_int_search(a,3450), bisect(a,3450))

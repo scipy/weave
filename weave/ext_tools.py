@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function
+
 
 import os
 import sys
@@ -96,7 +96,7 @@ class ext_function_from_specs(object):
 
     def arg_cleanup_code(self):
         arg_strings = []
-        have_cleanup = filter(lambda x:x.cleanup_code(),self.arg_specs)
+        have_cleanup = [x for x in self.arg_specs if x.cleanup_code()]
         for arg in have_cleanup:
             code = "if(%s)\n" % arg.init_flag()
             code += "{\n"
@@ -259,12 +259,12 @@ extern "C" {
 
     def warning_code(self):
         all_warnings = self.build_information().warnings()
-        w = map(lambda x: "#pragma warning(%s)\n" % x,all_warnings)
+        w = ["#pragma warning(%s)\n" % x for x in all_warnings]
         return '#ifndef __GNUC__\n' + ''.join(w) + '\n#endif'
 
     def header_code(self):
         h = self.get_headers()
-        h = map(lambda x: '#include ' + x + '\n',h)
+        h = ['#include ' + x + '\n' for x in h]
         return ''.join(h) + '\n'
 
     def support_code(self):
@@ -325,7 +325,7 @@ extern "C" {
         source_files = {}
         for i in _source_files:
             source_files[i] = None
-        source_files = source_files.keys()
+        source_files = list(source_files.keys())
 
         # add internally specified macros, includes, etc. to the key words
         # values of the same names so that distutils will use them.
@@ -476,7 +476,7 @@ def indent(st,spaces):
 def format_error_msg(errors):
     #minimum effort right now...
     import pprint
-    import cStringIO
-    msg = cStringIO.StringIO()
+    import io
+    msg = io.StringIO()
     pprint.pprint(errors,msg)
     return msg.getvalue()

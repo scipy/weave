@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function
+
 
 from numpy import ones, ndarray, array, asarray, concatenate, zeros, shape, \
          alltrue, equal, divide, arccos, arcsin, arctan, cos, cosh, \
@@ -7,7 +7,7 @@ from numpy import ones, ndarray, array, asarray, concatenate, zeros, shape, \
 
 import sys
 
-numericTypes = (int, long, float, complex)
+numericTypes = (int, int, float, complex)
 
 
 def isnumeric(t):
@@ -43,13 +43,13 @@ def check_expr(expr,local_vars,global_vars={}):
     values = {}
 
     # first handle the globals
-    for var,val in global_vars.items():
+    for var,val in list(global_vars.items()):
         if isinstance(val, ndarray):
             values[var] = dummy_array(val,name=var)
         elif isnumeric(val):
             values[var] = val
     # now handle the locals
-    for var,val in local_vars.items():
+    for var,val in list(local_vars.items()):
         if isinstance(val, ndarray):
             values[var] = dummy_array(val,name=var)
         if isnumeric(val):
@@ -240,7 +240,7 @@ class dummy_array(object):
                 #    step = step.value
                 if beg is None:
                     beg = 0
-                if end == sys.maxint or end is None:
+                if end == sys.maxsize or end is None:
                     end = dim_len
                 if step is None:
                     step = 1

@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function
+
 
 import time
 
@@ -35,7 +35,7 @@ def list_append_c(a,Na):
 
 
 def list_append_py(a,Na):
-    for i in xrange(Na):
+    for i in range(Na):
         a.append(i)
 
 

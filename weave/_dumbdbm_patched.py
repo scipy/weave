@@ -20,7 +20,7 @@ is read when the database is opened, and some updates rewrite the whole index)
 - support opening for read-only (flag = 'm')
 
 """
-from __future__ import division, print_function, absolute_import
+
 
 import sys
 _os = __import__('os')
@@ -30,7 +30,7 @@ PY3 = sys.version_info[0] == 3
 if PY3:
     string_types = str,
 else:
-    string_types = basestring,
+    string_types = str,
 
 _open = open
 
@@ -79,7 +79,7 @@ class _Database(object):
         except _os.error:
             pass
         f = _open(self._dirfile, 'w')
-        for key, (pos, siz) in self._index.items():
+        for key, (pos, siz) in list(self._index.items()):
             f.write("%s, (%s, %s)\n" % (repr(key), repr(pos), repr(siz)))
         f.close()
 

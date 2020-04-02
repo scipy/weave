@@ -4,7 +4,7 @@
     keep the object files and shared libaries straight when
     multiple platforms share the same file system.
 """
-from __future__ import absolute_import, print_function
+
 
 import os
 import sys

@@ -4,7 +4,7 @@ converters and the other shows how it can be done without using blitz
 by accessing the numpy array data directly.
 
 """
-from __future__ import absolute_import, print_function
+
 
 import weave
 from weave import converters

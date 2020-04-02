@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function
+
 
 """ Implements a fast replacement for calling DrawLines with an array as an
     argument.  It uses weave, so you'll need that installed.
@@ -157,10 +157,10 @@ if __name__ == '__main__':
                 if phase > 2*pi:
                     phase = 0
                     try:
-                        pen = pens.next()
+                        pen = next(pens)
                     except:
                         pens = iter([red_pen,white_pen,blue_pen])
-                        pen = pens.next()
+                        pen = next(pens)
                     dc.SetPen(pen)
                 polyline(dc,pt_copy)
                 next_y = (h/2.*sin(x*ang-phase)+h/2.).astype(int32)
@@ -177,10 +177,10 @@ if __name__ == '__main__':
                 if phase > 2*pi:
                     phase = 0
                     try:
-                        pen = pens.next()
+                        pen = next(pens)
                     except:
                         pens = iter([red_pen,white_pen,blue_pen])
-                        pen = pens.next()
+                        pen = next(pens)
                     dc.SetPen(pen)
                 dc.DrawLines(pt_copy)
                 next_y = (h/2.*sin(x*ang-phase)+h/2.).astype(int32)

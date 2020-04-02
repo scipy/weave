@@ -30,7 +30,7 @@
     along with the path information to its module, are also stored in a
     persistent catalog for future use by python sessions.
 """
-from __future__ import absolute_import, print_function
+
 
 import os
 import sys
@@ -45,7 +45,7 @@ try:
     # installs (due to known bsddb issues).  While importing shelve doesn't
     # fail, it won't work correctly if dbhash import fails.  So in that case we
     # want to use _dumb_shelve
-    import dbhash
+    import dbm.bsd
     import shelve
     dumb = 0
 except ImportError:
@@ -63,11 +63,11 @@ def getmodule(object):
     value = inspect.getmodule(object)
     if value is None:
         # walk trough all modules looking for function
-        for name,mod in sys.modules.items():
+        for name,mod in list(sys.modules.items()):
             # try except used because of some comparison failures
             # in wxPoint code.  Need to review this
             try:
-                if mod and object in mod.__dict__.values():
+                if mod and object in list(mod.__dict__.values()):
                     value = mod
                     # if it is a built-in module, keep looking to see
                     # if a non-builtin also has it.  Otherwise quit and
@@ -107,7 +107,7 @@ def unique_file(d,expr):
     """
     files = os.listdir(d)
     base = expr_to_filename(expr)
-    for i in xrange(1000000):
+    for i in range(1000000):
         fname = base + repr(i)
         if not (fname+'.cpp' in files or
                 fname+'.o' in files or
@@ -594,8 +594,8 @@ class catalog(object):
             However, all will be valid locations for a catalog
             to be created (if you have write permission).
         """
-        files = map(catalog_path,self.build_search_order())
-        files = filter(lambda x: x is not None,files)
+        files = list(map(catalog_path,self.build_search_order()))
+        files = [x for x in files if x is not None]
         return files
 
     def get_existing_files(self):
@@ -632,7 +632,7 @@ class catalog(object):
             from os import access, F_OK, W_OK
             return (access(x,F_OK) and access(x,W_OK) or
                     access(os.path.dirname(x),W_OK))
-        writable = filter(file_test,files)
+        writable = list(filter(file_test,files))
         if writable:
             file = writable[0]
         else:

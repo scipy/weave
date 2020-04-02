@@ -12,7 +12,7 @@
 #     speed in c (scxx): 0.200000047684
 #     speed up: 1.25
 #    [0, 1, 2, 3, 4]
-from __future__ import absolute_import, print_function
+
 
 import sys
 sys.path.insert(0,'..')
@@ -60,7 +60,7 @@ def c_sort2(adict):
 
 
 def sortedDictValues1(adict):
-    items = adict.items()
+    items = list(adict.items())
     items.sort()
     return [value for key, value in items]
 
@@ -70,7 +70,7 @@ def sortedDictValues1(adict):
 
 
 def sortedDictValues2(adict):
-    keys = adict.keys()
+    keys = list(adict.keys())
     keys.sort()
     return [adict[key] for key in keys]
 
@@ -79,9 +79,9 @@ def sortedDictValues2(adict):
 
 
 def sortedDictValues3(adict):
-    keys = adict.keys()
+    keys = list(adict.keys())
     keys.sort()
-    return map(adict.get, keys)
+    return list(map(adict.get, keys))
 
 import time
 
@@ -118,7 +118,7 @@ def sort_compare(a,n):
 def setup_dict(m):
     " does insertion order matter?"
     import random
-    a = range(m)
+    a = list(range(m))
     d = {}
     for i in range(m):
         key = random.choice(a)

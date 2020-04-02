@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function
+
 
 
 class base_converter(object):
@@ -84,11 +84,11 @@ class base_converter(object):
     def variable_as_string(self):
         return '"' + self.name + '"'
 
-import UserList
+import collections
 from . import base_info
 
 
-class arg_spec_list(UserList.UserList):
+class arg_spec_list(collections.UserList):
     def build_information(self):
         all_info = base_info.info_list()
         for i in self:
@@ -96,25 +96,25 @@ class arg_spec_list(UserList.UserList):
         return all_info
 
     def py_references(self):
-        return map(lambda x: x.py_reference(),self)
+        return [x.py_reference() for x in self]
 
     def py_pointers(self):
-        return map(lambda x: x.py_pointer(),self)
+        return [x.py_pointer() for x in self]
 
     def py_variables(self):
-        return map(lambda x: x.py_variable(),self)
+        return [x.py_variable() for x in self]
 
     def references(self):
-        return map(lambda x: x.py_reference(),self)
+        return [x.py_reference() for x in self]
 
     def pointers(self):
-        return map(lambda x: x.pointer(),self)
+        return [x.pointer() for x in self]
 
     def variables(self):
-        return map(lambda x: x.variable(),self)
+        return [x.variable() for x in self]
 
     def init_flags(self):
-        return map(lambda x: x.init_flag(),self)
+        return [x.init_flag() for x in self]
 
     def variable_as_strings(self):
-        return map(lambda x: x.variable_as_string(),self)
+        return [x.variable_as_string() for x in self]
