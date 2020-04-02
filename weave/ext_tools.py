@@ -295,7 +295,7 @@ extern "C" {
         code = 'PyMODINIT_FUNC init%s(void)\n' \
                '{\n' \
                '%s' \
-               '    (void) Py_InitModule3("%s", compiled_methods);\n' \
+               '    (void) Py_InitModule("%s", compiled_methods);\n' \
                '}\n' % (self.name,init_code,self.name)
         return code
 

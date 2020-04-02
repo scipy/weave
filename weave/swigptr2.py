@@ -2917,7 +2917,7 @@ SWIGRUNTIME void
 SWIG_Python_SetModule(swig_module_info *swig_module) {
   static PyMethodDef swig_empty_runtime_method_table[] = { {NULL, NULL, 0, NULL} };/* Sentinel */
 
-  PyObject *module = Py_InitModule3((char*)"swig_runtime_data" SWIG_RUNTIME_VERSION,
+  PyObject *module = Py_InitModule((char*)"swig_runtime_data" SWIG_RUNTIME_VERSION,
                                    swig_empty_runtime_method_table);
   PyObject *pointer = PyCObject_FromVoidPtr((void *) swig_module, NULL);
   if (pointer && module) {
@@ -5265,7 +5265,7 @@ SWIGRUNTIME void
 SWIG_Python_SetModule(swig_module_info *swig_module) {
   static PyMethodDef swig_empty_runtime_method_table[] = { {NULL, NULL, 0, NULL} };/* Sentinel */
 
-  PyObject *module = Py_InitModule3((char*)"swig_runtime_data" SWIG_RUNTIME_VERSION,
+  PyObject *module = Py_InitModule((char*)"swig_runtime_data" SWIG_RUNTIME_VERSION,
                                    swig_empty_runtime_method_table);
   PyObject *pointer = PyCObject_FromVoidPtr((void *) swig_module, SWIG_Python_DestroyModule);
   if (pointer && module) {
