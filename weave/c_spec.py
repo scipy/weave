@@ -3,6 +3,7 @@
 import types
 from .base_spec import base_converter
 from . import base_info
+import io
 
 #----------------------------------------------------------------------------
 # C++ code template for converting code from python objects to C++ objects
@@ -273,7 +274,8 @@ class file_converter(common_base_converter):
         self.return_type = self.c_type
         self.to_c_return = "PyFile_AsFile(py_obj)"
         self.headers = ['<stdio.h>']
-        self.matching_types = [types.FileType]
+        # self.matching_types = [types.FileType]
+        self.matching_types = [io.IOBase]
 
     def c_to_py_code(self):
         # !! Need to dedent returned code.
@@ -447,22 +449,22 @@ class dict_converter(scxx_converter):
         # ref counting handled by py::dict
         self.use_ref_count = 0
 
-#----------------------------------------------------------------------------
-# Instance Converter
-#----------------------------------------------------------------------------
+##----------------------------------------------------------------------------
+## Instance Converter
+##----------------------------------------------------------------------------
 
 
-class instance_converter(scxx_converter):
-    def init_info(self):
-        scxx_converter.init_info(self)
-        self.type_name = 'instance'
-        self.check_func = 'PyInstance_Check'
-        self.c_type = 'py::object'
-        self.return_type = 'py::object'
-        self.to_c_return = 'py::object(py_obj)'
-        self.matching_types = [types.InstanceType]
-        # ref counting handled by py::object
-        self.use_ref_count = 0
+#class instance_converter(scxx_converter):
+#    def init_info(self):
+#        scxx_converter.init_info(self)
+#        self.type_name = 'instance'
+#        self.check_func = 'PyInstance_Check'
+#        self.c_type = 'py::object'
+#        self.return_type = 'py::object'
+#        self.to_c_return = 'py::object(py_obj)'
+#        self.matching_types = [types.InstanceType]
+#        # ref counting handled by py::object
+#        self.use_ref_count = 0
 
 #----------------------------------------------------------------------------
 # Catchall Converter

@@ -1,0 +1,3 @@
+[submodule "weave/py3c"]
+	path = weave/py3c
+	url = git@github.com:encukou/py3c.git
