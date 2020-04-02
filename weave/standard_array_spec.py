@@ -124,7 +124,7 @@ numpy_size_handler x__numpy_size_handler = numpy_size_handler();
 
 numeric_init_code = \
 """
-Py_Initialize();
+// Py_Initialize();
 import_array();
 PyImport_ImportModule("numpy");
 """

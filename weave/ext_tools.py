@@ -210,6 +210,7 @@ extern "C" {
             self.support_code(),
             self.function_code(),
             self.python_function_definition_code(),
+            self.python_module_definition_code(),
             self.module_init_code(),
             """\
 #ifdef __CPLUSCPLUS__
@@ -289,13 +290,25 @@ extern "C" {
                '};\n'
         return code % (all_definition_code)
 
+    def python_module_definition_code(self):
+        module_name = self.name
+        code = 'static struct PyModuleDef %s = \n' \
+               '{\n' \
+               '    PyModuleDef_HEAD_INIT,\n' \
+               '    "%s",\n' \
+               '    NULL,' \
+               '    -1,\n' \
+               '    compiled_methods\n' \
+               '};\n'
+        return code % (module_name, module_name)
+
     def module_init_code(self):
         init_code_list = self.build_information().module_init_code()
         init_code = indent(''.join(init_code_list),4)
-        code = 'PyMODINIT_FUNC init%s(void)\n' \
+        code = 'PyMODINIT_FUNC PyInit_%s(void)\n' \
                '{\n' \
                '%s' \
-               '    (void) Py_InitModule("%s", compiled_methods);\n' \
+               '    (void) PyModule_Create(&%s);\n' \
                '}\n' % (self.name,init_code,self.name)
         return code
 

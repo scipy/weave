@@ -112,7 +112,7 @@ def recurse_compare(n):
     print(' speed in python:', t2 - t1)
 
     # load into cache
-    c_fib1(i)
+    c_fib1(1)
     t1 = time.time()
     for i in range(n):
         c_fib1(i)

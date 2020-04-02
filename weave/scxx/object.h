@@ -416,10 +416,14 @@ public:
   // !! NOT TESTED
   //-------------------------------------------------------------------------
   int cmp(const object& other) const {
-    int rslt = 0;
-    int rc = PyObject_Cmp(_obj, other, &rslt);
-    if (rc == -1)
-      fail(PyExc_TypeError, "cannot make the comparison");
+    // int rslt = 0;
+    // int rc = PyObject_Cmp(_obj, other, &rslt);
+    // if (rc == -1)
+    //     fail(PyExc_TypeError, "cannot make the comparison");
+
+    int rslt = PyObject_RichCompareBool(_obj, other, Py_EQ);
+    if (rslt == -1)
+        fail(PyExc_TypeError, "cannot make the comparison");
     return rslt;
   };  
   int cmp(int other) const {
@@ -601,7 +605,7 @@ public:
 
   // !! Not Tested  
   object unicode() const {
-    object result = PyObject_Unicode(_obj);
+    object result = PyObject_Str(_obj);
     if (!(PyObject*)result)
         throw 1;
     lose_ref(result);    
