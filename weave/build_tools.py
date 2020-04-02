@@ -215,6 +215,7 @@ def build_extension(module_path,compiler_name='',build_dir=None,
     from numpy.distutils.core import setup
     from numpy.distutils.log import set_verbosity
     set_verbosity(-1)
+    verbose = 2
 
     # this is a screwy trick to get rid of a ton of warnings on Unix
     import distutils.sysconfig
