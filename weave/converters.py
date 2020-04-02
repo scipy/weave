@@ -14,8 +14,8 @@ default = [c_spec.int_converter(),
            c_spec.string_converter(),
            c_spec.list_converter(),
            c_spec.dict_converter(),
-           c_spec.tuple_converter(),
-           c_spec.file_converter(),]
+           c_spec.tuple_converter(),]
+           # c_spec.file_converter(),]
            # c_spec.instance_converter(),]
 
 #----------------------------------------------------------------------------

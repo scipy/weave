@@ -265,30 +265,30 @@ class unicode_converter(common_base_converter):
 #----------------------------------------------------------------------------
 
 
-class file_converter(common_base_converter):
-    def init_info(self):
-        common_base_converter.init_info(self)
-        self.type_name = 'file'
-        self.check_func = 'PyFile_Check'
-        self.c_type = 'FILE*'
-        self.return_type = self.c_type
-        self.to_c_return = "PyFile_AsFile(py_obj)"
-        self.headers = ['<stdio.h>']
-        # self.matching_types = [types.FileType]
-        self.matching_types = [io.IOBase]
+# class file_converter(common_base_converter):
+#     def init_info(self):
+#         common_base_converter.init_info(self)
+#         self.type_name = 'file'
+#         self.check_func = 'PyFile_Check'
+#         self.c_type = 'FILE*'
+#         self.return_type = self.c_type
+#         self.to_c_return = "PyFile_AsFile(py_obj)"
+#         self.headers = ['<stdio.h>']
+#         # self.matching_types = [types.FileType]
+#         self.matching_types = [io.IOBase]
 
-    def c_to_py_code(self):
-        # !! Need to dedent returned code.
-        code = """
-               PyObject* file_to_py(FILE* file, const char* name,
-                                    const char* mode)
-               {
-                   return (PyObject*) PyFile_FromFile(file,
-                     const_cast<char*>(name),
-                     const_cast<char*>(mode), fclose);
-               }
-               """
-        return code
+#     def c_to_py_code(self):
+#         # !! Need to dedent returned code.
+#         code = """
+#                PyObject* file_to_py(FILE* file, const char* name,
+#                                     const char* mode)
+#                {
+#                    return (PyObject*) PyFile_FromFile(file,
+#                      const_cast<char*>(name),
+#                      const_cast<char*>(mode), fclose);
+#                }
+#                """
+#         return code
 
 #----------------------------------------------------------------------------
 #
