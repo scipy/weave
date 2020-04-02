@@ -13,7 +13,7 @@
 
 import sys
 sys.path.insert(0,'..')
-import ext_tools
+import weave.ext_tools as ext_tools
 
 
 def build_fibonacci():
