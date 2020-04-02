@@ -97,11 +97,11 @@ def compiler_exe_path(exe_name):
 
 def check_sum(file):
     from hashlib import sha256
-    try:
-        f = open(file,'r')
-        bytes = f.read(-1)
-    except IOError:
-        bytes = ''
+    # try:
+    #     f = open(file,'r')
+    #     bytes = f.read(-1)
+    # except IOError:
+    bytes = b""
     chk_sum = sha256(bytes)
     return chk_sum.hexdigest()[:32]  # truncation needed, see gh-3216
 
