@@ -5,6 +5,9 @@ from .base_spec import base_converter
 from . import base_info
 import io
 
+import io 
+import sys
+
 #----------------------------------------------------------------------------
 # C++ code template for converting code from python objects to C++ objects
 #
@@ -80,6 +83,7 @@ class common_base_converter(base_converter):
 
     def init_info(self):
         self.matching_types = []
+        self.preheader_defines = []
         self.headers = []
         self.include_dirs = []
         self.libraries = []
@@ -102,6 +106,8 @@ class common_base_converter(base_converter):
 
     def generate_build_info(self):
         info = self.info_object()
+        for (a,b) in self.preheader_defines:
+            info.add_preheader_define(a,b)
         for header in self.headers:
             info.add_header(header)
         for d in self.include_dirs:
@@ -166,9 +172,14 @@ class common_base_converter(base_converter):
         return simple_c_to_py_template % self.template_vars()
 
     def declaration_code(self,templatize=0,inline=0):
-        code = '%(py_var)s = %(var_lookup)s;\n'   \
-               '%(c_type)s %(name)s = %(var_convert)s;\n' %  \
-               self.template_vars(inline=inline)
+        template_vars = self.template_vars(inline=inline)
+        if template_vars['py_var'] != template_vars['var_lookup']:
+            code = '%(py_var)s = %(var_lookup)s;\n'   \
+                   '%(c_type)s %(name)s = %(var_convert)s;\n' %  \
+                   template_vars
+        else:
+            code = '%(c_type)s %(name)s = %(var_convert)s;\n' %  \
+                   template_vars
         return code
 
     def cleanup_code(self):
@@ -183,15 +194,8 @@ class common_base_converter(base_converter):
         msg = "(file:: name: %s)" % self.name
         return msg
 
-    def __cmp__(self,other):
-        # only works for equal
-        result = -1
-        try:
-            result = cmp(self.name,other.name) or \
-                     cmp(self.__class__, other.__class__)
-        except AttributeError:
-            pass
-        return result
+    def __eq__(self,other):
+        return self.name == other.name and self.__class__ == other.__class__
 
 #----------------------------------------------------------------------------
 # Module Converter
@@ -200,7 +204,7 @@ class common_base_converter(base_converter):
 
 class module_converter(common_base_converter):
     def init_info(self):
-        common_base_converter.init_info(self)
+        super().init_info()
         self.type_name = 'module'
         self.check_func = 'PyModule_Check'
         # probably should test for callable classes here also.
@@ -213,13 +217,13 @@ class module_converter(common_base_converter):
 
 class string_converter(common_base_converter):
     def init_info(self):
-        common_base_converter.init_info(self)
+        super().init_info()
         self.type_name = 'string'
         self.check_func = 'PyUnicode_Check'
         self.c_type = 'std::string'
         self.return_type = 'std::string'
-        self.to_c_return = "std::string(_PyUnicode_AsString(py_obj))"
-        self.matching_types = [bytes]
+        self.to_c_return = "std::string(PyUnicode_AsUTF8(py_obj))"
+        self.matching_types = [str]
         self.headers.append('<string>')
 
     def c_to_py_code(self):
@@ -231,64 +235,6 @@ class string_converter(common_base_converter):
                }
                """
         return code
-
-#----------------------------------------------------------------------------
-# Unicode Converter
-#----------------------------------------------------------------------------
-
-
-class unicode_converter(common_base_converter):
-    def init_info(self):
-        common_base_converter.init_info(self)
-        self.type_name = 'unicode'
-        self.check_func = 'PyUnicode_Check'
-        # This isn't supported by gcc 2.95.3 -- MSVC works fine with it.
-        # self.c_type = 'std::wstring'
-        # self.to_c_return = "std::wstring(PyUnicode_AS_UNICODE(py_obj))"
-        self.c_type = 'Py_UNICODE*'
-        self.return_type = self.c_type
-        self.to_c_return = "PyUnicode_AS_UNICODE(py_obj)"
-        self.matching_types = [str]
-        # self.headers.append('<string>')
-
-    def declaration_code(self,templatize=0,inline=0):
-        # since wstring doesn't seem to work everywhere, we need to provide
-        # the length variable Nxxx for the unicode string xxx.
-        code = '%(py_var)s = %(var_lookup)s;\n'                     \
-               '%(c_type)s %(name)s = %(var_convert)s;\n'           \
-               'int N%(name)s = PyUnicode_GET_SIZE(%(py_var)s);\n'  \
-               % self.template_vars(inline=inline)
-
-        return code
-#----------------------------------------------------------------------------
-# File Converter
-#----------------------------------------------------------------------------
-
-
-# class file_converter(common_base_converter):
-#     def init_info(self):
-#         common_base_converter.init_info(self)
-#         self.type_name = 'file'
-#         self.check_func = 'PyFile_Check'
-#         self.c_type = 'FILE*'
-#         self.return_type = self.c_type
-#         self.to_c_return = "PyFile_AsFile(py_obj)"
-#         self.headers = ['<stdio.h>']
-#         # self.matching_types = [types.FileType]
-#         self.matching_types = [io.IOBase]
-
-#     def c_to_py_code(self):
-#         # !! Need to dedent returned code.
-#         code = """
-#                PyObject* file_to_py(FILE* file, const char* name,
-#                                     const char* mode)
-#                {
-#                    return (PyObject*) PyFile_FromFile(file,
-#                      const_cast<char*>(name),
-#                      const_cast<char*>(mode), fclose);
-#                }
-#                """
-#         return code
 
 #----------------------------------------------------------------------------
 #
@@ -307,8 +253,6 @@ num_to_c_types = {}
 num_to_c_types[type(1)] = 'long'
 num_to_c_types[type(1.)] = 'double'
 num_to_c_types[type(1.+1.j)] = 'std::complex<double> '
-# !! hmmm. The following is likely unsafe...
-num_to_c_types[int] = 'npy_longlong'
 
 #----------------------------------------------------------------------------
 # Numeric array Python numeric --> C type maps
@@ -337,7 +281,7 @@ num_to_c_types['Q'] = 'npy_ulonglong'
 
 class scalar_converter(common_base_converter):
     def init_info(self):
-        common_base_converter.init_info(self)
+        super().init_info()
         self.warnings = ['disable: 4275', 'disable: 4101']
         self.headers = ['<complex>','<math.h>']
         self.use_ref_count = 0
@@ -345,15 +289,16 @@ class scalar_converter(common_base_converter):
 # This has to be int for SCXX to work.
 
 
-class int_converter(scalar_converter):
-    def init_info(self):
-        scalar_converter.init_info(self)
-        self.type_name = 'int'
-        self.check_func = 'PyInt_Check'
-        self.c_type = 'int'
-        self.return_type = 'int'
-        self.to_c_return = "(int) PyInt_AsLong(py_obj)"
-        self.matching_types = [int]
+if sys.version_info.major < 3:
+    class int_converter(scalar_converter):
+        def init_info(self):
+            scalar_converter.init_info(self)
+            self.type_name = 'int'
+            self.check_func = 'PyInt_Check'
+            self.c_type = 'int'
+            self.return_type = 'int'
+            self.to_c_return = "(int) PyInt_AsLong(py_obj)"
+            self.matching_types = [int]
 
 
 class long_converter(scalar_converter):
@@ -362,9 +307,9 @@ class long_converter(scalar_converter):
         # !! long to int conversion isn't safe!
         self.type_name = 'long'
         self.check_func = 'PyLong_Check'
-        self.c_type = 'longlong'
-        self.return_type = 'longlong'
-        self.to_c_return = "(longlong) PyLong_AsLongLong(py_obj)"
+        self.c_type = 'long'
+        self.return_type = 'long'
+        self.to_c_return = "(long) PyLong_AsLong(py_obj)"
         self.matching_types = [int]
 
 
@@ -404,11 +349,12 @@ scxx_dir = os.path.join(local_dir,'scxx')
 
 class scxx_converter(common_base_converter):
     def init_info(self):
-        common_base_converter.init_info(self)
+        super().init_info()
         self.headers = ['"py3c/include/py3c.h"', '"scxx/object.h"','"scxx/list.h"','"scxx/tuple.h"',
                         '"scxx/dict.h"','<iostream>']
         self.include_dirs = [local_dir,scxx_dir]
         self.sources = [os.path.join(scxx_dir,'weave_imp.cpp'),]
+        self.extra_compile_args = ['-std=c++0x']
 
 
 class list_converter(scxx_converter):
@@ -448,23 +394,6 @@ class dict_converter(scxx_converter):
         self.matching_types = [dict]
         # ref counting handled by py::dict
         self.use_ref_count = 0
-
-##----------------------------------------------------------------------------
-## Instance Converter
-##----------------------------------------------------------------------------
-
-
-#class instance_converter(scxx_converter):
-#    def init_info(self):
-#        scxx_converter.init_info(self)
-#        self.type_name = 'instance'
-#        self.check_func = 'PyInstance_Check'
-#        self.c_type = 'py::object'
-#        self.return_type = 'py::object'
-#        self.to_c_return = 'py::object(py_obj)'
-#        self.matching_types = [types.InstanceType]
-#        # ref counting handled by py::object
-#        self.use_ref_count = 0
 
 #----------------------------------------------------------------------------
 # Catchall Converter

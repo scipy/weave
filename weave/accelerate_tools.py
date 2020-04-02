@@ -95,9 +95,9 @@ class Basic_Number(Basic):
 
 class Integer(Basic_Number):
     cxxtype = "long"
-    checker = "PyInt_Check"
-    inbounder = "PyInt_AsLong"
-    outbounder = "PyInt_FromLong"
+    checker = "PyLong_Check"
+    inbounder = "PyLong_AsLong"
+    outbounder = "PyLong_FromLong"
 
 
 class Double(Basic_Number):
@@ -110,7 +110,7 @@ class Double(Basic_Number):
 class String(Basic):
     cxxtype = "char*"
     checker = "PyUnicode_Check"
-    inbounder = "_PyUnicode_AsString"
+    inbounder = "PyUnicode_AsUTF8"
     outbounder = "PyUnicode_FromString"
 
     def literalizer(self,s):

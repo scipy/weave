@@ -1,7 +1,5 @@
 
 
-import types
-
 from numpy import arange, float32, float64
 from numpy.testing import (TestCase, dec, assert_equal, assert_,
                            run_module_suite)
@@ -134,7 +132,7 @@ class TestAssignVariableTypes(TestCase):
         bd = array_converter()
         bd.name, bd.var_type, bd.dims = 'b', float64, 1
 
-        cd = c_spec.int_converter()
+        cd = c_spec.long_converter()
         cd.name, cd.var_type = 'c', int
         desired = [ad,bd,cd]
         assert_equal(actual,desired)

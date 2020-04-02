@@ -16,7 +16,7 @@ cpp_support_template = \
 static %(cpp_struct)s* convert_to_%(cpp_clean_struct)s(PyObject* py_obj,char* name)
 {
     %(cpp_struct)s *cpp_ptr = 0;
-    char* str = _PyUnicode_AsString(py_obj);
+    char* str = PyUnicode_AsUTF8(py_obj);
     if (!str)
         handle_conversion_error(py_obj,"%(cpp_struct)s", name);
     // work on this error reporting...
@@ -32,7 +32,7 @@ static %(cpp_struct)s* convert_to_%(cpp_clean_struct)s(PyObject* py_obj,char* na
 static %(cpp_struct)s* py_to_%(cpp_clean_struct)s(PyObject* py_obj,char* name)
 {
     %(cpp_struct)s *cpp_ptr;
-    char* str = _PyUnicode_AsString(py_obj);
+    char* str = PyUnicode_AsUTF8(py_obj);
     if (!str)
         handle_conversion_error(py_obj,"%(cpp_struct)s", name);
     // work on this error reporting...
@@ -107,8 +107,7 @@ class cpp_namespace_converter(base_converter):
         msg = "(%s:: name: %s)" % (self.type_name,self.name)
         return msg
 
-    def __cmp__(self,other):
-        #only works for equal
-        return cmp(self.name,other.name) or \
-               cmp(self.__class__, other.__class__) or \
-               cmp(self.type_name,other.type_name)
+    def __eq__(self,other):
+        return self.__class__ == other.__class__ and \
+               self.name == other.name and \
+               self.type_name == other.type_name

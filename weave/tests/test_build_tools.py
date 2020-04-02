@@ -65,23 +65,5 @@ class TestConfigureTempDir(TestConfigureBuildDir):
         assert_(is_writable(d))
 
 
-class TestConfigureSysArgv(TestCase):
-
-    def test_simple(self):
-        build_dir = 'build_dir'
-        temp_dir = 'temp_dir'
-        compiler = 'compiler'
-        pre_argv = sys.argv[:]
-        build_tools.configure_sys_argv(compiler,temp_dir,build_dir)
-        argv = sys.argv[:]
-        bd = argv[argv.index('--build-lib')+1]
-        assert_(bd == build_dir)
-        td = argv[argv.index('--build-temp')+1]
-        assert_(td == temp_dir)
-        argv.index('--compiler='+compiler)
-        build_tools.restore_sys_argv()
-        assert_(pre_argv == sys.argv[:])
-
-
 if __name__ == "__main__":
     run_module_suite()

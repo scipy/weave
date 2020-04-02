@@ -341,7 +341,7 @@ SWIG_Python_ConvertPtr(PyObject *obj, void **ptr, swig_type_info *ty, int flags)
       goto type_error;
     }
   }
-  c = _PyUnicode_AsString(obj);
+  c = PyUnicode_AsUTF8(obj);
   /* Pointer values must start with leading underscore */
   if (*c != '_') {
     *ptr = (void *) 0;
@@ -369,7 +369,7 @@ cobject:
   }
 
   if ((pyobj) && (flags & SWIG_POINTER_DISOWN)) {
-    PyObject *zero = PyInt_FromLong(0);
+    PyObject *zero = PyLong_FromLong(0);
     PyObject_SetAttrString(pyobj,(char*)"thisown",zero);
     Py_DECREF(zero);
   }
@@ -426,7 +426,7 @@ SWIG_Python_NewPointerObj(void *ptr, swig_type_info *type, int own) {
     Py_DECREF(args);
     if (inst) {
       if (own) {
-        PyObject *n = PyInt_FromLong(1);
+        PyObject *n = PyLong_FromLong(1);
         PyObject_SetAttrString(inst,(char*)"thisown",n);
         Py_DECREF(n);
       }
@@ -1279,7 +1279,7 @@ SWIG_Python_TypeError(const char *type, PyObject *obj)
       const char *otype = (obj ? obj->ob_type->tp_name : 0);
       if (otype) {
         PyObject *str = PyObject_Str(obj);
-        const char *cstr = str ? _PyUnicode_AsString(str) : 0;
+        const char *cstr = str ? PyUnicode_AsUTF8(str) : 0;
         if (cstr) {
           PyErr_Format(PyExc_TypeError, "a '%s' is expected, '%s(%s)' is received",
                        type, otype, cstr);
@@ -1320,9 +1320,9 @@ SWIG_Python_AddErrMesg(const char* mesg, int infront)
       Py_XINCREF(type);
       PyErr_Clear();
       if (infront) {
-        PyErr_Format(type, "%s %s", mesg, _PyUnicode_AsString(old_str));
+        PyErr_Format(type, "%s %s", mesg, PyUnicode_AsUTF8(old_str));
       } else {
-        PyErr_Format(type, "%s %s", _PyUnicode_AsString(old_str), mesg);
+        PyErr_Format(type, "%s %s", PyUnicode_AsUTF8(old_str), mesg);
       }
       Py_DECREF(old_str);
     }
@@ -1396,7 +1396,7 @@ SWIG_Python_ConvertPtr(PyObject *obj, void **ptr, swig_type_info *ty, int flags)
       goto type_error;
     }
   }
-  c = PyString_AS_STRING(obj);
+  c = PyUnicode_AsUTF8(obj);
   /* Pointer values must start with leading underscore */
   c = SWIG_UnpackVoidPtr(c, &vptr, ty->name);
   if (newref) { Py_DECREF(obj); }
@@ -1465,7 +1465,7 @@ SWIG_Python_ConvertPacked(PyObject *obj, void *ptr, size_t sz, swig_type_info *t
   c = PySwigPacked_UnpackData(obj, ptr, sz);
 #else
   if ((!obj) || (!PyUnicode_Check(obj))) goto type_error;
-  c = PyString_AS_STRING(obj);
+  c = PyUnicode_AsUTF8(obj);
   /* Pointer values must start with leading underscore */
   c = SWIG_UnpackDataName(c, ptr, sz, ty->name);
 #endif
@@ -2618,7 +2618,7 @@ SWIG_Python_TypeError(const char *type, PyObject *obj)
       const char *otype = (obj ? obj->ob_type->tp_name : 0);
       if (otype) {
         PyObject *str = PyObject_Str(obj);
-        const char *cstr = str ? _PyUnicode_AsString(str) : 0;
+        const char *cstr = str ? PyUnicode_AsUTF8(str) : 0;
         if (cstr) {
           PyErr_Format(PyExc_TypeError, "a '%s' is expected, '%s(%s)' is received",
                        type, otype, cstr);
@@ -2659,9 +2659,9 @@ SWIG_Python_AddErrMesg(const char* mesg, int infront)
       Py_XINCREF(type);
       PyErr_Clear();
       if (infront) {
-        PyErr_Format(type, "%s %s", mesg, _PyUnicode_AsString(old_str));
+        PyErr_Format(type, "%s %s", mesg, PyUnicode_AsUTF8(old_str));
       } else {
-        PyErr_Format(type, "%s %s", _PyUnicode_AsString(old_str), mesg);
+        PyErr_Format(type, "%s %s", PyUnicode_AsUTF8(old_str), mesg);
       }
       Py_DECREF(old_str);
     }
@@ -2735,7 +2735,7 @@ SWIG_Python_ConvertPtr(PyObject *obj, void **ptr, swig_type_info *ty, int flags)
       goto type_error;
     }
   }
-  c = PyString_AS_STRING(obj);
+  c = PyUnicode_AsUTF8(obj);
   /* Pointer values must start with leading underscore */
   c = SWIG_UnpackVoidPtr(c, &vptr, ty->name);
   if (newref) { Py_DECREF(obj); }
@@ -2804,7 +2804,7 @@ SWIG_Python_ConvertPacked(PyObject *obj, void *ptr, size_t sz, swig_type_info *t
   c = PySwigPacked_UnpackData(obj, ptr, sz);
 #else
   if ((!obj) || (!PyUnicode_Check(obj))) goto type_error;
-  c = PyString_AS_STRING(obj);
+  c = PyUnicode_AsUTF8(obj);
   /* Pointer values must start with leading underscore */
   c = SWIG_UnpackDataName(c, ptr, sz, ty->name);
 #endif
@@ -3743,8 +3743,9 @@ PyString_FromFormat(const char *fmt, ...) {
 
 /* A crude _PyUnicode_AsStringAndSize implementation for old Pythons */
 #if PY_VERSION_HEX < 0x02010000
-# ifndef _PyUnicode_AsStringAndSize
-#  define _PyUnicode_AsStringAndSize(obj, s, len) {*s = _PyUnicode_AsString(obj); *len = *s ? strlen(*s) : 0;}
+# ifndef PyString_AsStringAndSize
+#  define PyString_AsStringAndSize(obj, s, len) {*s = PyUnicode_AsUTF8(obj); *len = *s ? strlen(*s) : 0;}
+>>>>>>> piannucci/python3
 # endif
 #endif
 
@@ -3827,7 +3828,7 @@ SWIG_Python_AddErrorMsg(const char* mesg)
     PyObject *old_str = PyObject_Str(value);
     PyErr_Clear();
     Py_XINCREF(type);
-    PyErr_Format(type, "%s %s", _PyUnicode_AsString(old_str), mesg);
+    PyErr_Format(type, "%s %s", PyUnicode_AsUTF8(old_str), mesg);
     Py_DECREF(old_str);
     Py_DECREF(value);
   } else {
@@ -4320,7 +4321,7 @@ PySwigObject_repr(PySwigObject *v, PyObject *args)
 {
   const char *name = SWIG_TypePrettyName(v->ty);
   PyObject *hex = PySwigObject_hex(v);
-  PyObject *repr = PyString_FromFormat("<Swig Object of type '%s' at 0x%s>", name, _PyUnicode_AsString(hex));
+  PyObject *repr = PyString_FromFormat("<Swig Object of type '%s' at 0x%s>", name, PyUnicode_AsUTF8(hex));
   Py_DECREF(hex);
   if (v->next) {
 #ifdef METH_NOARGS
@@ -4342,7 +4343,7 @@ PySwigObject_print(PySwigObject *v, FILE *fp, int SWIGUNUSEDPARM(flags))
   PyObject *repr = PySwigObject_repr(v, NULL);
 #endif
   if (repr) {
-    fputs(_PyUnicode_AsString(repr), fp);
+    fputs(PyUnicode_AsUTF8(repr), fp);
     Py_DECREF(repr);
     return 0;
   } else {
@@ -5324,9 +5325,9 @@ SWIG_Python_AddErrMesg(const char* mesg, int infront)
       Py_XINCREF(type);
       PyErr_Clear();
       if (infront) {
-        PyErr_Format(type, "%s %s", mesg, _PyUnicode_AsString(old_str));
+        PyErr_Format(type, "%s %s", mesg, PyUnicode_AsUTF8(old_str));
       } else {
-        PyErr_Format(type, "%s %s", _PyUnicode_AsString(old_str), mesg);
+        PyErr_Format(type, "%s %s", PyUnicode_AsUTF8(old_str), mesg);
       }
       Py_DECREF(old_str);
     }
@@ -5375,7 +5376,7 @@ SWIG_Python_TypeError(const char *type, PyObject *obj)
       const char *otype = (obj ? obj->ob_type->tp_name : 0);
       if (otype) {
         PyObject *str = PyObject_Str(obj);
-        const char *cstr = str ? _PyUnicode_AsString(str) : 0;
+        const char *cstr = str ? PyUnicode_AsUTF8(str) : 0;
         if (cstr) {
           PyErr_Format(PyExc_TypeError, "a '%s' is expected, '%s(%s)' is received",
                        type, otype, cstr);

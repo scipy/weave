@@ -26,22 +26,22 @@ class IntConverter(TestCase):
 
     @dec.slow
     def test_type_match_string(self):
-        s = c_spec.int_converter()
+        s = c_spec.long_converter()
         assert_(not s.type_match('string'))
 
     @dec.slow
     def test_type_match_int(self):
-        s = c_spec.int_converter()
+        s = c_spec.long_converter()
         assert_(s.type_match(5))
 
     @dec.slow
     def test_type_match_float(self):
-        s = c_spec.int_converter()
+        s = c_spec.long_converter()
         assert_(not s.type_match(5.))
 
     @dec.slow
     def test_type_match_complex(self):
-        s = c_spec.int_converter()
+        s = c_spec.long_converter()
         assert_(not s.type_match(5.+1j))
 
     @dec.slow
@@ -54,7 +54,7 @@ class IntConverter(TestCase):
         test = ext_tools.ext_function('test',code,['a'])
         mod.add_function(test)
         mod.compile(location=test_dir, compiler=self.compiler)
-        exec('from ' + mod_name + ' import test')
+        test = __import__(mod_name).test
         b = 1
         test(b)
         try:
@@ -81,7 +81,7 @@ class IntConverter(TestCase):
         test = ext_tools.ext_function('test',code,['a'])
         mod.add_function(test)
         mod.compile(location=test_dir, compiler=self.compiler)
-        exec('from ' + mod_name + ' import test')
+        test = __import__(mod_name).test
         b = 1
         c = test(b)
 
@@ -121,7 +121,7 @@ class FloatConverter(TestCase):
         test = ext_tools.ext_function('test',code,['a'])
         mod.add_function(test)
         mod.compile(location=test_dir, compiler=self.compiler)
-        exec('from ' + mod_name + ' import test')
+        test = __import__(mod_name).test
         b = 1.
         test(b)
         try:
@@ -148,7 +148,7 @@ class FloatConverter(TestCase):
         test = ext_tools.ext_function('test',code,['a'])
         mod.add_function(test)
         mod.compile(location=test_dir, compiler=self.compiler)
-        exec('from ' + mod_name + ' import test')
+        test = __import__(mod_name).test
         b = 1.
         c = test(b)
         assert_(c == 3.)
@@ -188,7 +188,7 @@ class ComplexConverter(TestCase):
         test = ext_tools.ext_function('test',code,['a'])
         mod.add_function(test)
         mod.compile(location=test_dir, compiler=self.compiler)
-        exec('from ' + mod_name + ' import test')
+        test = __import__(mod_name).test
         b = 1.+1j
         test(b)
         try:
@@ -215,56 +215,10 @@ class ComplexConverter(TestCase):
         test = ext_tools.ext_function('test',code,['a'])
         mod.add_function(test)
         mod.compile(location=test_dir, compiler=self.compiler)
-        exec('from ' + mod_name + ' import test')
+        test = __import__(mod_name).test
         b = 1.+1j
         c = test(b)
         assert_(c == 3.+3j)
-
-
-#----------------------------------------------------------------------------
-# File conversion tests
-#----------------------------------------------------------------------------
-
-class FileConverter(TestCase):
-
-    compiler = ''
-
-    @dec.slow
-    def test_py_to_file(self):
-        file_name = os.path.join(test_dir, "testfile")
-        file = open(file_name,'w')
-        code = """
-               fprintf(file,"hello bob");
-               """
-        inline_tools.inline(code,['file'],compiler=self.compiler,force=1)
-        file.close()
-        file = open(file_name,'r')
-        assert_(file.read() == "hello bob")
-
-    @dec.slow
-    def test_file_to_py(self):
-        file_name = os.path.join(test_dir, "testfile")
-        # not sure I like Py::String as default -- might move to std::sting
-        # or just plain char*
-        code = """
-               const char* _file_name = file_name.c_str();
-               FILE* file = fopen(_file_name, "w");
-               return_val = file_to_py(file, _file_name, "w");
-               """
-        file = inline_tools.inline(code,['file_name'], compiler=self.compiler,
-                                   force=1)
-        file.write("hello fred")
-        file.close()
-        file = open(file_name,'r')
-        assert_(file.read() == "hello fred")
-
-
-#----------------------------------------------------------------------------
-# Instance conversion tests
-#----------------------------------------------------------------------------
-
-class InstanceConverter(TestCase):
-    pass
 
 
 #----------------------------------------------------------------------------
@@ -277,7 +231,7 @@ class CallableConverter(TestCase):
 
     @dec.slow
     def test_call_function(self):
-        func = string.find
+        func = str.find
         search_str = "hello world hello"
         sub_str = "world"
         # * Not sure about ref counts on search_str and sub_str.
@@ -354,7 +308,7 @@ class StringConverter(TestCase):
         mod.add_function(test)
         mod.compile(location=test_dir, compiler=self.compiler)
 
-        exec('from ' + mod_name + ' import test')
+        test = __import__(mod_name).test
         b = 'bub'
         test(b)
         try:
@@ -381,7 +335,7 @@ class StringConverter(TestCase):
         test = ext_tools.ext_function('test',code,['a'])
         mod.add_function(test)
         mod.compile(location=test_dir, compiler=self.compiler)
-        exec('from ' + mod_name + ' import test')
+        test = __import__(mod_name).test
         b = 'bub'
         c = test(b)
         assert_(c == 'hello')
@@ -413,7 +367,7 @@ class ListConverter(TestCase):
         test = ext_tools.ext_function('test',code,['a'])
         mod.add_function(test)
         mod.compile(location=test_dir, compiler=self.compiler)
-        exec('from ' + mod_name + ' import test')
+        test = __import__(mod_name).test
         b = [1,2]
         test(b)
         try:
@@ -441,7 +395,7 @@ class ListConverter(TestCase):
         test = ext_tools.ext_function('test',code,['a'])
         mod.add_function(test)
         mod.compile(location=test_dir, compiler=self.compiler)
-        exec('from ' + mod_name + ' import test')
+        test = __import__(mod_name).test
         b = [1,2]
         c = test(b)
         assert_(c == ['hello'])
@@ -467,13 +421,13 @@ class ListConverter(TestCase):
         with_cxx = ext_tools.ext_function('with_cxx',code,['a'])
         mod.add_function(with_cxx)
         code = """
-               int vv, sum = 0;
+               long vv, sum = 0;
                PyObject *v;
                for(int i = 0; i < a.len(); i++)
                {
                    v = PyList_GetItem(py_a,i);
                    //didn't set error here -- just speed test
-                   vv = py_to_int(v,"list item");
+                   vv = PyLong_AsLong(v);
                    if (vv % 2)
                     sum += vv;
                    else
@@ -484,7 +438,9 @@ class ListConverter(TestCase):
         no_checking = ext_tools.ext_function('no_checking',code,['a'])
         mod.add_function(no_checking)
         mod.compile(location=test_dir, compiler=self.compiler)
-        exec('from ' + mod_name + ' import with_cxx, no_checking')
+        loaded_module = __import__(mod_name)
+        with_cxx = loaded_module.with_cxx
+        no_checking = loaded_module.no_checking
         t1 = time.time()
         sum1 = with_cxx(a)
         t2 = time.time()
@@ -533,7 +489,7 @@ class TupleConverter(TestCase):
         test = ext_tools.ext_function('test',code,['a'])
         mod.add_function(test)
         mod.compile(location=test_dir, compiler=self.compiler)
-        exec('from ' + mod_name + ' import test')
+        test = __import__(mod_name).test
         b = (1,2)
         test(b)
         try:
@@ -562,7 +518,7 @@ class TupleConverter(TestCase):
         test = ext_tools.ext_function('test',code,['a'])
         mod.add_function(test)
         mod.compile(location=test_dir, compiler=self.compiler)
-        exec('from ' + mod_name + ' import test')
+        test = __import__(mod_name).test
         b = (1,2)
         c = test(b)
         assert_(c == ('hello',None))
@@ -599,7 +555,7 @@ class DictConverter(TestCase):
         test = ext_tools.ext_function('test',code,['a'])
         mod.add_function(test)
         mod.compile(location=test_dir, compiler=self.compiler)
-        exec('from ' + mod_name + ' import test')
+        test = __import__(mod_name).test
         b = {'y':2}
         test(b)
         try:
@@ -627,7 +583,7 @@ class DictConverter(TestCase):
         test = ext_tools.ext_function('test',code,['a'])
         mod.add_function(test)
         mod.compile(location=test_dir, compiler=self.compiler)
-        exec('from ' + mod_name + ' import test')
+        test = __import__(mod_name).test
         b = {'z':2}
         c = test(b)
         assert_(c['hello'] == 5)

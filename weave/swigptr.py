@@ -416,7 +416,7 @@ SWIG_GetPtrObj(PyObject *obj, void **ptr, char *type) {
     sobj = PyObject_GetAttrString(obj,"this");
     if (!sobj) return "";
   }
-  str = _PyUnicode_AsString(sobj);
+  str = PyUnicode_AsUTF8(sobj);
   //printf("str: %s\\n", str);
   return SWIG_GetPtr(str,ptr,type);
 }

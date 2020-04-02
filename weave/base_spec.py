@@ -84,11 +84,16 @@ class base_converter(object):
     def variable_as_string(self):
         return '"' + self.name + '"'
 
-import collections
+import sys
+
+if sys.version_info.major == 3:
+    from collections import UserList
+else:
+    from UserList import UserList
 from . import base_info
 
 
-class arg_spec_list(collections.UserList):
+class arg_spec_list(UserList):
     def build_information(self):
         all_info = base_info.info_list()
         for i in self:
