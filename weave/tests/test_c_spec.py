@@ -76,7 +76,7 @@ class IntConverter(TestCase):
         a = 1
         code = """
                a=a+2;
-               return_val = PyInt_FromLong(a);
+               return_val = PyLong_FromLong(a);
                """
         test = ext_tools.ext_function('test',code,['a'])
         mod.add_function(test)

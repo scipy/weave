@@ -72,7 +72,7 @@ class TestExtModule(TestCase):
         mod = ext_tools.ext_module('ext_string_and_int')
         code = """
                a=b.length();
-               return_val = PyInt_FromLong(a);
+               return_val = PyLong_FromLong(a);
                """
         test = ext_tools.ext_function('test',code,['a','b'])
         mod.add_function(test)
