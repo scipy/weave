@@ -20,7 +20,7 @@ const char* find_type(PyObject* py_obj)
 {
     if(py_obj == NULL) return "C NULL value";
     if(PyCallable_Check(py_obj)) return "callable";
-    if(PyString_Check(py_obj)) return "string";
+    if(PyUnicode_Check(py_obj)) return "string";
     if(PyInt_Check(py_obj)) return "int";
     if(PyFloat_Check(py_obj)) return "float";
     if(PyDict_Check(py_obj)) return "dict";

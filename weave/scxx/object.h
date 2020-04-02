@@ -165,12 +165,12 @@ public:
     return std::complex<double>(real, imag);
   };  
   operator std::string () const {
-    if (!PyString_Check(_obj))
+    if (!PyUnicode_Check(_obj))
         fail(PyExc_TypeError, "cannot convert value to std::string");
     return std::string(_PyUnicode_AsString(_obj));
   };  
   operator char* () const {
-    if (!PyString_Check(_obj))
+    if (!PyUnicode_Check(_obj))
         fail(PyExc_TypeError, "cannot convert value to char*");
     return _PyUnicode_AsString(_obj);
   };  
@@ -752,7 +752,7 @@ public:
   };
   
   object is_string() const {
-    return PyString_Check(_obj) == 1;
+    return PyUnicode_Check(_obj) == 1;
   };
   
   //-------------------------------------------------------------------------

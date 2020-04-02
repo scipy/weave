@@ -109,7 +109,7 @@ class Double(Basic_Number):
 
 class String(Basic):
     cxxtype = "char*"
-    checker = "PyString_Check"
+    checker = "PyUnicode_Check"
     inbounder = "_PyUnicode_AsString"
     outbounder = "PyUnicode_FromString"
 

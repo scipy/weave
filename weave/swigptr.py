@@ -412,7 +412,7 @@ SWIGSTATICRUNTIME(char *)
 SWIG_GetPtrObj(PyObject *obj, void **ptr, char *type) {
   PyObject *sobj = obj;
   char     *str;
-  if (!PyString_Check(obj)) {
+  if (!PyUnicode_Check(obj)) {
     sobj = PyObject_GetAttrString(obj,"this");
     if (!sobj) return "";
   }

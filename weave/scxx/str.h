@@ -39,7 +39,7 @@ public:
     return *this;
   };
   virtual void _violentTypeCheck() {
-    if (!PyString_Check(_obj)) {
+    if (!PyUnicode_Check(_obj)) {
       grab_ref(0);
       fail(PyExc_TypeError, "Not a Python String");
     }

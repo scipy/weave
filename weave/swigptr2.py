@@ -329,14 +329,14 @@ SWIG_Python_ConvertPtr(PyObject *obj, void **ptr, swig_type_info *ty, int flags)
   if (newref) Py_DECREF(obj);
   goto cobject;
 #else
-  if (!(PyString_Check(obj))) {
+  if (!(PyUnicode_Check(obj))) {
     if (!SWIG_this)
       SWIG_this = PyUnicode_FromString("this");
     pyobj = obj;
     obj = PyObject_GetAttr(obj,SWIG_this);
     newref = 1;
     if (!obj) goto type_error;
-    if (!PyString_Check(obj)) {
+    if (!PyUnicode_Check(obj)) {
       Py_DECREF(obj);
       goto type_error;
     }
@@ -1384,14 +1384,14 @@ SWIG_Python_ConvertPtr(PyObject *obj, void **ptr, swig_type_info *ty, int flags)
   if (newref) { Py_DECREF(obj); }
   goto type_check;
 #else
-  if (!(PyString_Check(obj))) {
+  if (!(PyUnicode_Check(obj))) {
     if (!SWIG_this)
       SWIG_this = PyUnicode_FromString("this");
     pyobj = obj;
     obj = PyObject_GetAttr(obj,SWIG_this);
     newref = 1;
     if (!obj) goto type_error;
-    if (!PyString_Check(obj)) {
+    if (!PyUnicode_Check(obj)) {
       Py_DECREF(obj);
       goto type_error;
     }
@@ -1464,7 +1464,7 @@ SWIG_Python_ConvertPacked(PyObject *obj, void *ptr, size_t sz, swig_type_info *t
 #if defined(SWIG_COBJECT_TYPES) && !defined(SWIG_COBJECT_PYTHON)
   c = PySwigPacked_UnpackData(obj, ptr, sz);
 #else
-  if ((!obj) || (!PyString_Check(obj))) goto type_error;
+  if ((!obj) || (!PyUnicode_Check(obj))) goto type_error;
   c = PyString_AS_STRING(obj);
   /* Pointer values must start with leading underscore */
   c = SWIG_UnpackDataName(c, ptr, sz, ty->name);
@@ -2723,14 +2723,14 @@ SWIG_Python_ConvertPtr(PyObject *obj, void **ptr, swig_type_info *ty, int flags)
   if (newref) { Py_DECREF(obj); }
   goto type_check;
 #else
-  if (!(PyString_Check(obj))) {
+  if (!(PyUnicode_Check(obj))) {
     if (!SWIG_this)
       SWIG_this = PyUnicode_FromString("this");
     pyobj = obj;
     obj = PyObject_GetAttr(obj,SWIG_this);
     newref = 1;
     if (!obj) goto type_error;
-    if (!PyString_Check(obj)) {
+    if (!PyUnicode_Check(obj)) {
       Py_DECREF(obj);
       goto type_error;
     }
@@ -2803,7 +2803,7 @@ SWIG_Python_ConvertPacked(PyObject *obj, void *ptr, size_t sz, swig_type_info *t
 #if defined(SWIG_COBJECT_TYPES) && !defined(SWIG_COBJECT_PYTHON)
   c = PySwigPacked_UnpackData(obj, ptr, sz);
 #else
-  if ((!obj) || (!PyString_Check(obj))) goto type_error;
+  if ((!obj) || (!PyUnicode_Check(obj))) goto type_error;
   c = PyString_AS_STRING(obj);
   /* Pointer values must start with leading underscore */
   c = SWIG_UnpackDataName(c, ptr, sz, ty->name);

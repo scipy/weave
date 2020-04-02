@@ -215,7 +215,7 @@ class string_converter(common_base_converter):
     def init_info(self):
         common_base_converter.init_info(self)
         self.type_name = 'string'
-        self.check_func = 'PyString_Check'
+        self.check_func = 'PyUnicode_Check'
         self.c_type = 'std::string'
         self.return_type = 'std::string'
         self.to_c_return = "std::string(_PyUnicode_AsString(py_obj))"
