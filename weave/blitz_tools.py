@@ -59,15 +59,17 @@ def blitz(expr,local_dict=None, global_dict=None,check_size=1,verbose=0,**kw):
         expr_code = ast_to_blitz_expr(ast_list)
         arg_names = ast_tools.harvest_variables(ast_list)
         module_dir = global_dict.get('__file__',None)
-        func = inline_tools.compile_function(expr_code,arg_names,local_dict,
-                                             global_dict,module_dir,
-                                             compiler='gcc',auto_downcast=1,
-                                             verbose=verbose,
-                                             type_converters=converters.blitz,
-                                             **kw)
+        func = inline_tools.compile_function(expr_code,
+                    arg_names,local_dict,
+                    global_dict,module_dir,
+                    compiler='gcc',auto_downcast=1,
+                    verbose=2,
+                    type_converters=converters.blitz,**kw)
+
         function_catalog.add_function(expr,func,module_dir)
         try:
             results = attempt_function_call(expr,local_dict,global_dict)
+            import pdb; pdb.set_trace()
         except ValueError:
             warnings.warn('compilation failed. Executing as python code',
                           BlitzWarning)
