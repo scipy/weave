@@ -65,7 +65,9 @@ def getmodule(object):
         # walk trough all modules looking for function
         for name,mod in list(sys.modules.items()):
             # try except used because of some comparison failures
-            # in wxPoint code.  Need to review this
+            # in wxPoint code.  Need to review this.
+            # Moreover, when mod = coverage.debug.DebugOutputFile.the_one,
+            # the following throws an AttributeError exception.
             try:
                 if mod and any(object is x for x in mod.__dict__.values()):
                     value = mod
@@ -76,12 +78,9 @@ def getmodule(object):
                     if str(mod) not in '(built-in)':
                         break
 
-            except (TypeError, KeyError, ImportError):
+            except (TypeError, KeyError, ImportError, AttributeError):
                 pass
-            except (AttributeError):
-                print('mod: ', mod)
-                print('name: ', name)
-                pass
+
     return value
 
 
