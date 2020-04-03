@@ -67,8 +67,6 @@ def getmodule(object):
             # try except used because of some comparison failures
             # in wxPoint code.  Need to review this
             try:
-                print('mod: ', mod)
-                print('name: ', name)
                 if mod and any(object is x for x in mod.__dict__.values()):
                     value = mod
                     # if it is a built-in module, keep looking to see
@@ -78,7 +76,11 @@ def getmodule(object):
                     if str(mod) not in '(built-in)':
                         break
 
-            except (TypeError, KeyError, ImportError):
+            except (TypeError, KeyError, ImportError, AttributeError):
+                pass
+            except (AttributeError):
+                print('mod: ', mod)
+                print('name: ', name)
                 pass
     return value
 
