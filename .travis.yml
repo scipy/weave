@@ -29,6 +29,8 @@ before_install:
   - ulimit -a
   - mkdir builds
   - pushd builds
+  - travis_retry pip install numpy
+  - travis_retry pip install nose argparse
   - python -V
   - popd
 script:
