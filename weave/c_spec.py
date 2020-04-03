@@ -350,7 +350,8 @@ scxx_dir = os.path.join(local_dir,'scxx')
 class scxx_converter(common_base_converter):
     def init_info(self):
         super().init_info()
-        self.headers = ['"py3c/include/py3c.h"', '"scxx/object.h"','"scxx/list.h"','"scxx/tuple.h"',
+        self.headers = ['"scxx/object.h"','"scxx/list.h"','"scxx/tuple.h"',
+        # self.headers = ['"py3c/include/py3c.h"', '"scxx/object.h"','"scxx/list.h"','"scxx/tuple.h"',
                         '"scxx/dict.h"','<iostream>']
         self.include_dirs = [local_dir,scxx_dir]
         self.sources = [os.path.join(scxx_dir,'weave_imp.cpp'),]
