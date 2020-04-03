@@ -46,9 +46,9 @@ def build_slice_atom(slice_vars, position):
     # I think this case can might be remedied by calculating all ranges on
     # the fly, and then subtracting them from the length of the array in
     # that dimension if they are negative.  This is major code bloat in the
-    # funcitons and more work.  Save till later...
+    # functions and more work.  Save till later...
     ###########################################################################
-    # I don't think the strip is necessary, but it insures
+    # I don't think the strip is necessary, but it ensures
     # that '-' is the first sign for negative indices.
     if slice_vars['single_index'] != '_index':
         expr = '%(single_index)s' % slice_vars
@@ -78,7 +78,6 @@ def build_slice_atom(slice_vars, position):
 def transform_subscript_list(subscript_dict):
     # this is gonna edit the ast_list...
     subscript_list = subscript_dict['subscript_list']
-
     var = subscript_dict['var']
     #skip the first entry (the subscript_list symbol)
     slice_position = -1
@@ -99,7 +98,7 @@ def harvest_subscript_dicts(ast_list):
     """
     subscript_lists = []
     if isinstance(ast_list, list):
-        found,data = match(indexed_array_pattern,ast_list)
+        found, data = match(indexed_array_pattern, ast_list)
         # data is a dict with 'var' = variable name
         # and 'subscript_list' = to the ast_seq for the subscript list
         if found:
@@ -150,10 +149,12 @@ slice_patterns.append((symbol.subscript,['single_index']))
 
 indexed_array_pattern = \
            (symbol.power,
-             (symbol.atom,(token.NAME, ['var'])),
-             (symbol.trailer,
-                (token.LSQB, '['),
-                   ['subscript_list'],
-                (token.RSQB, ']')
-              )
+               (symbol.atom_expr,
+                 (symbol.atom,(token.NAME, ['var'])),
+                 (symbol.trailer,
+                    (token.LSQB, '['),
+                       ['subscript_list'],
+                    (token.RSQB, ']')
+                  )
+                )
             )

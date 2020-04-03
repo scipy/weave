@@ -632,7 +632,7 @@ class catalog(object):
             from os import access, F_OK, W_OK
             return (access(x,F_OK) and access(x,W_OK) or
                     access(os.path.dirname(x),W_OK))
-        writable = list(filter(file_test,files))
+        writable = iter(list(filter(file_test,files)))
         if writable:
             file = next(writable)
         else:

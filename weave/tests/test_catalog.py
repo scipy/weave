@@ -10,7 +10,7 @@ import tempfile
 from distutils.dir_util import remove_tree
 
 from numpy.testing import TestCase, assert_, dec, run_module_suite
-from numpy.testing.noseclasses import KnownFailureTest
+from numpy.testing._private.noseclasses import KnownFailureTest
 
 from weave import catalog
 from weave_test_utils import (clear_temp_catalog, restore_temp_catalog,
