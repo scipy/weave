@@ -4,15 +4,13 @@ language: python
 sudo: false
 matrix:
   include:
-    - python: 3.6
+    - python: 3.7
       env:
         - TESTMODE=full
         - COVERAGE=--coverage
-    - python: 3.7
+    - python: 3.6
       env:
         - TESTMODE=fast
-        - NUMPYSPEC="numpy==1.6.2"
-        - OPTIMIZE=-OO
 addons:
   apt:
     packages:
@@ -31,8 +29,6 @@ before_install:
   - ulimit -a
   - mkdir builds
   - pushd builds
-  - travis_retry pip install $NUMPYSPEC
-  - travis_retry pip install nose argparse
   - python -V
   - popd
 script:
