@@ -1,3 +1,0 @@
-[submodule "weave/py3c"]
-	path = weave/py3c
-	url = https://github.com/zanellia/py3c.git
