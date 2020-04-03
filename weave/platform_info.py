@@ -125,7 +125,6 @@ def get_compiler_dir(compiler_name):
     chk_sum = check_sum(exe_path)
     restore_sys_argv()
 
-    import pdb; pdb.set_trace()
     if chk_sum is not None:
         return 'compiler_'+chk_sum
     else:

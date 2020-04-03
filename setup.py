@@ -144,6 +144,7 @@ def configuration(parent_package='',top_path=None):
     config.get_version('weave/version.py')
     return config
 
+from setuptools import setup, find_packages
 
 def setup_package():
 
@@ -164,6 +165,11 @@ def setup_package():
         url = "http://www.github.com/scipy/weave",
         download_url = "https://pypi.python.org/pypi/weave",
         license = 'BSD',
+        packages = find_packages(),
+        install_requires=[
+           'numpy',
+           'nose',
+        ],
         cmdclass=cmdclass,
         classifiers=[_f for _f in CLASSIFIERS.split('\n') if _f],
         platforms = ["Windows", "Linux", "Solaris", "Mac OS-X", "Unix"],
