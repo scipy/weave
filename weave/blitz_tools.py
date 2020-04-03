@@ -69,7 +69,6 @@ def blitz(expr,local_dict=None, global_dict=None,check_size=1,verbose=0,**kw):
         function_catalog.add_function(expr,func,module_dir)
         try:
             results = attempt_function_call(expr,local_dict,global_dict)
-            import pdb; pdb.set_trace()
         except ValueError:
             warnings.warn('compilation failed. Executing as python code',
                           BlitzWarning)
