@@ -76,7 +76,7 @@ def getmodule(object):
                     if str(mod) not in '(built-in)':
                         break
 
-            except (TypeError, KeyError, ImportError, AttributeError):
+            except (TypeError, KeyError, ImportError):
                 pass
             except (AttributeError):
                 print('mod: ', mod)
