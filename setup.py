@@ -144,8 +144,6 @@ def configuration(parent_package='',top_path=None):
     config.get_version('weave/version.py')
     return config
 
-from setuptools import setup, find_packages
-
 def setup_package():
 
     # Rewrite the version file every time
