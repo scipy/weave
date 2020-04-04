@@ -63,7 +63,7 @@ def blitz(expr,local_dict=None, global_dict=None,check_size=1,verbose=0,**kw):
                     arg_names,local_dict,
                     global_dict,module_dir,
                     compiler='gcc',auto_downcast=1,
-                    verbose=2,
+                    verbose=verbose,
                     type_converters=converters.blitz,**kw)
 
         function_catalog.add_function(expr,func,module_dir)

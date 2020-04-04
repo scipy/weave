@@ -208,7 +208,6 @@ class ext_module(object):
             self.support_code(),
             self.function_code(),
             self.python_function_definition_code(),
-            self.python_module_definition_code(),
             self.module_init_code(),
             ])
         return code
@@ -289,54 +288,35 @@ class ext_module(object):
                '};\n'
         return code % (all_definition_code)
 
-    def python_module_definition_code(self):
-        module_name = self.name
-        code = 'static struct PyModuleDef %s = \n' \
-               '{\n' \
-               '    PyModuleDef_HEAD_INIT,\n' \
-               '    "%s",\n' \
-               '    NULL,' \
-               '    -1,\n' \
-               '    compiled_methods\n' \
-               '};\n'
-        return code % (module_name, module_name)
-
     def module_init_code(self):
         init_code_list = self.build_information().module_init_code()
         init_code = indent(''.join(init_code_list),4)
-        if sys.version_info.major < 3:
-            code = 'PyMODINIT_FUNC init%s(void)\n' \
-                   '{\n' \
-                   '%s' \
-                   '    (void) Py_InitModule("%s", compiled_methods);\n' \
-                   '}\n' % (self.name,init_code,self.name)
-        else:
-            code = 'static int traverse(PyObject *m, visitproc visit, void *arg) {\n' \
-                   '    return 0;\n' \
-                   '}\n' \
-                   '\n' \
-                   'static int clear(PyObject *m) {\n' \
-                   '    return 0;\n' \
-                   '}\n' \
-                   '\n' \
-                   'static struct PyModuleDef moduledef = {\n' \
-                   '        PyModuleDef_HEAD_INIT,\n' \
-                   '        "%s", NULL,\n' \
-                   '        0,\n' \
-                   '        compiled_methods,\n' \
-                   '        NULL,\n' \
-                   '        traverse,\n' \
-                   '        clear,\n' \
-                   '        NULL\n' \
-                   '};\n' \
-                   '\n' \
-                   'extern "C"\n' \
-                   'PyObject *PyInit_%s(void)\n' \
-                   '{\n' \
-                   '    PyObject *module = PyModule_Create(&moduledef);\n' \
-                   '%s' \
-                   '    return module;\n' \
-                   '}\n' % (self.name,self.name,init_code)
+        code = 'static int traverse(PyObject *m, visitproc visit, void *arg) {\n' \
+               '    return 0;\n' \
+               '}\n' \
+               '\n' \
+               'static int clear(PyObject *m) {\n' \
+               '    return 0;\n' \
+               '}\n' \
+               '\n' \
+               'static struct PyModuleDef moduledef = {\n' \
+               '        PyModuleDef_HEAD_INIT,\n' \
+               '        "%s", NULL,\n' \
+               '        0,\n' \
+               '        compiled_methods,\n' \
+               '        NULL,\n' \
+               '        traverse,\n' \
+               '        clear,\n' \
+               '        NULL\n' \
+               '};\n' \
+               '\n' \
+               'extern "C"\n' \
+               'PyObject *PyInit_%s(void)\n' \
+               '{\n' \
+               '    PyObject *module = PyModule_Create(&moduledef);\n' \
+               '%s' \
+               '    return module;\n' \
+               '}\n' % (self.name,self.name,init_code)
 
         return code
 
@@ -363,10 +343,7 @@ class ext_module(object):
         info = self.build_information()
         _source_files = info.sources()
         # remove duplicates
-        source_files = {}
-        for i in _source_files:
-            source_files[i] = None
-        source_files = list(source_files.keys())
+        source_files = list({i:None for i in _source_files})
 
         # add internally specified macros, includes, etc. to the key words
         # values of the same names so that distutils will use them.
@@ -379,7 +356,7 @@ class ext_module(object):
                                    info.extra_compile_args()
         kw['extra_link_args'] = kw.get('extra_link_args',[]) + \
                                    info.extra_link_args()
-        kw['sources'] = kw.get('sources',[]) + list(source_files)
+        kw['sources'] = kw.get('sources',[]) + source_files
         file = self.generate_file(location=location)
         return kw,file
 

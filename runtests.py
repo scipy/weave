@@ -177,7 +177,7 @@ def main(argv):
             else:
                 test = sys.modules[modname].test
         except (ImportError, KeyError, AttributeError) as e:
-            print(("Cannot run tests for %s (%s)" % (modname, e)))
+            print("Cannot run tests for %s (%s)" % (modname, e))
             sys.exit(2)
     elif args.tests:
         def fix_test_path(x):
@@ -317,7 +317,7 @@ def build_project(args):
     else:
         if not args.show_build_log:
             with open(log_filename, 'r') as f:
-                print((f.read()))
+                print(f.read())
             print("Build failed!")
         sys.exit(1)
 

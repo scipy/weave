@@ -46,13 +46,13 @@ def check_expr(expr,local_vars,global_vars={}):
     values = {}
 
     # first handle the globals
-    for var,val in list(global_vars.items()):
+    for var,val in global_vars.items():
         if isinstance(val, ndarray):
             values[var] = dummy_array(val,name=var)
         elif isnumeric(val):
             values[var] = val
     # now handle the locals
-    for var,val in list(local_vars.items()):
+    for var,val in local_vars.items():
         if isinstance(val, ndarray):
             values[var] = dummy_array(val,name=var)
         if isnumeric(val):

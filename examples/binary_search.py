@@ -136,7 +136,7 @@ def py_int_search(seq, t):
     while 1:
         if max < min:
             return -1
-        m = int((min + max) / 2)
+        m = (min + max) // 2
         if seq[m] < t:
             min = m + 1
         elif seq[m] > t:

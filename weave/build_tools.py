@@ -213,7 +213,6 @@ def build_extension(module_path,compiler_name='',build_dir=None,
     success = 0
     from numpy.distutils.log import set_verbosity
     set_verbosity(-1)
-    verbose = 2
 
     # get the name of the module and the extension directory it lives in.
     module_dir,cpp_name = os.path.split(os.path.abspath(module_path))

@@ -163,11 +163,6 @@ def setup_package():
         url = "http://www.github.com/scipy/weave",
         download_url = "https://pypi.python.org/pypi/weave",
         license = 'BSD',
-        # packages = find_packages(),
-        # install_requires=[
-        #    'numpy',
-        #    'nose',
-        # ],
         cmdclass=cmdclass,
         classifiers=[_f for _f in CLASSIFIERS.split('\n') if _f],
         platforms = ["Windows", "Linux", "Solaris", "Mac OS-X", "Unix"],

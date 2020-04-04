@@ -12,8 +12,6 @@
 #include <limits.h>
 #include <string>
 #include <complex>
-// #include "../py3c/include/py3c.h"
-
 
 // for debugging
 #include <iostream>

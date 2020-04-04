@@ -16,26 +16,6 @@ namespace py {
 object None = object(Py_None);
 }
 
-//const char* find_type(PyObject* py_obj)
-//{
-//    if(py_obj == NULL) return "C NULL value";
-//    if(PyCallable_Check(py_obj)) return "callable";
-//    if(PyUnicode_Check(py_obj)) return "string";
-//    if(PyInt_Check(py_obj)) return "int";
-//    if(PyFloat_Check(py_obj)) return "float";
-//    if(PyDict_Check(py_obj)) return "dict";
-//    if(PyList_Check(py_obj)) return "list";
-//    if(PyTuple_Check(py_obj)) return "tuple";
-//    if(PyFile_Check(py_obj)) return "file";
-//    if(PyModule_Check(py_obj)) return "module";
-//
-//    //should probably do more intergation (and thinking) on these.
-//    if(PyCallable_Check(py_obj) && PyInstance_Check(py_obj)) return "callable";
-//    if(PyInstance_Check(py_obj)) return "instance";
-//    if(PyCallable_Check(py_obj)) return "callable";
-//    return "unknown type";
-//}
-
 const char* find_type(PyObject* py_obj)
 {
     if(py_obj == NULL) return "C NULL value";

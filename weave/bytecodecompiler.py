@@ -157,7 +157,7 @@ byName = {
 # Build one in the reverse sense
 # -----------------------------------------------
 byOpcode = {}
-for name, op in list(byName.items()):
+for name, op in byName.items():
     byOpcode[op] = name
     del name
     del op

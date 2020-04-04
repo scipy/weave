@@ -26,12 +26,6 @@ import os as _os
 import collections
 
 
-PY3 = sys.version_info[0] == 3
-if PY3:
-    string_types = str,
-else:
-    string_types = str,
-
 _open = open
 
 __all__ = ["error", "open"]

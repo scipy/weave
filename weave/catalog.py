@@ -63,7 +63,7 @@ def getmodule(object):
     value = inspect.getmodule(object)
     if value is None:
         # walk trough all modules looking for function
-        for name,mod in list(sys.modules.items()):
+        for name,mod in sys.modules.items():
             # try except used because of some comparison failures
             # in wxPoint code.  Need to review this.
             # Moreover, when mod = coverage.debug.DebugOutputFile.the_one,
@@ -635,9 +635,9 @@ class catalog(object):
             from os import access, F_OK, W_OK
             return (access(x,F_OK) and access(x,W_OK) or
                     access(os.path.dirname(x),W_OK))
-        writable = iter(list(filter(file_test,files)))
+        writable = list(filter(file_test,files))
         if writable:
-            file = next(writable)
+            file = writable[0]
         else:
             file = None
         return file

@@ -69,7 +69,7 @@ def cleanup_temp_dir(d):
     This should probably catch some errors.
 
     """
-    files = list(map(lambda x,d=d: os.path.join(d,x),os.listdir(d)))
+    files = [os.path.join(d,x) for x in os.listdir(d)]
     for i in files:
         try:
             if os.path.isdir(i):

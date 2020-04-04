@@ -3741,11 +3741,10 @@ PyString_FromFormat(const char *fmt, ...) {
 #endif
 
 
-/* A crude _PyUnicode_AsStringAndSize implementation for old Pythons */
+/* A crude PyString_AsStringAndSize implementation for old Pythons */
 #if PY_VERSION_HEX < 0x02010000
 # ifndef PyString_AsStringAndSize
 #  define PyString_AsStringAndSize(obj, s, len) {*s = PyUnicode_AsUTF8(obj); *len = *s ? strlen(*s) : 0;}
->>>>>>> piannucci/python3
 # endif
 #endif
 
