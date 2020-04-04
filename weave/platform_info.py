@@ -95,14 +95,14 @@ def compiler_exe_path(exe_name):
     return exe_path
 
 
-def check_sum(file):
+def check_sum(file_path):
     from hashlib import sha256
     try:
-        with open(file,'rb') as f:
-            bytes = f.read(-1)
+        with open(file_path,'rb') as f:
+            bstring = f.read(-1)
     except IOError:
-        bytes = ''
-    chk_sum = sha256(bytes)
+        bstring = b""
+    return sha256(bstring).hexdigest()[:32]
 
 
 def get_compiler_dir(compiler_name):
@@ -125,10 +125,7 @@ def get_compiler_dir(compiler_name):
     chk_sum = check_sum(exe_path)
     restore_sys_argv()
 
-    if chk_sum is not None:
-        return 'compiler_'+chk_sum
-    else:
-        return 'compiler_nochecksum'
+    return 'compiler_'+chk_sum
 
 #----------------------------------------------------------------------------
 # Not needed -- used for testing.
