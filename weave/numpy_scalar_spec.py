@@ -1,7 +1,7 @@
 """ Converters for all of NumPy's scalar types such as
     int32, float32, complex128, etc.
 """
-from __future__ import absolute_import, print_function
+
 
 import numpy
 from . import c_spec

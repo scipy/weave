@@ -1335,7 +1335,7 @@ TypeError.
     {
         if(py_obj == NULL) return "C NULL value";
         if(PyCallable_Check(py_obj)) return "callable";
-        if(PyString_Check(py_obj)) return "string";
+        if(PyUnicode_Check(py_obj)) return "string";
         if(PyInt_Check(py_obj)) return "int";
         if(PyFloat_Check(py_obj)) return "float";
         if(PyDict_Check(py_obj)) return "dict";
@@ -1577,7 +1577,7 @@ from the local and global namespaces. <code>py_to_list()</code> and
 its
 friends has the following form:
 <blockquote>
-  <pre><code>    <br>    static Py::List py_to_list(PyObject* py_obj,char* name)<br>    {<br>        if (!py_obj || !PyList_Check(py_obj))<br>            handle_bad_type(py_obj,"list", name);<br>        return Py::List(py_obj);<br>    }<br>    <br>    static Py::String py_to_string(PyObject* py_obj,char* name)<br>    {<br>        if (!PyString_Check(py_obj))<br>            handle_bad_type(py_obj,"string", name);<br>        return Py::String(py_obj);<br>    }<br><br>    static Py::Dict py_to_dict(PyObject* py_obj,char* name)<br>    {<br>        if (!py_obj || !PyDict_Check(py_obj))<br>            handle_bad_type(py_obj,"dict", name);<br>        return Py::Dict(py_obj);<br>    }<br>    <br>    static Py::Tuple py_to_tuple(PyObject* py_obj,char* name)<br>    {<br>        if (!py_obj || !PyTuple_Check(py_obj))<br>            handle_bad_type(py_obj,"tuple", name);<br>        return Py::Tuple(py_obj);<br>    }<br>    </code></pre>
+  <pre><code>    <br>    static Py::List py_to_list(PyObject* py_obj,char* name)<br>    {<br>        if (!py_obj || !PyList_Check(py_obj))<br>            handle_bad_type(py_obj,"list", name);<br>        return Py::List(py_obj);<br>    }<br>    <br>    static Py::String py_to_string(PyObject* py_obj,char* name)<br>    {<br>        if (!PyUnicode_Check(py_obj))<br>            handle_bad_type(py_obj,"string", name);<br>        return Py::String(py_obj);<br>    }<br><br>    static Py::Dict py_to_dict(PyObject* py_obj,char* name)<br>    {<br>        if (!py_obj || !PyDict_Check(py_obj))<br>            handle_bad_type(py_obj,"dict", name);<br>        return Py::Dict(py_obj);<br>    }<br>    <br>    static Py::Tuple py_to_tuple(PyObject* py_obj,char* name)<br>    {<br>        if (!py_obj || !PyTuple_Check(py_obj))<br>            handle_bad_type(py_obj,"tuple", name);<br>        return Py::Tuple(py_obj);<br>    }<br>    </code></pre>
 </blockquote>
 SCXX handles reference counts on for strings, lists, tuples, and
 dictionaries,

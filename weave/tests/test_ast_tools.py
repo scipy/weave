@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function
+
 
 from numpy.testing import TestCase, assert_equal, run_module_suite
 

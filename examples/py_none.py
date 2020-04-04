@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function
+
 
 # This tests the amount of overhead added for inline() function calls.
 # It isn't a "real world" test, but is somewhat informative.

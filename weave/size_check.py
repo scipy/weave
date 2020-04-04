@@ -1,13 +1,16 @@
-from __future__ import absolute_import, print_function
+
 
 from numpy import ones, ndarray, array, asarray, concatenate, zeros, shape, \
-         alltrue, equal, divide, arccos, arcsin, arctan, cos, cosh, \
+         alltrue, equal, floor_divide, arccos, arcsin, arctan, cos, cosh, \
          sin, sinh, exp, ceil, floor, fabs, log, log10, sqrt, argmin, \
          argmax, argsort, around, absolute, sign, negative, float32
 
 import sys
 
-numericTypes = (int, long, float, complex)
+if sys.version_info.major == 3:
+    numericTypes = (int, float, complex)
+else:
+    numericTypes = (int, long, float, complex)
 
 
 def isnumeric(t):
@@ -77,17 +80,19 @@ def make_same_length(x,y):
         Ny = len(y)
     except:
         Ny = 0
+    x = asarray(x,int)
+    y = asarray(y,int)
     if Nx == Ny == 0:
         return empty,empty
     elif Nx == Ny:
-        return asarray(x),asarray(y)
+        return x,y
     else:
         diff = abs(Nx - Ny)
         front = ones(diff, int)
         if Nx > Ny:
-            return asarray(x), concatenate((front,y))
+            return x, concatenate((front,y))
         elif Ny > Nx:
-            return concatenate((front,x)),asarray(y)
+            return concatenate((front,x)),y
 
 
 def binary_op_size(xx,yy):
@@ -96,7 +101,7 @@ def binary_op_size(xx,yy):
         throws errors if the array sizes are incompatible.
     """
     x,y = make_same_length(xx,yy)
-    res = zeros(len(x))
+    res = zeros(len(x),int)
     for i in range(len(x)):
         if x[i] == y[i]:
             res[i] = x[i]
@@ -131,14 +136,15 @@ class dummy_array(object):
         new_shape = binary_op_size(self.shape,x)
         return dummy_array(new_shape,1)
 
-    def __cmp__(self,other):
-        # This isn't an exact compare, but does work for ==
-        # cluge for Numeric
+    def __eq__(self,other):
+        # kludge for Numeric
         if isnumeric(other):
-            return 0
-        if len(self.shape) == len(other.shape) == 0:
-            return 0
-        return not alltrue(equal(self.shape,other.shape),axis=0)
+            return True
+        same = (self.shape == other.shape)
+        if isinstance(same, bool):
+            return same
+        else:
+            return all(same)
 
     def __add__(self,other):
         return self.binary_op(other)
@@ -158,10 +164,10 @@ class dummy_array(object):
     def __rmul__(self,other):
         return self.binary_op(other)
 
-    def __div__(self,other):
+    def __truediv__(self,other):
         return self.binary_op(other)
 
-    def __rdiv__(self,other):
+    def __rtruediv__(self,other):
         return self.binary_op(other)
 
     def __mod__(self,other):
@@ -240,7 +246,7 @@ class dummy_array(object):
                 #    step = step.value
                 if beg is None:
                     beg = 0
-                if end == sys.maxint or end is None:
+                if end == sys.maxsize or end is None:
                     end = dim_len
                 if step is None:
                     step = 1
@@ -267,7 +273,7 @@ class dummy_array(object):
                     beg,end,step = 0,0,1
                 # elif index.step > 0 and beg <= end:
                 elif step > 0 and beg <= end:
-                    pass  # slc_len = abs(divide(end-beg-1,step)+1)
+                    pass  # slc_len = abs(floor_divide(end-beg-1,step)+1)
                 # handle [::-1] and [-1::-1] correctly
                 # elif index.step > 0 and beg > end:
                 elif step > 0 and beg > end:
@@ -283,7 +289,7 @@ class dummy_array(object):
                     beg,end,step = end,beg,-step
                 elif(step < 0 and beg < end):
                     beg,end,step = 0,0,-step
-                slc_len = abs(divide(end-beg-1,step)+1)
+                slc_len = abs(floor_divide(end-beg-1,step)+1)
                 new_dims.append(slc_len)
             else:
                 if index < 0:

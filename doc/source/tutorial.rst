@@ -1232,7 +1232,7 @@ TypeError.
         {
             if(py_obj == NULL) return "C NULL value";
             if(PyCallable_Check(py_obj)) return "callable";
-            if(PyString_Check(py_obj)) return "string";
+            if(PyUnicode_Check(py_obj)) return "string";
             if(PyInt_Check(py_obj)) return "int";
             if(PyFloat_Check(py_obj)) return "float";
             if(PyDict_Check(py_obj)) return "dict";
@@ -1419,7 +1419,7 @@ namespaces. ``py_to_list()`` and its friends have the following form::
 
         static Py::String py_to_string(PyObject* py_obj,char* name)
         {
-            if (!PyString_Check(py_obj))
+            if (!PyUnicode_Check(py_obj))
                 handle_bad_type(py_obj,"string", name);
             return Py::String(py_obj);
         }

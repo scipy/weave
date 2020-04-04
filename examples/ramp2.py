@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function
+
 
 #
 #        C:\home\eric\wrk\weave\examples>python ramp2.py
@@ -15,7 +15,7 @@ from numpy import *
 
 def Ramp(result, size, start, end):
     step = (end-start)/(size-1)
-    for i in xrange(size):
+    for i in range(size):
         result[i] = start + step*i
 
 
@@ -43,7 +43,7 @@ def build_ramp_ext():
 def main():
     arr = [0]*10000
     t1 = time.time()
-    for i in xrange(200):
+    for i in range(200):
         Ramp(arr, 10000, 0.0, 1.0)
     t2 = time.time()
     py_time = t2 - t1
@@ -57,7 +57,7 @@ def main():
         build_ramp_ext()
         import ramp_ext
     arr = array([0]*10000,float64)
-    for i in xrange(10000):
+    for i in range(10000):
         ramp_ext.Ramp(arr, 0.0, 1.0)
     t2 = time.time()
     c_time = (t2 - t1)

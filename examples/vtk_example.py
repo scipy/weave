@@ -37,7 +37,7 @@ Copyright (c) 2004, Prabhu Ramachandran
 License: BSD Style.
 
 """
-from __future__ import absolute_import, print_function
+
 
 import weave
 import vtk

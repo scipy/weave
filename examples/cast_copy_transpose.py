@@ -13,7 +13,7 @@
 #  speed up: 3.48
 #  inplace transpose c: 0.129999995232
 #  speed up: 6.70
-from __future__ import absolute_import, print_function
+
 
 import numpy
 from numpy import *

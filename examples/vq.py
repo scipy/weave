@@ -1,6 +1,6 @@
 """
 """
-from __future__ import absolute_import, print_function
+
 
 # C:\home\ej\wrk\weave\examples>python vq.py
 # vq with 1000 observation, 10 features and 30 codes fo 100 iterations

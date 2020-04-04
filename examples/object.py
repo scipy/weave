@@ -3,7 +3,7 @@
     Note: std::cout type operations currently crash python...
           Not sure what is up with this...
 """
-from __future__ import absolute_import, print_function
+
 
 import weave
 
@@ -43,7 +43,7 @@ print('initial, inc(2), set(5)/get:', weave.inline(code,['obj']))
 #----------------------------------------------------------------------------
 # indexing of values.
 #----------------------------------------------------------------------------
-from UserList import UserList
+from collections import UserList
 obj = UserList([1,[1,2],"hello"])
 code = """
        int i;

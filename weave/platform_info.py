@@ -4,7 +4,7 @@
     keep the object files and shared libaries straight when
     multiple platforms share the same file system.
 """
-from __future__ import absolute_import, print_function
+
 
 import os
 import sys
@@ -95,15 +95,14 @@ def compiler_exe_path(exe_name):
     return exe_path
 
 
-def check_sum(file):
+def check_sum(file_path):
     from hashlib import sha256
     try:
-        f = open(file,'r')
-        bytes = f.read(-1)
+        with open(file_path,'rb') as f:
+            bstring = f.read(-1)
     except IOError:
-        bytes = ''
-    chk_sum = sha256(bytes)
-    return chk_sum.hexdigest()[:32]  # truncation needed, see gh-3216
+        bstring = b""
+    return sha256(bstring).hexdigest()[:32]
 
 
 def get_compiler_dir(compiler_name):

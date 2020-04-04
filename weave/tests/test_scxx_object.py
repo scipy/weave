@@ -1,9 +1,15 @@
 """ Test refcounting and behavior of SCXX.
 """
-from __future__ import absolute_import, print_function
+
 
 import sys
-from UserList import UserList
+if sys.version_info.major == 3:
+    from collections import UserDict, UserList
+    from io import StringIO
+else:
+    from UserList import UserList
+    from UserDict import UserDict
+    from cStringIO import StringIO
 
 from numpy.testing import (TestCase, dec, assert_equal, assert_, assert_raises,
                            run_module_suite)
@@ -90,8 +96,7 @@ class TestObjectPrint(TestCase):
 
     @dec.slow
     def test_stringio(self):
-        import cStringIO
-        file_imposter = cStringIO.StringIO()
+        file_imposter = StringIO()
         code = """
                py::object val = "how now brown cow";
                val.print(file_imposter);
@@ -426,9 +431,8 @@ class TestObjectCmp(TestCase):
         class Foo:
             def __init__(self,x):
                 self.x = x
-
-            def __cmp__(self,other):
-                return cmp(self.x,other.x)
+            def __eq__(self,other):
+                return self.x == other.x
 
         a,b = Foo(1),Foo(2)
         res = inline_tools.inline('return_val = (a == b);',['a','b'])
@@ -543,29 +547,6 @@ class TestObjectStr(TestCase):
         second = sys.getrefcount(res)
         assert_equal(first,second)
         assert_equal(res,"str return")
-
-
-class TestObjectUnicode(TestCase):
-
-    # This ain't going to win awards for test of the year...
-
-    @dec.slow
-    def test_unicode(self):
-        class Foo:
-
-            def __repr__(self):
-                return "repr return"
-
-            def __str__(self):
-                return "unicode"
-        a = Foo()
-        res = inline_tools.inline('return_val = a.unicode();',['a'])
-        first = sys.getrefcount(res)
-        del res
-        res = inline_tools.inline('return_val = a.unicode();',['a'])
-        second = sys.getrefcount(res)
-        assert_equal(first,second)
-        assert_equal(res,"unicode")
 
 
 class TestObjectIsCallable(TestCase):
@@ -891,9 +872,6 @@ class TestObjectSetItemOpIndex(TestCase):
         inline_tools.inline('a[1] = std::complex<double>(1,1);',['a'])
         assert_equal(sys.getrefcount(a[1]),2)
         assert_equal(a[1],1+1j)
-
-
-from UserDict import UserDict
 
 
 class TestObjectSetItemOpKey(TestCase):

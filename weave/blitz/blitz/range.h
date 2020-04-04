@@ -117,7 +117,7 @@ public:
 
     bool isAscendingContiguous() const
     {
-        return ((first_ < last_) && (stride_ == 1) || (first_ == last_));
+        return (((first_ < last_) && (stride_ == 1)) || (first_ == last_));
     }
 
     void setRange(int first, int last, int stride=1)

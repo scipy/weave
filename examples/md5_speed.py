@@ -27,12 +27,12 @@ their strings.  Yeah, the expected result, but it never hurts
 to check...
 
 """
-from __future__ import absolute_import, print_function
+
 
 import random
 import md5
 import time
-import cStringIO
+import io
 
 
 def speed(n,m):
@@ -51,7 +51,7 @@ def generate_random(avg_length,count):
     alphabet = 'abcdefghijklmnopqrstuvwxyz'
     lo,hi = [30,avg_length*2+30]
     for i in range(count):
-        new_str = cStringIO.StringIO()
+        new_str = io.StringIO()
         l = random.randrange(lo,hi)
         for i in range(l):
             new_str.write(random.choice(alphabet))
