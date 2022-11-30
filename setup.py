@@ -6,10 +6,11 @@ Inlining C/C++ code within Python generally results in speedups of 1.5x to 30x
 over algorithms written in pure Python.
 
 ``scipy-weave`` is the stand-alone version of the removed SciPy submodule
-``scipy.weave``.   It is Python 2.x only, and is provided for users that need
-versions of SciPy from which the ``weave`` submodule has been removed but
-have existing code that still depends on ``scipy.weave``.  For new code, users
-are recommended to use Cython.
+``scipy.weave``.   It is Python 3.x only (see versions <0.19.0 for Python
+2.6-2.7 support), and is provided for users that need versions of SciPy from
+which the ``weave`` submodule has been removed but have existing code that
+still depends on ``scipy.weave``.  For new code, users are recommended to use
+Cython.
 
 To install ``scipy-weave``, use of pip is recommended:: 
 
@@ -27,13 +28,16 @@ import sys
 import subprocess
 import os
 
+if not sys.version_info[0] == 3:
+    raise RuntimeError("Python 3.x is required")
+
 CLASSIFIERS = """\
 Development Status :: 4 - Beta
 Intended Audience :: Science/Research
 Intended Audience :: Developers
 License :: OSI Approved
 Programming Language :: C
-Programming Language :: Python
+Programming Language :: Python :: 3
 Topic :: Software Development
 Topic :: Scientific/Engineering
 Operating System :: Microsoft :: Windows
@@ -175,6 +179,7 @@ def setup_package():
         classifiers=[_f for _f in CLASSIFIERS.split('\n') if _f],
         platforms = ["Windows", "Linux", "Solaris", "Mac OS-X", "Unix"],
         test_suite='nose.collector',
+        python_requires='>=3.4,<3.10',  # parser module removed in 3.10
     )
 
     if len(sys.argv) >= 2 and ('--help' in sys.argv[1:] or
