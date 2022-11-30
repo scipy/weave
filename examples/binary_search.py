@@ -14,7 +14,7 @@
 # Note -- really need to differentiate between conversion errors and
 # run time errors.  This would reduce useless compiles and provide a
 # more intelligent control of things.
-from __future__ import absolute_import, print_function
+
 
 import sys
 sys.path.insert(0,'..')
@@ -33,10 +33,10 @@ def c_int_search(seq,t,chk=1):
            #line 33 "binary_search.py"
            if (!PyList_Check(py_seq))
                py::fail(PyExc_TypeError, "seq must be a list");
-           if (!PyInt_Check(py_t))
+           if (!PyLong_Check(py_t))
                py::fail(PyExc_TypeError, "t must be an integer");
-           int val, m, min = 0;
-           int max = seq.len()- 1;
+           long val, m, min = 0;
+           long max = seq.len()- 1;
            for(;;)
            {
                if (max < min )
@@ -45,7 +45,7 @@ def c_int_search(seq,t,chk=1):
                    break;
                }
                m = (min + max) / 2;
-               val = py_to_int(PyList_GET_ITEM(py_seq,m),"val");
+               val = PyLong_AsLong(PyList_GET_ITEM(py_seq,m));
                if (val < t)
                    min = m + 1;
                else if (val > t)
@@ -136,7 +136,7 @@ def py_int_search(seq, t):
     while 1:
         if max < min:
             return -1
-        m = (min + max) / 2
+        m = (min + max) // 2
         if seq[m] < t:
             min = m + 1
         elif seq[m] > t:
@@ -223,7 +223,7 @@ def search_compare(a,n):
 if __name__ == "__main__":
     # note bisect returns index+1 compared to other algorithms
     m = 100000
-    a = range(m)
+    a = list(range(m))
     n = 50000
     search_compare(a,n)
     print('search(a,3450)', c_int_search(a,3450), py_int_search(a,3450), bisect(a,3450))

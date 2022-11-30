@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function
+
 
 from numpy import arange
 from numpy.testing import TestCase, assert_, run_module_suite

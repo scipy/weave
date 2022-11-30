@@ -8,7 +8,7 @@ accelerate_tools contains the interface for on-the-fly building of
 C++ equivalents to Python functions.
 """
 #**************************************************************************#
-from __future__ import absolute_import, print_function
+
 
 from types import InstanceType, XRangeType
 import inspect
@@ -17,6 +17,7 @@ import weave
 from numpy.testing import assert_
 
 from .bytecodecompiler import CXXCoder,Type_Descriptor,Function_Descriptor
+from functools import reduce
 
 
 def CStr(s):
@@ -94,9 +95,9 @@ class Basic_Number(Basic):
 
 class Integer(Basic_Number):
     cxxtype = "long"
-    checker = "PyInt_Check"
-    inbounder = "PyInt_AsLong"
-    outbounder = "PyInt_FromLong"
+    checker = "PyLong_Check"
+    inbounder = "PyLong_AsLong"
+    outbounder = "PyLong_FromLong"
 
 
 class Double(Basic_Number):
@@ -108,9 +109,9 @@ class Double(Basic_Number):
 
 class String(Basic):
     cxxtype = "char*"
-    checker = "PyString_Check"
-    inbounder = "PyString_AsString"
-    outbounder = "PyString_FromString"
+    checker = "PyUnicode_Check"
+    inbounder = "PyUnicode_AsUTF8"
+    outbounder = "PyUnicode_FromString"
 
     def literalizer(self,s):
         return CStr(s)
@@ -366,7 +367,7 @@ class accelerate(object):
     def identifier(self,signature):
         # Build a (truncated, see gh-3216) SHA-256 checksum
         f = self.function
-        co = f.func_code
+        co = f.__code__
         identifier = str(signature) + \
                      str(co.co_argcount) + \
                      str(co.co_consts) + \
@@ -379,10 +380,10 @@ class accelerate(object):
         return P
 
     def code(self,*args):
-        if len(args) != self.function.func_code.co_argcount:
+        if len(args) != self.function.__code__.co_argcount:
             raise TypeError('%s() takes exactly %d arguments (%d given)' %
                         (self.function.__name__,
-                         self.function.func_code.co_argcount,
+                         self.function.__code__.co_argcount,
                          len(args)))
         signature = tuple(map(lookup_type,args))
         ident = self.function.__name__
@@ -410,8 +411,7 @@ class Python2CXX(CXXCoder):
         assert_(inspect.isfunction(f))
         # and check the input type signature
         assert_(reduce(lambda x,y: x and y,
-                      map(lambda x: isinstance(x,Type_Descriptor),
-                          signature),
+                      [isinstance(x,Type_Descriptor) for x in signature],
                       1), msg='%s not all type objects' % signature)
         self.arg_specs = []
         self.customize = weave.base_info.custom_info()

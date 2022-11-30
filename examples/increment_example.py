@@ -3,11 +3,11 @@
 # from weave import ext_tools
 
 # use the following so that development version is used.
-from __future__ import absolute_import, print_function
+
 
 import sys
 sys.path.insert(0,'..')
-import ext_tools
+import weave.ext_tools as ext_tools
 
 
 def build_increment_ext():
@@ -19,11 +19,11 @@ def build_increment_ext():
     # Effectively a type declaration for 'a' in the following functions.
     a = 1
 
-    ext_code = "return_val = PyInt_FromLong(a+1);"
+    ext_code = "return_val = PyLong_FromLong(a+1);"
     func = ext_tools.ext_function('increment',ext_code,['a'])
     mod.add_function(func)
 
-    ext_code = "return_val = PyInt_FromLong(a+2);"
+    ext_code = "return_val = PyLong_FromLong(a+2);"
     func = ext_tools.ext_function('increment_by_2',ext_code,['a'])
     mod.add_function(func)
 

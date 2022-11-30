@@ -58,7 +58,7 @@ import weave
 version = re.sub(r'\.dev-.*$', r'.dev', weave.__version__)
 release = weave.__version__
 
-print "Scipy (VERSION %s)" % (version,)
+print("Scipy (VERSION %s)" % (version,))
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
@@ -307,7 +307,7 @@ for name in ['sphinx.ext.linkcode', 'linkcode', 'numpydoc.linkcode']:
     except ImportError:
         pass
 else:
-    print "NOTE: linkcode extension not found -- no links to source generated"
+    print("NOTE: linkcode extension not found -- no links to source generated")
 
 def linkcode_resolve(domain, info):
     """

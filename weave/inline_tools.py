@@ -1,6 +1,6 @@
 # should re-write compiled functions to take a local and global dict
 # as input.
-from __future__ import absolute_import, print_function
+
 
 import sys
 import os
@@ -43,7 +43,7 @@ class inline_ext_function(ext_tools.ext_function):
 
             This code got a lot uglier when I added local_dict...
         """
-        declare_return = 'py::object return_val;\n'    \
+        declare_return = 'py::object return_val(nullptr);\n'    \
                          'int exception_occurred = 0;\n'    \
                          'PyObject *py__locals = NULL;\n' \
                          'PyObject *py__globals = NULL;\n'
@@ -111,12 +111,12 @@ class inline_ext_function(ext_tools.ext_function):
             '    }\n'
         catch_code = "catch(...)                        \n"   \
                       "{                                 \n" + \
-                      "    return_val =  py::object();   \n"   \
+                      "    return_val = nullptr;   \n"   \
                       "    exception_occurred = 1;        \n"   \
                       "}                                 \n"
         return_code = "    /* cleanup code */                   \n" + \
                            cleanup_code + \
-                      "    if(!(PyObject*)return_val && !exception_occurred)\n"   \
+                      "    if(return_val.is_null() && !exception_occurred)\n"   \
                       "    {\n                                  \n"   \
                       "        return_val = Py_None;            \n"   \
                       "    }\n                                  \n"   \
@@ -335,7 +335,7 @@ def inline(code,arg_names=[],local_dict=None, global_dict=None,
     else:
         # 1. try local cache
         try:
-            results = apply(function_cache[code],(local_dict,global_dict))
+            results = function_cache[code](local_dict,global_dict)
             return results
         except TypeError as msg:
             msg = str(msg).strip()
@@ -381,7 +381,7 @@ def attempt_function_call(code,local_dict,global_dict):
     global function_catalog
     # 1. try local cache
     try:
-        results = apply(function_cache[code],(local_dict,global_dict))
+        results = function_cache[code](local_dict,global_dict)
         return results
     except TypeError as msg:
         msg = str(msg).strip()
@@ -401,7 +401,7 @@ def attempt_function_call(code,local_dict,global_dict):
     function_list = function_catalog.get_functions_fast(code)
     for func in function_list:
         try:
-            results = apply(func,(local_dict,global_dict))
+            results = func(local_dict,global_dict)
             function_catalog.fast_cache(code,func)
             function_cache[code] = func
             return results
@@ -425,7 +425,7 @@ def attempt_function_call(code,local_dict,global_dict):
     function_list = function_catalog.get_functions(code,module_dir)
     for func in function_list:
         try:
-            results = apply(func,(local_dict,global_dict))
+            results = func(local_dict,global_dict)
             function_catalog.fast_cache(code,func)
             function_cache[code] = func
             return results
@@ -503,8 +503,7 @@ def compile_function(code,arg_names,local_dict,global_dict,
     # the directory where it lives is in the python path.
     try:
         sys.path.insert(0,storage_dir)
-        exec('import ' + module_name)
-        func = eval(module_name+'.compiled_func')
+        func = __import__(module_name).compiled_func
     finally:
         del sys.path[0]
     return func

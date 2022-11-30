@@ -1,7 +1,7 @@
-/******************************************** 
+/********************************************
   copyright 1999 McMillan Enterprises, Inc.
   www.mcmillan-inc.com
-  
+
   modified heavily for weave by eric jones
 *********************************************/
 #if !defined(STR_H_INCLUDED_)
@@ -16,18 +16,16 @@ namespace py {
 class str : public sequence
 {
 public:
-  str() : sequence() {};
   str(const char* s)
-    : sequence(PyString_FromString((char* )s)) { lose_ref(_obj); }
+    : sequence(PyUnicode_FromString((char* )s)) { lose_ref(_obj); }
   str(const char* s, int sz)
-    : sequence(PyString_FromStringAndSize((char* )s, sz)) {  lose_ref(_obj); }
+    : sequence(PyUnicode_FromStringAndSize((char* )s, sz)) {  lose_ref(_obj); }
   str(const str& other)
     : sequence(other) {};
   str(PyObject* obj)
     : sequence(obj) { _violentTypeCheck(); };
   str(const object& other)
     : sequence(other) { _violentTypeCheck(); };
-  virtual ~str() {};
 
   virtual str& operator=(const str& other) {
     grab_ref(other);
@@ -39,13 +37,13 @@ public:
     return *this;
   };
   virtual void _violentTypeCheck() {
-    if (!PyString_Check(_obj)) {
+    if (!PyUnicode_Check(_obj)) {
       grab_ref(0);
       fail(PyExc_TypeError, "Not a Python String");
     }
   };
   operator const char* () const {
-    return PyString_AsString(_obj);
+    return PyUnicode_AsUTF8(_obj);
   };
   /*
   static str format(const str& fmt, tuple& args){

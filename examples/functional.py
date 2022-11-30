@@ -7,7 +7,7 @@
 #       speed up: 0.666666666667
 #       c speed: 0.0200001001358
 #       speed up: 1.99998807913
-from __future__ import absolute_import, print_function
+
 
 import sys
 sys.path.insert(0,'..')
@@ -64,7 +64,7 @@ def c_list_map2(func,seq):
 
 def main():
     seq = ['aa','bbb','cccc']
-    print('desired:', map(len,seq))
+    print('desired:', list(map(len,seq)))
     print('actual:', c_list_map(len,seq))
     print('actual2:', c_list_map2(len,seq))
 
@@ -74,7 +74,7 @@ def time_it(m,n):
     seq = ['aadasdf'] * n
     t1 = time.time()
     for i in range(m):
-        result = map(len,seq)
+        result = list(map(len,seq))
     t2 = time.time()
     py = t2 - t1
     print('python speed:', py)

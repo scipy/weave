@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function
+
 
 import parser
 import sys
@@ -45,9 +45,8 @@ def blitz(expr,local_dict=None, global_dict=None,check_size=1,verbose=0,**kw):
 
     # 2. try local cache
     try:
-        results = apply(function_cache[expr],(local_dict,global_dict))
-        return results
-    except:
+        return function_cache[expr](local_dict,global_dict)
+    except (KeyError, TypeError):
         pass
     try:
         results = attempt_function_call(expr,local_dict,global_dict)
@@ -60,12 +59,13 @@ def blitz(expr,local_dict=None, global_dict=None,check_size=1,verbose=0,**kw):
         expr_code = ast_to_blitz_expr(ast_list)
         arg_names = ast_tools.harvest_variables(ast_list)
         module_dir = global_dict.get('__file__',None)
-        func = inline_tools.compile_function(expr_code,arg_names,local_dict,
-                                             global_dict,module_dir,
-                                             compiler='gcc',auto_downcast=1,
-                                             verbose=verbose,
-                                             type_converters=converters.blitz,
-                                             **kw)
+        func = inline_tools.compile_function(expr_code,
+                    arg_names,local_dict,
+                    global_dict,module_dir,
+                    compiler='gcc',auto_downcast=1,
+                    verbose=verbose,
+                    type_converters=converters.blitz,**kw)
+
         function_catalog.add_function(expr,func,module_dir)
         try:
             results = attempt_function_call(expr,local_dict,global_dict)

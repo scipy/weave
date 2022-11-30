@@ -8,13 +8,17 @@
     info_list -- a handy list class for working with multiple
                  info classes at the same time.
 """
-from __future__ import absolute_import, print_function
 
-import UserList
+import sys
 
+if sys.version_info.major == 3:
+    from collections import UserList
+else:
+    from UserList import UserList
 
 class base_info(object):
     _warnings = []
+    _preheader_defines = []
     _headers = []
     _include_dirs = []
     _libraries = []
@@ -41,6 +45,9 @@ class base_info(object):
 
     def warnings(self):
         return self._warnings
+
+    def preheader_defines(self):
+        return self._preheader_defines
 
     def headers(self):
         return self._headers
@@ -79,6 +86,7 @@ class base_info(object):
 class custom_info(base_info):
     def __init__(self):
         self._warnings = []
+        self._preheader_defines = []
         self._headers = []
         self._include_dirs = []
         self._libraries = []
@@ -93,6 +101,9 @@ class custom_info(base_info):
 
     def add_warning(self,warning):
         self._warnings.append(warning)
+
+    def add_preheader_define(self,first,second=''):
+        self._preheader_defines.append((first, second))
 
     def add_header(self,header):
         self._headers.append(header)
@@ -128,11 +139,11 @@ class custom_info(base_info):
         return self._extra_link_args.append(link_arg)
 
 
-class info_list(UserList.UserList):
+class info_list(UserList):
     def get_unique_values(self,attribute):
         all_values = []
         for info in self:
-            vals = eval('info.'+attribute+'()')
+            vals = getattr(info, attribute)()
             all_values.extend(vals)
         return unique_values(all_values)
 
@@ -150,6 +161,9 @@ class info_list(UserList.UserList):
 
     def warnings(self):
         return self.get_unique_values('warnings')
+
+    def preheader_defines(self):
+        return self.get_unique_values('preheader_defines')
 
     def headers(self):
         return self.get_unique_values('headers')

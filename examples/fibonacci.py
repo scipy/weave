@@ -9,11 +9,11 @@
 #  speed in c: 5.00000715256e-005
 #  speed up: 10.42
 # fib(30) 832040 832040 832040 832040
-from __future__ import absolute_import, print_function
+
 
 import sys
 sys.path.insert(0,'..')
-import ext_tools
+import weave.ext_tools as ext_tools
 
 
 def build_fibonacci():
@@ -101,7 +101,6 @@ def py_fib2(a):
 
 import time
 
-
 def recurse_compare(n):
     print('Recursively computing the first %d fibonacci numbers:' % n)
     t1 = time.time()
@@ -112,7 +111,7 @@ def recurse_compare(n):
     print(' speed in python:', t2 - t1)
 
     # load into cache
-    c_fib1(i)
+    c_fib1(1)
     t1 = time.time()
     for i in range(n):
         c_fib1(i)

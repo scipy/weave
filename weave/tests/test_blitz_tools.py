@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function
+
 
 import time
 import parser
@@ -55,7 +55,7 @@ class TestBlitz(TestCase):
 
     Would be useful to benchmark these things somehow.
     """
-    def generic_check(self, expr, arg_dict, type, size):
+    def generic_check(self, expr, arg_dict, typ, size):
         clean_result = array(arg_dict['result'],copy=1)
         t1 = time.time()
         exec(expr, globals(),arg_dict)
@@ -91,14 +91,14 @@ class TestBlitz(TestCase):
                     except:
                         pass
                 debug_print('Run:', size,typ)
-                standard,compiled = self.generic_check(expr,arg_dict,type,size)
+                standard,compiled = self.generic_check(expr,arg_dict,typ,size)
                 try:
                     speed_up = standard/compiled
                 except:
                     speed_up = -1.
                 debug_print("1st run(numpy,compiled,speed up):  %3.4f, %3.4f, "
                             "%3.4f" % (standard,compiled,speed_up))
-                standard,compiled = self.generic_check(expr,arg_dict,type,size)
+                standard,compiled = self.generic_check(expr,arg_dict,typ,size)
                 try:
                     speed_up = standard/compiled
                 except:

@@ -1,6 +1,4 @@
-from __future__ import absolute_import, print_function
 
-import types
 
 from numpy import arange, float32, float64
 from numpy.testing import (TestCase, dec, assert_equal, assert_,
@@ -72,7 +70,7 @@ class TestExtModule(TestCase):
         mod = ext_tools.ext_module('ext_string_and_int')
         code = """
                a=b.length();
-               return_val = PyInt_FromLong(a);
+               return_val = PyLong_FromLong(a);
                """
         test = ext_tools.ext_function('test',code,['a','b'])
         mod.add_function(test)
@@ -134,8 +132,8 @@ class TestAssignVariableTypes(TestCase):
         bd = array_converter()
         bd.name, bd.var_type, bd.dims = 'b', float64, 1
 
-        cd = c_spec.int_converter()
-        cd.name, cd.var_type = 'c', types.IntType
+        cd = c_spec.long_converter()
+        cd.name, cd.var_type = 'c', int
         desired = [ad,bd,cd]
         assert_equal(actual,desired)
 

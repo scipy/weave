@@ -15,7 +15,7 @@ Authors:
   Prabhu Ramachandran <prabhu@aero.iitm.ernet.in>
   Eric Jones <eric@enthought.com>
 """
-from __future__ import absolute_import, print_function
+
 
 from .c_spec import common_base_converter
 
@@ -117,14 +117,8 @@ class vtk_converter(common_base_converter):
         new_spec.name = name
         return new_spec
 
-    def __cmp__(self,other):
-        # only works for equal
-        res = -1
-        try:
-            res = cmp(self.name,other.name) or \
-                  cmp(self.__class__, other.__class__) or \
-                  cmp(self.class_name, other.class_name) or \
-                  cmp(self.type_name,other.type_name)
-        except:
-            pass
-        return res
+    def __eq__(self,other):
+        return self.__class__ == other.__class__ and \
+               self.name == other.name and \
+               self.class_name == other.class_name and \
+               self.type_name == other.type_name

@@ -1,8 +1,9 @@
-from __future__ import absolute_import, print_function
+
 
 import os
 import sys
 import re
+import io
 
 from . import catalog
 from . import build_tools
@@ -44,10 +45,10 @@ class ext_function_from_specs(object):
             This code got a lot uglier when I added local_dict...
         """
 
-        declare_return = 'py::object return_val;\n' \
+        declare_return = 'py::object return_val(nullptr);\n' \
                          'int exception_occurred = 0;\n' \
                          'PyObject *py_local_dict = NULL;\n'
-        arg_string_list = self.arg_specs.variable_as_strings() + ['"local_dict"']
+        arg_string_list = list(self.arg_specs.variable_as_strings()) + ['"local_dict"']
         arg_strings = ','.join(arg_string_list)
         if arg_strings:
             arg_strings += ','
@@ -55,14 +56,15 @@ class ext_function_from_specs(object):
                          arg_strings
 
         py_objects = ', '.join(self.arg_specs.py_pointers())
-        init_flags = ', '.join(self.arg_specs.init_flags())
-        init_flags_init = '= '.join(self.arg_specs.init_flags())
         py_vars = ' = '.join(self.arg_specs.py_variables())
+        init_flags = [x.init_flag() for x in self.arg_specs if x.cleanup_code()]
         if py_objects:
             declare_py_objects = 'PyObject ' + py_objects + ';\n'
-            declare_py_objects += 'int ' + init_flags + ';\n'
+            if init_flags:
+                declare_py_objects += 'int ' + ', '.join(init_flags) + ';\n'
             init_values = py_vars + ' = NULL;\n'
-            init_values += init_flags_init + ' = 0;\n\n'
+            if init_flags:
+                init_values += '= '.join(init_flags) + ' = 0;\n\n'
         else:
             declare_py_objects = ''
             init_values = ''
@@ -90,13 +92,14 @@ class ext_function_from_specs(object):
         arg_strings = []
         for arg in self.arg_specs:
             arg_strings.append(arg.declaration_code())
-            arg_strings.append(arg.init_flag() + " = 1;\n")
+            if arg.cleanup_code():
+                arg_strings.append(arg.init_flag() + " = 1;\n")
         code = "".join(arg_strings)
         return code
 
     def arg_cleanup_code(self):
         arg_strings = []
-        have_cleanup = filter(lambda x:x.cleanup_code(),self.arg_specs)
+        have_cleanup = [x for x in self.arg_specs if x.cleanup_code()]
         for arg in have_cleanup:
             code = "if(%s)\n" % arg.init_flag()
             code += "{\n"
@@ -134,13 +137,13 @@ class ext_function_from_specs(object):
                       "\n}                                \n"
         catch_code = "catch(...)                       \n"   \
                       "{                                \n" + \
-                      "    return_val =  py::object();      \n"   \
+                      "    return_val = nullptr;      \n"   \
                       "    exception_occurred = 1;       \n"   \
                       "}                                \n"
 
         return_code = "    /*cleanup code*/                     \n" + \
                            cleanup_code + \
-                      '    if(!(PyObject*)return_val && !exception_occurred)\n'   \
+                      '    if(return_val.is_null() && !exception_occurred)\n'   \
                       '    {\n                                  \n'   \
                       '        return_val = Py_None;            \n'   \
                       '    }\n                                  \n'   \
@@ -200,22 +203,12 @@ class ext_module(object):
 
     def module_code(self):
         code = '\n'.join([
-            """\
-#ifdef __CPLUSPLUS__
-extern "C" {
-#endif
-""",
             self.warning_code(),
             self.header_code(),
             self.support_code(),
             self.function_code(),
             self.python_function_definition_code(),
             self.module_init_code(),
-            """\
-#ifdef __CPLUSCPLUS__
-}
-#endif
-"""
             ])
         return code
 
@@ -234,6 +227,12 @@ extern "C" {
         for i in info:
             i.set_compiler(self.compiler)
         return info
+        return base_info.info_list(info)
+
+    def get_preheader_defines(self):
+        d = self.build_information().preheader_defines()
+        d = map(lambda xy: '#define %s %s\n' % xy, d)
+        return ''.join(d) + '\n'
 
     def get_headers(self):
         all_headers = self.build_information().headers()
@@ -259,13 +258,13 @@ extern "C" {
 
     def warning_code(self):
         all_warnings = self.build_information().warnings()
-        w = map(lambda x: "#pragma warning(%s)\n" % x,all_warnings)
+        w = ["#pragma warning(%s)\n" % x for x in all_warnings]
         return '#ifndef __GNUC__\n' + ''.join(w) + '\n#endif'
 
     def header_code(self):
         h = self.get_headers()
         h = map(lambda x: '#include ' + x + '\n',h)
-        return ''.join(h) + '\n'
+        return self.get_preheader_defines() + ''.join(h) + '\n'
 
     def support_code(self):
         code = self.build_information().support_code()
@@ -292,11 +291,33 @@ extern "C" {
     def module_init_code(self):
         init_code_list = self.build_information().module_init_code()
         init_code = indent(''.join(init_code_list),4)
-        code = 'PyMODINIT_FUNC init%s(void)\n' \
+        code = 'static int traverse(PyObject *m, visitproc visit, void *arg) {\n' \
+               '    return 0;\n' \
+               '}\n' \
+               '\n' \
+               'static int clear(PyObject *m) {\n' \
+               '    return 0;\n' \
+               '}\n' \
+               '\n' \
+               'static struct PyModuleDef moduledef = {\n' \
+               '        PyModuleDef_HEAD_INIT,\n' \
+               '        "%s", NULL,\n' \
+               '        0,\n' \
+               '        compiled_methods,\n' \
+               '        NULL,\n' \
+               '        traverse,\n' \
+               '        clear,\n' \
+               '        NULL\n' \
+               '};\n' \
+               '\n' \
+               'extern "C"\n' \
+               'PyObject *PyInit_%s(void)\n' \
                '{\n' \
+               '    PyObject *module = PyModule_Create(&moduledef);\n' \
                '%s' \
-               '    (void) Py_InitModule("%s", compiled_methods);\n' \
-               '}\n' % (self.name,init_code,self.name)
+               '    return module;\n' \
+               '}\n' % (self.name,self.name,init_code)
+
         return code
 
     def generate_file(self,file_name="",location='.'):
@@ -322,10 +343,7 @@ extern "C" {
         info = self.build_information()
         _source_files = info.sources()
         # remove duplicates
-        source_files = {}
-        for i in _source_files:
-            source_files[i] = None
-        source_files = source_files.keys()
+        source_files = list({i:None for i in _source_files})
 
         # add internally specified macros, includes, etc. to the key words
         # values of the same names so that distutils will use them.
@@ -476,7 +494,6 @@ def indent(st,spaces):
 def format_error_msg(errors):
     #minimum effort right now...
     import pprint
-    import cStringIO
-    msg = cStringIO.StringIO()
+    msg = io.StringIO()
     pprint.pprint(errors,msg)
     return msg.getvalue()

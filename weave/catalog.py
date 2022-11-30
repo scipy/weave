@@ -30,7 +30,7 @@
     along with the path information to its module, are also stored in a
     persistent catalog for future use by python sessions.
 """
-from __future__ import absolute_import, print_function
+
 
 import os
 import sys
@@ -45,7 +45,7 @@ try:
     # installs (due to known bsddb issues).  While importing shelve doesn't
     # fail, it won't work correctly if dbhash import fails.  So in that case we
     # want to use _dumb_shelve
-    import dbhash
+    import dbm.bsd
     import shelve
     dumb = 0
 except ImportError:
@@ -65,9 +65,11 @@ def getmodule(object):
         # walk trough all modules looking for function
         for name,mod in sys.modules.items():
             # try except used because of some comparison failures
-            # in wxPoint code.  Need to review this
+            # in wxPoint code.  Need to review this.
+            # Moreover, when mod = coverage.debug.DebugOutputFile.the_one,
+            # the following throws an AttributeError exception.
             try:
-                if mod and object in mod.__dict__.values():
+                if mod and any(object is x for x in mod.__dict__.values()):
                     value = mod
                     # if it is a built-in module, keep looking to see
                     # if a non-builtin also has it.  Otherwise quit and
@@ -76,8 +78,9 @@ def getmodule(object):
                     if str(mod) not in '(built-in)':
                         break
 
-            except (TypeError, KeyError, ImportError):
+            except (TypeError, KeyError, ImportError, AttributeError):
                 pass
+
     return value
 
 
@@ -92,7 +95,7 @@ def expr_to_filename(expr):
     base = 'sc_'
     # 32 chars is enough for unique filenames; too long names don't work for
     # MSVC (see gh-3216).  Don't use md5, gives a FIPS warning.
-    return base + sha256(expr).hexdigest()[:32]
+    return base + sha256(bytes(expr, 'utf-8')).hexdigest()[:32]
 
 
 def unique_file(d,expr):
@@ -107,7 +110,7 @@ def unique_file(d,expr):
     """
     files = os.listdir(d)
     base = expr_to_filename(expr)
-    for i in xrange(1000000):
+    for i in range(1000000):
         fname = base + repr(i)
         if not (fname+'.cpp' in files or
                 fname+'.o' in files or
@@ -596,7 +599,7 @@ class catalog(object):
         """
         files = map(catalog_path,self.build_search_order())
         files = filter(lambda x: x is not None,files)
-        return files
+        return list(files)
 
     def get_existing_files(self):
         """ Returns all existing catalog file list in correct search order.
@@ -632,7 +635,7 @@ class catalog(object):
             from os import access, F_OK, W_OK
             return (access(x,F_OK) and access(x,W_OK) or
                     access(os.path.dirname(x),W_OK))
-        writable = filter(file_test,files)
+        writable = list(filter(file_test,files))
         if writable:
             file = writable[0]
         else:
