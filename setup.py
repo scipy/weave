@@ -173,7 +173,7 @@ def setup_package():
         description = DOCLINES[0],
         long_description = "\n".join(DOCLINES[2:]),
         url = "http://www.github.com/scipy/weave",
-        download_url = "https://pypi.python.org/pypi/weave",
+        download_url = "https://pypi.python.org/pypi/scipy-weave",
         license = 'BSD',
         cmdclass=cmdclass,
         classifiers=[_f for _f in CLASSIFIERS.split('\n') if _f],
