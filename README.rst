@@ -1,18 +1,18 @@
-Weave provides tools for including C/C++ code within Python code. Inlining
-C/C++ code within Python generally results in speedups of 1.5x to 30x over
-algorithms written in pure Python.
+``scipy-weave`` provides tools for including C/C++ code within Python code.
+Inlining C/C++ code within Python generally results in speedups of 1.5x to 30x
+over algorithms written in pure Python.
 
-Weave is the stand-alone version of the deprecated Scipy submodule
+``scipy-weave`` is the stand-alone version of the removed SciPy submodule
 ``scipy.weave``.   It is Python 2.x only, and is provided for users that need
-new versions of Scipy (from which the ``weave`` submodule may be removed) but
+versions of SciPy from which the ``weave`` submodule has been removed but
 have existing code that still depends on ``scipy.weave``.  For new code, users
 are recommended to use Cython.
 
-To install Weave, use of pip is recommended:: 
+To install ``scipy-weave``, use of pip is recommended:: 
 
-    pip install weave
+    pip install scipy-weave
 
-To run the tests::
+Note that the import name for ``scipy-weave`` is ``weave``. To run the tests::
 
     python2 -c "import weave; weave.test('full')"
 
