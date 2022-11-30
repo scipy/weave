@@ -1,15 +1,23 @@
 #!/usr/bin/env python
-"""Weave: a C++ compiler for Python.
+"""scipy-weave: a C++ compiler for Python 2.
 
-Weave provides tools for including C/C++ code within Python code. Inlining
-C/C++ code within Python generally results in speedups of 1.5x to 30x over
-algorithms written in pure Python.
+scipy-weave provides tools for including C/C++ code within Python code.
+Inlining C/C++ code within Python generally results in speedups of 1.5x to 30x
+over algorithms written in pure Python.
 
-Weave is the stand-alone version of the deprecated Scipy submodule
+``scipy-weave`` is the stand-alone version of the removed SciPy submodule
 ``scipy.weave``.   It is Python 2.x only, and is provided for users that need
-new versions of Scipy (from which the ``weave`` submodule may be removed) but
+versions of SciPy from which the ``weave`` submodule has been removed but
 have existing code that still depends on ``scipy.weave``.  For new code, users
 are recommended to use Cython.
+
+To install ``scipy-weave``, use of pip is recommended:: 
+
+    pip install scipy-weave
+
+Note that the import name for ``scipy-weave`` is ``weave``. To run the tests::
+
+    python2 -c "import weave; weave.test('full')"
 
 """
 
@@ -37,7 +45,7 @@ Operating System :: MacOS
 
 
 MAJOR               = 0
-MINOR               = 18
+MINOR               = 19
 MICRO               = 0
 ISRELEASED          = False
 VERSION             = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
@@ -88,7 +96,7 @@ def get_version_info():
         GIT_REVISION = "Unknown"
 
     if not ISRELEASED:
-        FULLVERSION += '.dev-' + GIT_REVISION[:7]
+        FULLVERSION += '.dev0+' + GIT_REVISION[:7]
 
     return FULLVERSION, GIT_REVISION
 
@@ -155,8 +163,8 @@ def setup_package():
         cmdclass = {}
 
     metadata = dict(
-        name = 'weave',
-        maintainer = "Weave developers",
+        name = 'scipy-weave',
+        maintainer = "scipy-weave developers",
         maintainer_email = "scipy-dev@scipy.org",
         description = DOCLINES[0],
         long_description = "\n".join(DOCLINES[2:]),
