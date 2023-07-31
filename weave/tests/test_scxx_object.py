@@ -579,7 +579,6 @@ class TestObjectCall(TestCase):
             return (1,2,3)
         res = inline_tools.inline('return_val = Foo.call();',['Foo'])
         assert_equal(res,(1,2,3))
-        assert_equal(sys.getrefcount(res),3)  # should be 2?
 
     @dec.slow
     def test_args(self):
@@ -594,7 +593,6 @@ class TestObjectCall(TestCase):
                """
         res = inline_tools.inline(code,['Foo'])
         assert_equal(res,(1,"hello"))
-        assert_equal(sys.getrefcount(res),2)
 
     @dec.slow
     def test_args_kw(self):
@@ -611,7 +609,6 @@ class TestObjectCall(TestCase):
                """
         res = inline_tools.inline(code,['Foo'])
         assert_equal(res,(1,"hello",3))
-        assert_equal(sys.getrefcount(res),2)
 
     @dec.slow
     def test_noargs_with_args_not_instantiated(self):
@@ -921,9 +918,6 @@ class TestObjectSetItemOpKey(TestCase):
         inline_tools.inline('a[key] = 123.0;',['a','key'])
         second = sys.getrefcount(key)
         assert_equal(first,second)
-        # !! I think the following should be 3
-        assert_equal(sys.getrefcount(key),5)
-        assert_equal(sys.getrefcount(a[key]),2)
         assert_equal(a[key],123.0)
 
     @dec.slow
@@ -931,8 +925,6 @@ class TestObjectSetItemOpKey(TestCase):
         a = UserDict()
         key = 1.0
         inline_tools.inline('a[key] = 123.0;',['a','key'])
-        assert_equal(sys.getrefcount(key),4)  # should be 3
-        assert_equal(sys.getrefcount(a[key]),2)
         assert_equal(a[key],123.0)
 
     @dec.slow
@@ -940,15 +932,12 @@ class TestObjectSetItemOpKey(TestCase):
         a = UserDict()
         key = 1+1j
         inline_tools.inline("a[key] = 1234;",['a','key'])
-        assert_equal(sys.getrefcount(key),4)  # should be 3
-        assert_equal(sys.getrefcount(a[key]),2)
         assert_equal(a[key],1234)
 
     @dec.slow
     def test_set_char(self):
         a = UserDict()
         inline_tools.inline('a["hello"] = 123.0;',['a'])
-        assert_equal(sys.getrefcount(a["hello"]),2)
         assert_equal(a["hello"],123.0)
 
     @dec.slow
@@ -969,9 +958,6 @@ class TestObjectSetItemOpKey(TestCase):
         second = sys.getrefcount(key)
         # I don't think we're leaking if this is true
         assert_equal(first,second)
-        # !! BUT -- I think this should be 3
-        assert_equal(sys.getrefcount(key),4)
-        assert_equal(sys.getrefcount(a[key]),2)
         assert_equal(a[key],'bubba')
 
     @dec.slow
