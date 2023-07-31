@@ -53,7 +53,7 @@ class NumpyComplexScalarConverter(TestCase):
         mod_name = sys._getframe().f_code.co_name + self.compiler
         mod_name = unique_mod(test_dir,mod_name)
         mod = ext_tools.ext_module(mod_name)
-        a = numpy.complex(1.+1j)
+        a = complex(1.+1j)
         code = "a=std::complex<double>(2.,2.);"
         test = ext_tools.ext_function('test',code,['a'])
         mod.add_function(test)
