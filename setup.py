@@ -179,6 +179,8 @@ def setup_package():
         classifiers=[_f for _f in CLASSIFIERS.split('\n') if _f],
         platforms = ["Windows", "Linux", "Solaris", "Mac OS-X", "Unix"],
         test_suite='nose.collector',
+        install_requires=['numpy<1.25'],
+        setup_requires=['numpy'],
         python_requires='>=3.4,<3.10',  # parser module removed in 3.10
     )
 
